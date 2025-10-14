@@ -57,8 +57,6 @@ bibliography: references.bib
 number-sections: true
 ---
 
-# A Heading
-
 A reference... [@poisotSpeciesWhyEcological2015]
 
 # References {.unnumbered}
