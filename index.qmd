@@ -1,0 +1,65 @@
+---
+title: "Is everything a Niche model?"
+author:
+  - name: Tanya Strydom
+    id: ts
+    orcid: 0000-0001-6067-1349
+    corresponding: true
+    email: t.strydom@sheffield.ac.uk
+    role: 
+    - conceptualization: lead
+    - methodology: supporting
+    affiliation:
+      - id: sheffield
+        name: School of Biosciences, University of Sheffield, Sheffield, UK
+  - name: Xiaoxiao Li
+    id: xl
+    orcid: 0000-0002-4029-2162
+    corresponding: false
+    role: 
+    - conceptualization: lead
+    - methodology: supporting
+    affiliations:
+      - ref: sheffield
+  - name: Laura Landon Blake
+    id: llb
+    corresponding: false
+    role: 
+    - conceptualization: lead
+    - methodology: supporting
+    affiliations:
+      - ref: sheffield
+  - name: Andrew P. Beckerman
+    id: apb
+    orcid: 0000-0002-7859-8394
+    corresponding: false
+    role: 
+    - conceptualization: lead
+    - methodology: supporting
+    affiliations:
+      - ref: sheffield
+  - name: Dylan Z. Childs
+    id: dzc
+    orcid: 0000-0002-0675-4933
+    corresponding: false
+    role: 
+    - conceptualization: lead
+    - methodology: supporting
+    affiliations:
+      - ref: sheffield
+funding: "The author(s) received no specific funding for this work. Well they did I just haven't done the homework"
+keywords:
+  - food webs
+abstract: |
+  TODO
+date: last-modified
+bibliography: references.bib
+number-sections: true
+---
+
+A reference... [@poisotSpeciesWhyEcological2015]
+
+# References {.unnumbered}
+
+::: {#refs}
+:::
