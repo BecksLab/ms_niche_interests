@@ -1,2 +1,4 @@
 [deps]
 FoodWebTools = "1f540cc9-11db-4f16-ba1b-35cbaf81ff1e"
+Graphs = "86223c79-3864-5bf0-83f7-82e725a168b6"
+SpeciesInteractionNetworks = "49e116ef-912f-4766-9e56-896a49944adc"
