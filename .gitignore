@@ -30,3 +30,4 @@ JuliaLocalPreferences.toml
 /.luarc.json
 
 /.quarto/
+.vscode/settings.json
