@@ -19,7 +19,9 @@ randommodel(species::Int64, L::Int64)
 
     Graphs.jl TODO
 """
-function random(species::Any, L::Int64)
+function random(species::Any, Co::Int64)
+
+    L = floor(Int, Co * (length(species)^2))
 
     S = length(species)
     N = erdos_renyi(S, L)
