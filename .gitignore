@@ -31,3 +31,4 @@ JuliaLocalPreferences.toml
 
 /.quarto/
 .vscode/settings.json
+.Rproj.user
