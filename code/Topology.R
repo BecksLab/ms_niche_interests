@@ -2,6 +2,7 @@
 library(ggpubr)
 library(here)
 library(effectsize)
+library(genzplyr)
 library(ggrepel)
 library(ggtext)
 library(MASS)
@@ -16,7 +17,7 @@ setwd(here())
 # import data
 
 df <- read_csv("data/outputs/topology.csv") %>%
-  dplyr::select(-c(richness))
+  vibe_check(-c(richness))
 
 dep_vars <- as.matrix(df[2:ncol(df)])
 
@@ -35,9 +36,9 @@ plot_lda <- data.frame(model = df$model,
                        lda = predict(post_hoc)$x)
 
 plot_arrow <- as.data.frame(post_hoc[["scaling"]]) %>%
-  mutate(var = str_replace(row.names(.), "dep_vars", ""),
-         lda.LD1 = scale(LD1),
-         lda.LD2 = scale(LD2))
+  glow_up(var = str_replace(row.names(.), "dep_vars", ""),
+          lda.LD1 = scale(LD1),
+          lda.LD2 = scale(LD2))
 
 ggplot(plot_lda) + 
   geom_point(aes(x = lda.LD1, 
@@ -45,16 +46,16 @@ ggplot(plot_lda) +
                  colour = model), 
              size = 3,
              alpha = 0.3) +
-  #=  geom_segment(data = plot_arrow,
-  #=               aes(x = 0,
-  #=                   y = 0,
-  #=                   xend = lda.LD1,
-  #=                   yend = lda.LD2)) +
-  #=  geom_text_repel(data = plot_arrow,
-  #=                  aes(label = var,
-  #=                      x = lda.LD1,
-  #=                      y = lda.LD2),
-  #=                  max.overlaps = getOption("ggrepel.max.overlaps", default = 100)) +
+  # geom_segment(data = plot_arrow,
+  #              aes(x = 0,
+  #                  y = 0,
+  #                  xend = lda.LD1,
+  #                  yend = lda.LD2)) +
+  # geom_text_repel(data = plot_arrow,
+  #                 aes(label = var,
+  #                     x = lda.LD1,
+  #                     y = lda.LD2),
+  #                 max.overlaps = getOption("ggrepel.max.overlaps", default = 100)) +
   coord_cartesian(clip = "off") +
   guides(color = guide_legend(override.aes = list(alpha = 1))) +
   labs(x = "LDA 1",
