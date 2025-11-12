@@ -1,4 +1,4 @@
-### This file contains functions to be used in the pre-perturbation simulation.
+
 ENDI = EcologicalNetworksDynamics.Internals
 
 ## --- Function to rescale bodymass -----------------
