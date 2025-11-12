@@ -1,6 +1,13 @@
 ### This file contains functions to be used in the pre-perturbation simulation.
 ENDI = EcologicalNetworksDynamics.Internals
 
+## --- Function to rescale bodymass -----------------
+"""
+    rescale_bodymass(bodymasses::AbstractVector, met_class::AbstractVector)
+    bodymasses = vector of bodymasses
+    met_class = vector of metabolic classes (:producer, :herbivore, :carnivore, etc.)  
+    Rescale bodymasses so that the smallest producer has bodymass = 1. 
+"""
 function rescale_bodymass(bodymasses::AbstractVector, met_class::AbstractVector)
     idx = findall(==(:producer), met_class)
     ref = minimum(bodymasses[idx])
@@ -9,7 +16,14 @@ function rescale_bodymass(bodymasses::AbstractVector, met_class::AbstractVector)
 end
 
 
-# 
+## --- Function to calculate resilience -----------------
+"""
+    get_fw_resilience(params::ModelParameters, Beq::AbstractVector, alive_idx::AbstractVector)
+    params = model parameters
+    Beq = equilibrium biomasses
+    alive_idx = indices of alive species
+    Calculate the resilience of the food web at equilibrium.
+"""
 function get_fw_resilience(params, Beq, alive_idx)
     j = jacobian(params, Beq)
     j_alive = j[alive_idx, alive_idx]
@@ -17,6 +31,14 @@ function get_fw_resilience(params, Beq, alive_idx)
     return lumbda_eq
 end
 
+## --- Function to calculate reactivity -----------------
+"""
+    get_fw_reactivity(params::ModelParameters, Beq::AbstractVector, alive_idx::AbstractVector)
+    params = model parameters
+    Beq = equilibrium biomasses
+    alive_idx = indices of alive species
+    Calculate the reactivity of the food web at equilibrium.
+""" 
 function get_fw_reactivity(params, Beq, alive_idx)
     j = jacobian(params, Beq)
     j_alive = j[alive_idx, alive_idx]
@@ -26,6 +48,13 @@ end
 
 
 ## --- Function to get all output of a simulation -----------------
+"""
+    get_sim_summary(params::ModelParameters, sol::ODESolution, tspan::Int64)
+    params = model parameters
+    sol = solution of the ODE simulation
+    tspan = number of timesteps to consider at the end of the simulation for time series metrics
+    Return a named tuple with various summary statistics of the simulation at equilibrium.
+"""
 function get_sim_summary(params, sol, tspan)
   # Get bomass dynamics equally distributed at last tspan timesteps using interpolation
    last_t = sol.t[end]
