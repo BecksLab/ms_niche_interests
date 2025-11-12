@@ -36,7 +36,7 @@ function build_network(adj_mat::Matrix{Int64})
 
     # specify edges and nodes
     # make adj_mat Boolean
-    edges = Binary(iszero.(adj_mat))
+    edges = Binary(.!iszero.(adj_mat))
     nodes = Unipartite(spp_list)
 
     return SpeciesInteractionNetwork(nodes, edges)
