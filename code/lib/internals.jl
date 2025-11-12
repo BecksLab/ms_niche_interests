@@ -64,13 +64,10 @@ function network_summary(N::SpeciesInteractionNetwork{<:Partiteness,<:Binary})
     D = Dict{Symbol,Any}(
         :richness => richness(N),
         :connectance => SpeciesInteractionNetworks.connectance(N),
-        :diameter => _diameter(N),
         :complexity => complexity(N),
         :trophic_level => findmax(collect(values(tls)))[2],
-        :distance => distancetobase(N, collect(keys(_gen))[ind_maxgen]),
         :generality => std(gen / l_s),
         :vulnerability => std(vul / l_s),
-        :redundancy => (L - (S - 1))/S,
         # note for motif calcs one needs to exclude cannibalism (as per Stouffer)
         :S1 =>
             length(
