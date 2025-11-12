@@ -38,7 +38,7 @@ tmin, tmax, tspan = 3000, 6000, 1000
 simulation_summary = DataFrame(
     fw_ID = String[],
     model = String[],
-    richness_equilibrium = Float64[],
+    richness_equilibrium = Int[],
     connectance_equilibrium = Float64[],
     persistence = Float64[],
     max_trophic_level = Float64[],
@@ -50,7 +50,8 @@ simulation_summary = DataFrame(
     reactivity = Float64[]
 )
 
-for i in 1:10 # nrow(networks)
+for i in 1:nrow(networks)
+    @info "Simulating food web $(i) / $(nrow(networks))"
     fwid         = networks.fw_ID[i]
     model_name   = networks.Model[i]                
     bodymasses   = networks.BodyMasses[i]
@@ -75,7 +76,7 @@ for i in 1:10 # nrow(networks)
     end
 
     # Choose an initial biomass (adjust to your API if you have a helper for this)
-    B0 = rand(params.S) 
+    B0 = rand(params.S)
 
     sol = simulate(
         params, B0, tmax;
@@ -86,14 +87,28 @@ for i in 1:10 # nrow(networks)
         show_degenerated = false,
     )
 
-    out = get_sim_summary(params, sol, tspan)
+    out = try
+        get_sim_summary(params, sol, tspan)
+    catch err
+        @warn "Simulation failed for fw_ID=$fwid" err
+        (
+            richness_equilibrium = NaN,
+            connectance_equilibrium = NaN,
+            persistence = NaN,
+            max_trophic_level = NaN,
+            total_biomass = NaN,
+            cv_total_biomass = NaN,
+            shannon = NaN,
+            evenness = NaN,
+            resilience = NaN,
+            reactivity = NaN,
+        )
+    end
 
-    push!(simulation_summary, (
-        fw_ID = fwid,
-        model = model_name,
-        out...
-    ))
+    push!(simulation_summary, (; fw_ID=string(fwid), model=string(model_name), out...); promote=true)
 end
+   
 
 # --- 6. Save Simulation Summary ---
-CSV.write("data/outputs/END_simulation.csv", simulation_summary)
+mkpath(joinpath(@__DIR__, "data", "outputs"))
+CSV.write(joinpath(@__DIR__, "data", "outputs", "END_simulation_summary.csv"), simulation_summary)
