@@ -118,6 +118,22 @@ function get_sim_summary(params, sol, tspan)
    Beq_alive = Beq[alive_idx]
    alive_A   = A[alive_idx, alive_idx]
 
+   # --- for cases where all species go extinct or become disconnected ---
+    if isempty(alive_idx)
+        return (
+            richness_equilibrium = 0,
+            connectance_equilibrium = 0.0,
+            persistence = 0.0,
+            max_trophic_level = 0.0,
+            total_biomass = 0.0,
+            cv_total_biomass = 0.0,
+            shannon = 0.0,
+            evenness = 0.0,
+            resilience = NaN,
+            reactivity = NaN
+        )
+    end
+
    # species richness and connectance at equilibrium
    S_eq = length(alive_idx)
    C_eq = round(count(!iszero, alive_A) / (S_eq * S_eq), digits=3)
@@ -147,7 +163,7 @@ function get_sim_summary(params, sol, tspan)
     reactivity_eq = get_fw_reactivity(params, Beq, alive_idx)
 
   return(
-    richness_equilibrium = S_eq,
+    richness_equilibrium = Int(S_eq),
     connectance_equilibrium = C_eq,
     persistence = S_eq / params.S,
     max_trophic_level = maxTL_eq,
