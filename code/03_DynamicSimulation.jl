@@ -1,15 +1,13 @@
 #=
-Dynamic simulations are conducted in END.
-Simulation output include:
+Dynamic simulation output include:
 - Persistence; 
 - Maximum trophic level; 
 - Total Biomass; 
 - CV of total biomass;  
 - Shannon; 
 - Evenness; 
-- Resilience if at steady state; (using EcoNetPostProcessing.jl) 
+- Resilience; (using EcoNetPostProcessing.jl) 
 - Reactivity; (using EcoNetPostProcessing.jl) 
-- Robustness; (using EcoNetPostProcessing.jl)
 =#
 
 using Pkg
@@ -75,7 +73,6 @@ for i in 1:nrow(networks)
         )
     end
 
-    # Choose an initial biomass (adjust to your API if you have a helper for this)
     B0 = rand(params.S)
 
     sol = simulate(
@@ -109,6 +106,6 @@ for i in 1:nrow(networks)
 end
    
 
-# --- 6. Save Simulation Summary ---
+# --- 5. Save Simulation Summary ---
 mkpath(joinpath(@__DIR__, "data", "outputs"))
 CSV.write(joinpath(@__DIR__, "data", "outputs", "END_simulation_summary.csv"), simulation_summary)
