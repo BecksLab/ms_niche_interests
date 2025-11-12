@@ -1,3 +1,4 @@
+# this files contains functions to process simulation outputs.
 
 ENDI = EcologicalNetworksDynamics.Internals
 
