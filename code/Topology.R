@@ -63,7 +63,7 @@ for (i in seq_along(plot_list)) {
 
 plot_list[[1]] / plot_list[[2]] / plot_list[[3]] +
   plot_layout(guides = 'collect') +
-  plot_layout(height = c(3, 2, 1))
+  plot_layout(height = c(2, 2, 1))
 
 ggsave("../figures/summary.png",
        width = 5000,
@@ -84,14 +84,59 @@ effectsize::eta_squared(fit)
 post_hoc <- lda(model~., df)
 post_hoc
 
+# Get the linear discriminant scores
+lda_values <- predict(post_hoc)
+
+# Correlation of original variables with the linear discriminants
+correlations <- cor(df[2:ncol(df)], lda_values$x)
+
+# 4. Convert to a data frame for plotting
+corr_df <- as.data.frame(correlations)
+corr_df$Variable <- rownames(corr_df)
+
+# 5. Create correlation circle plot
+ggplot(corr_df) +
+  geom_hline(yintercept = 0, 
+             linetype = "dashed", 
+             color = "grey70") +
+  geom_vline(xintercept = 0, 
+             linetype = "dashed", 
+             color = "grey70") +
+  # Add a unit circle
+  annotate("path",
+           x = cos(seq(0, 2 * pi, length.out = 200)),
+           y = sin(seq(0, 2 * pi, length.out = 200)),
+           color = "grey50")  +
+  geom_segment( 
+    aes(x = 0,
+        y = 0,
+        xend = LD1, 
+        yend = LD2),
+    arrow = arrow(length = unit(0.1,"cm")),
+    color = "steelblue") +
+  geom_text_repel(
+    aes(x = LD1, 
+        y = LD2, 
+        label = Variable),
+    max.overlaps = getOption("ggrepel.max.overlaps", default = 100), 
+    size = 4.5) +
+  coord_equal()+
+  labs(
+    title = "Correlation Circle of Original Variables with LDA Axes",
+    x = "LD1",
+    y = "LD2"
+  ) +
+  theme_classic()
+
+ggsave("../figures/lda_corr.png",
+       width = 5000,
+       height = 4000,
+       units = "px",
+       dpi = 700)
+
 # plot 
 plot_lda <- data.frame(model = df$model,
                        lda = predict(post_hoc)$x)
-
-plot_arrow <- as.data.frame(post_hoc[["scaling"]]) %>%
-  glow_up(var = str_replace(row.names(.), "dep_vars", ""),
-          lda.LD1 = scale(LD1),
-          lda.LD2 = scale(LD2))
 
 ggplot(plot_lda) + 
   geom_point(aes(x = lda.LD1, 
@@ -99,20 +144,10 @@ ggplot(plot_lda) +
                  colour = model), 
              size = 3,
              alpha = 0.3) +
-  # geom_segment(data = plot_arrow,
-  #              aes(x = 0,
-  #                  y = 0,
-  #                  xend = lda.LD1,
-  #                  yend = lda.LD2)) +
-  # geom_text_repel(data = plot_arrow,
-  #                 aes(label = var,
-  #                     x = lda.LD1,
-  #                     y = lda.LD2),
-  #                 max.overlaps = getOption("ggrepel.max.overlaps", default = 100)) +
   coord_cartesian(clip = "off") +
   guides(color = guide_legend(override.aes = list(alpha = 1))) +
-  labs(x = "LDA 1",
-       y = "LDA 2") +
+  labs(x = "LD1",
+       y = "LD2") +
   theme_classic() +
   theme(panel.border = element_rect(colour = 'black',
                                     fill = "#ffffff00"),
