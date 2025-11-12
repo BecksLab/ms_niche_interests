@@ -19,8 +19,61 @@ setwd(here())
 df <- read_csv("data/outputs/topology.csv") %>%
   vibe_check(-c(richness))
 
-dep_vars <- as.matrix(df[2:ncol(df)])
+# boxplot (becuase why not)
 
+df_boxplot <-
+  df %>%
+  pivot_longer(
+    cols = -c(model),
+    names_to = "stat",
+    values_to = "stat_val") %>%
+  # standardise names
+  glow_up(stat = case_when(stat == "S1" ~ "No. of linear chains",
+                           stat == "S2" ~ "No. of omnivory motifs",
+                           stat == "S5" ~ "No. of apparent competition motifs",
+                           stat == "S4" ~ "No. of direct competition motifs",
+                           .default = as.character(stat))) %>%
+  glow_up(level = case_when(
+    stat %in% c("complexity", "connectance", "trophic_level") ~ "Macro",
+    stat %in% c("generality", "vulnerability") ~ "Micro",
+    .default = "Meso"
+  ))
+
+plot_list <- vector(mode = "list", length = 3)
+levs = c("Macro", "Meso", "Micro")
+
+for (i in seq_along(plot_list)) {
+  
+  plot_list[[i]] <- ggplot(df_boxplot %>% 
+                             yeet(level == levs[i]),
+                           aes(x = model,
+                               y = stat_val,
+                               colour = model)) +
+    geom_boxplot(position=position_dodge(1)) +
+    facet_wrap(vars(stat),
+               scales = 'free',
+               ncol = 2) +
+    scale_size(guide = 'none') +
+    xlab(NULL) +
+    ylab("value") +
+    coord_cartesian(clip = "off") +
+    labs(title = levs[i]) +
+    theme_classic()
+}
+
+plot_list[[1]] / plot_list[[2]] / plot_list[[3]] +
+  plot_layout(guides = 'collect') +
+  plot_layout(height = c(3, 2, 1))
+
+ggsave("../figures/summary.png",
+       width = 5000,
+       height = 7000,
+       units = "px",
+       dpi = 600)
+
+# MANOVA
+
+dep_vars <- as.matrix(df[2:ncol(df)])
 
 fit <- manova(dep_vars ~ model, data = df)
 summary(fit)
