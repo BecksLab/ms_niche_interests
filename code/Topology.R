@@ -19,7 +19,7 @@ setwd(here())
 df <- read_csv("data/outputs/topology.csv") %>%
   vibe_check(-c(richness))
 
-# boxplot (becuase why not)
+# boxplot (because why not)
 
 df_boxplot <-
   df %>%
