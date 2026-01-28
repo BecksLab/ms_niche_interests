@@ -4,15 +4,10 @@ import Ipopt
 using JuMP 
 
 # Doing statistics and models
-using Distances
-using Distributions 
 using LinearAlgebra 
 using ProgressMeter
 using Random
-using SparseArrays
-using Statistics
 using StatsBase
-using Turing
 
 """
 solve_lambdas(S::Int64, L::Int64) 
@@ -71,4 +66,104 @@ function simulate_degrees(JDD::Matrix{Float64})
     
     # Validation: In a food web, sum(kin) must equal sum(kout)
     return (kin = kin, kout = kout)
+end
+
+using LinearAlgebra, Random, ProgressMeter
+
+"""
+svd_entropy(A::Matrix{Bool})
+Calculates the Shannon entropy of the normalized singular values of the matrix.
+This is the "complexity" metric the paper seeks to maximize.
+"""
+function svd_entropy(A::AbstractMatrix)
+    σ = svdvals(Float64.(A))
+    s_sum = sum(σ)
+    s_sum == 0 && return 0.0
+    
+    ω = σ ./ s_sum
+    # Calculate -sum(p log p), filtering out near-zero values
+    return -sum(x * log(x) for x in ω if x > 1e-12)
+end
+
+"""
+initial_matrix(kin::Vector{Int}, kout::Vector{Int})
+Creates a starting binary matrix from degree sequences using a configuration-style approach.
+"""
+function initial_matrix(kin::Vector{Int}, kout::Vector{Int})
+    S = length(kin)
+    A = zeros(Bool, S, S)
+    
+    # Create "stubs" for links
+    in_stubs = vcat([fill(i, kin[i]) for i in 1:S]...)
+    out_stubs = vcat([fill(i, kout[i]) for i in 1:S]...)
+    
+    shuffle!(in_stubs)
+    shuffle!(out_stubs)
+    
+    # Connect stubs (respecting the smaller sum to avoid errors)
+    L = min(length(in_stubs), length(out_stubs))
+    for i in 1:L
+        u, v = out_stubs[i], in_stubs[i]
+        # Avoid self-loops and multi-edges in the seed
+        if u != v && !A[u, v]
+            A[u, v] = true
+        end
+    end
+    return A
+end
+
+"""
+build_maxent_network(kin, kout; iterations=5000, T0=0.1)
+The "Heuristic Type II" model from the paper. 
+Optimizes the matrix structure while keeping the degree of every species fixed.
+"""
+function build_maxent_network(kin, kout; iterations=5000, T0=0.1)
+    # Start with a random seed matching the degrees
+    A = initial_matrix(kin, kout)
+    curr_h = svd_entropy(A)
+    
+    T = T0
+    alpha = 0.999 # Cooling rate
+    best_A = copy(A)
+    best_h = curr_h
+
+    @showprogress 1 "Optimizing Network Structure..." for i in 1:iterations
+        # 1. Propose a degree-preserving swap (Switching Move)
+        edges = findall(A)
+        length(edges) < 2 && break
+        
+        # Pick two random directed edges: (u -> v) and (x -> y)
+        idx1, idx2 = rand(1:length(edges), 2)
+        u, v = edges[idx1].I
+        x, y = edges[idx2].I
+        
+        # 2. Check if swapping to (u -> y) and (x -> v) is valid
+        # (Ensures no self-loops and no duplicate links)
+        if u != y && x != v && !A[u, y] && !A[x, v]
+            # Apply swap
+            A[u, v] = false; A[x, y] = false
+            A[u, y] = true; A[x, v] = true
+            
+            new_h = svd_entropy(A)
+            Δh = new_h - curr_h
+            
+            # 3. Metropolis Criterion (Maximize Entropy)
+            if Δh > 0 || rand() < exp(Δh / T)
+                curr_h = new_h
+                if curr_h > best_h
+                    best_h = curr_h
+                    best_A = copy(A)
+                end
+            else
+                # Reject: Revert the swap
+                A[u, v] = true; A[x, y] = true
+                A[u, y] = false; A[x, v] = false
+            end
+        end
+        
+        # Cool down the temperature
+        if i % 10 == 0; T *= alpha; end
+    end
+    
+    return best_A
 end
