@@ -10,122 +10,66 @@ library(patchwork)
 library(rstatix)
 library(tidyverse)
 library(vegan)
+library(MVN)        # For Henze-Zirkler test
+library(biotools)   # For Box's M test
+library(candisc)    # For Canonical Discriminant Analysis
+library(emmeans)    # For pairwise comparisons
+library(lmerTest)   # For mixed models
 
 # set path to code sub dir
 setwd(here())
 
 # import data
-
 df <- read_csv("data/outputs/topology.csv") %>%
-  vibe_check(-c(richness))
+  vibe_check(-c(richness)) %>%
+  na.omit()
 
-# boxplot (because why not)
-
-df_boxplot <-
-  df %>%
-  pivot_longer(
-    cols = -c(model),
-    names_to = "stat",
-    values_to = "stat_val") %>%
-  # standardise names
-  glow_up(stat = case_when(stat == "S1" ~ "No. of linear chains",
-                           stat == "S2" ~ "No. of omnivory motifs",
-                           stat == "S5" ~ "No. of apparent competition motifs",
-                           stat == "S4" ~ "No. of direct competition motifs",
-                           .default = as.character(stat))) %>%
-  glow_up(level = case_when(
-    stat %in% c("complexity", "connectance", "trophic_level") ~ "Macro",
-    stat %in% c("generality", "vulnerability") ~ "Micro",
-    .default = "Meso"
-  ))
-
-plot_list <- vector(mode = "list", length = 3)
-levs = c("Macro", "Meso", "Micro")
-
-for (i in seq_along(plot_list)) {
-  
-  plot_list[[i]] <- ggplot(df_boxplot %>% 
-                             yeet(level == levs[i]),
-                           aes(x = model,
-                               y = stat_val,
-                               colour = model)) +
-    geom_boxplot(position=position_dodge(1)) +
-    facet_wrap(vars(stat),
-               scales = 'free',
-               ncol = 2) +
-    scale_size(guide = 'none') +
-    xlab(NULL) +
-    ylab("value") +
-    coord_cartesian(clip = "off") +
-    labs(title = levs[i]) +
-    theme_classic()
-}
-
-plot_list[[1]] / plot_list[[2]] / plot_list[[3]] +
-  plot_layout(guides = 'collect') +
-  plot_layout(height = c(2, 2, 1))
-
-ggsave("../figures/summary.png",
-       width = 5000,
-       height = 7000,
-       units = "px",
-       dpi = 600)
-
-# MANOVA
-
+# Dependent variable matrix for multivariate tests
+# Assuming columns 2 onwards are your topological metrics
 dep_vars <- as.matrix(df[2:ncol(df)])
 
+# =========================
+# 1. MANOVA + Assumption Checks
+# =========================
 fit <- manova(dep_vars ~ model, data = df)
-summary(fit)
 
-#get effect size
-effectsize::eta_squared(fit)
+# --- Multivariate test
+summary(fit, test = "Pillai")
 
-post_hoc <- lda(model~., df)
-post_hoc
+# --- Assumption Checks
+# Henze-Zirkler Multivariate Normality
+result_hz <- hz(data = dep_vars)
+print(result_hz)
 
-# Get the linear discriminant scores
-lda_values <- predict(post_hoc)
+# Box's M test for Homogeneity of Covariance
+boxM(dep_vars, df$model) 
 
-# Correlation of original variables with the linear discriminants
-correlations <- cor(df[2:ncol(df)], lda_values$x)
+# =========================
+# 2. Canonical Discriminant Analysis (CDA)
+# =========================
+# This replaces the simple LDA with a more robust canonical variate approach
+cda <- candisc(fit)
+summary(cda)
 
-# 4. Convert to a data frame for plotting
-corr_df <- as.data.frame(correlations)
-corr_df$Variable <- rownames(corr_df)
+# Extract canonical loadings for plotting
+loadings_df <- as.data.frame(cda$structure[, 1:2]) %>%
+  rownames_to_column("Metric") %>%
+  rename(CV1 = Can1, CV2 = Can2) %>%
+  mutate(Level = case_when(
+    Metric %in% c("complexity", "connectance", "trophic_level") ~ "Macro",
+    Metric %in% c("generality", "vulnerability") ~ "Micro",
+    TRUE ~ "Meso"
+  ))
 
-# 5. Create correlation circle plot
-ggplot(corr_df) +
-  geom_hline(yintercept = 0, 
-             linetype = "dashed", 
-             color = "grey70") +
-  geom_vline(xintercept = 0, 
-             linetype = "dashed", 
-             color = "grey70") +
-  # Add a unit circle
-  annotate("path",
-           x = cos(seq(0, 2 * pi, length.out = 200)),
-           y = sin(seq(0, 2 * pi, length.out = 200)),
-           color = "grey50")  +
-  geom_segment( 
-    aes(x = 0,
-        y = 0,
-        xend = LD1, 
-        yend = LD2),
-    arrow = arrow(length = unit(0.1,"cm")),
-    color = "steelblue") +
-  geom_text_repel(
-    aes(x = LD1, 
-        y = LD2, 
-        label = Variable),
-    max.overlaps = getOption("ggrepel.max.overlaps", default = 100), 
-    size = 4.5) +
-  coord_equal()+
-  labs(
-    title = "Correlation Circle of Original Variables with LDA Axes",
-    x = "LD1",
-    y = "LD2"
-  ) +
+# CDA Loadings Plot
+ggplot(loadings_df, aes(x = CV1, y = CV2)) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "grey") +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "grey") +
+  geom_segment(aes(x = 0, y = 0, xend = CV1, yend = CV2, color = Level),
+               arrow = arrow(length = unit(0.2, "cm")), linewidth = 1) +
+  geom_text_repel(aes(label = Metric)) +
+  coord_equal() +
+  labs(title = "Canonical Loadings (CDA)") +
   theme_classic()
 
 ggsave("../figures/lda_corr.png",
@@ -134,39 +78,104 @@ ggsave("../figures/lda_corr.png",
        units = "px",
        dpi = 700)
 
-# plot 
-plot_lda <- data.frame(model = df$model,
-                       lda = predict(post_hoc)$x)
+# =========================
+# 3. LDA Visualization
+# =========================
+# Using LDA for the group separation plot
+lda_fit <- lda(model ~ ., data = df)
+lda_scores <- predict(lda_fit)$x
 
-ggplot(plot_lda) + 
-  geom_point(aes(x = lda.LD1, 
-                 y = lda.LD2, 
-                 colour = model), 
-             size = 3,
-             alpha = 0.3) +
-  coord_cartesian(clip = "off") +
-  guides(color = guide_legend(override.aes = list(alpha = 1))) +
-  labs(x = "LD1",
-       y = "LD2") +
-  theme_classic() +
-  theme(panel.border = element_rect(colour = 'black',
-                                    fill = "#ffffff00"),
-        panel.grid.minor = element_blank(),
-        panel.grid.major.x = element_blank(),
-        axis.line = element_blank(),
-        axis.ticks = element_line(colour = colorspace::darken("#dddddd", 0.1),
-                                  linewidth = 0.3),
-        plot.background = element_rect(fill = "white", colour = NA),
-        panel.background = element_rect(fill = "white", colour = NA),
-        legend.background = element_rect(fill = "white", colour = NA),
-        legend.key = element_blank(),
-        text = element_text(color = "#5e5e5e"),
-        plot.margin = margin(10, 5, 5, 10),
-        legend.margin = margin(1, 2, 1, 2)
-  )
+plot_lda <- data.frame(
+  model = df$model,
+  lda = lda_scores
+)
+
+ggplot(plot_lda, aes(x = lda.LD1, y = lda.LD2, colour = model)) + 
+  stat_ellipse(level = 0.95, linetype = 2) +
+  geom_point(alpha = 0.4, size = 2) +
+  labs(title = "LDA Group Separation", x = "LD1", y = "LD2") +
+  theme_classic()
 
 ggsave("../figures/lda.png",
        width = 5000,
        height = 4000,
        units = "px",
        dpi = 700)
+
+# =========================
+# 4. Pairwise Comparisons (EMMeans)
+# =========================
+# This performs univariate comparisons between models for specific metrics
+metrics_to_test <- df %>% select(!model) %>% names()
+
+emm_list <- list()
+
+for (m in metrics_to_test) {
+  # We use a linear model here. If you have a 'time' or 'replicate' random effect, 
+  # use lmer(as.formula(paste(m, "~ model + (1|replicate)")), data = df)
+  formula <- as.formula(paste(m, "~ model"))
+  mod <- lm(formula, data = df)
+  
+  # Calculate Estimated Marginal Means and compact letter display
+  emm <- emmeans(mod, specs = "model")
+  cld_res <- multcomp::cld(emm, Letters = letters)
+  
+  emm_list[[m]] <- as.data.frame(cld_res) %>% mutate(metric = m)
+}
+
+emm_df <- bind_rows(emm_list)
+
+# --- 1. Define Metric Categories ---
+# This matches the levels defined in your 06_structural_differences logic
+emm_df <- emm_df %>%
+  mutate(stat_label = case_when(
+    metric == "connectance" ~ "Connectance",
+    metric == "trophic_level" ~ "Max Trophic Level",
+    metric == "generality" ~ "Generality",
+    metric == "vulnerability" ~ "Vulnerability",
+    metric == "S1" ~ "No. of linear chains",
+    metric == "S2" ~ "No. of omnivory motifs",
+    metric == "S5" ~ "No. of apparent competition motifs",
+    metric == "S4" ~ "No. of direct competition motifs",
+    TRUE ~ as.character(metric)
+  )) %>%
+  mutate(level = case_when(
+    metric %in% c("complexity", "connectance", "trophic_level") ~ "Macro",
+    metric %in% c("generality", "vulnerability") ~ "Micro",
+    TRUE ~ "Meso"
+  ))
+
+# --- 2. Create Categorized Plot List ---
+levs <- c("Macro", "Meso", "Micro")
+plot_list_emm <- vector("list", length = 3)
+
+for (i in seq_along(levs)) {
+  
+  plot_list_emm[[i]] <- ggplot(
+    emm_df %>% filter(level == levs[i]),
+    aes(x = model, y = emmean, colour = model)
+  ) +
+    geom_point(size = 2.5) +
+    geom_errorbar(aes(ymin = lower.CL, ymax = upper.CL), 
+                  width = 0.2, linewidth = 0.6) +
+    # Add Compact Letter Display (CLD) for significance
+    geom_text(aes(label = .group, y = upper.CL),
+              vjust = -0.6, size = 3.5, colour = "black") +
+    facet_wrap(vars(stat_label), scales = "free_y", ncol = 2) +
+    scale_y_continuous(expand = expansion(mult = c(0.05, 0.2))) +
+    labs(x = NULL, y = "Estimated Mean", title = levs[i]) +
+    theme_classic() +
+    theme(
+      axis.text.x = element_text(angle = 45, hjust = 1),
+      legend.position = "none",
+      plot.title = element_text(face = "bold")
+    )
+}
+
+# --- 3. Patchwork Assembly ---
+# Adjusting heights to accommodate the number of facets in each level
+(plot_list_emm[[1]] / plot_list_emm[[2]] / plot_list_emm[[3]]) +
+  plot_layout(heights = c(2, 2, 1), guides = "collect")
+
+# Save
+ggsave("figures/emm_summary.png", width = 9, height = 12, dpi = 400)
