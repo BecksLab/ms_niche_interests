@@ -25,6 +25,10 @@ include("lib/internals.jl");
 
 networks = load_object("data/outputs/network_test_verified_seed_42_29-10-2025.jld2")
 
+# this is for the temp max-ent results
+select!(networks, Not(:BasalInput, :BodyMasses, :MetabolicClasses))
+append!(networks, load_object("data/outputs/maxent_only_results.jld2"))
+
 # --- 4. Convert networks to `SpeciesInteractionNetworks` networks ---
 
 # we will also append this to the network object as a col.
