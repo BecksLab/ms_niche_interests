@@ -68,8 +68,6 @@ function simulate_degrees(JDD::Matrix{Float64})
     return (kin = kin, kout = kout)
 end
 
-using LinearAlgebra, Random, ProgressMeter
-
 """
 svd_entropy(A::Matrix{Bool})
 Calculates the Shannon entropy of the normalized singular values of the matrix.
