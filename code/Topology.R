@@ -19,6 +19,8 @@ library(lmerTest)   # For mixed models
 # set path to code sub dir
 setwd(here())
 
+source("lib/plotting_theme.R")
+
 # import data
 df <- read_csv("data/outputs/topology.csv") %>%
   vibe_check(-c(richness)) %>%
@@ -68,9 +70,9 @@ ggplot(loadings_df, aes(x = CV1, y = CV2)) +
   geom_segment(aes(x = 0, y = 0, xend = CV1, yend = CV2, color = Level),
                arrow = arrow(length = unit(0.2, "cm")), linewidth = 1) +
   geom_text_repel(aes(label = Metric)) +
-  coord_equal() +
-  labs(title = "Canonical Loadings (CDA)") +
-  theme_classic()
+  coord_equal(xlim = c(-1, 1), ylim = c(-1, 1)) +
+  scale_colour_manual(values = c("#006D75", "#2F2F2F", "#EA7200")) +
+  figure_theme
 
 ggsave("../figures/lda_corr.png",
        width = 5000,
@@ -90,11 +92,17 @@ plot_lda <- data.frame(
   lda = lda_scores
 )
 
-ggplot(plot_lda, aes(x = lda.LD1, y = lda.LD2, colour = model)) + 
+ggplot(plot_lda, 
+       aes(x = lda.LD1, 
+           y = lda.LD2, 
+           colour = model)) + 
   stat_ellipse(level = 0.95, linetype = 2) +
-  geom_point(alpha = 0.4, size = 2) +
-  labs(title = "LDA Group Separation", x = "LD1", y = "LD2") +
-  theme_classic()
+  geom_point(alpha = 0.6, size = 2) +
+  scale_colour_manual(values = model_colours) +
+  labs(x = "LD1", 
+       y = "LD2",
+       colour = "Model") +
+  figure_theme
 
 ggsave("../figures/lda.png",
        width = 5000,
@@ -153,18 +161,24 @@ for (i in seq_along(levs)) {
   
   plot_list_emm[[i]] <- ggplot(
     emm_df %>% filter(level == levs[i]),
-    aes(x = model, y = emmean, colour = model)
-  ) +
+    aes(x = model, 
+        y = emmean, 
+        colour = model)) +
     geom_point(size = 2.5) +
-    geom_errorbar(aes(ymin = lower.CL, ymax = upper.CL), 
+    geom_errorbar(aes(ymin = lower.CL, 
+                      ymax = upper.CL), 
                   width = 0.2, linewidth = 0.6) +
     # Add Compact Letter Display (CLD) for significance
-    geom_text(aes(label = .group, y = upper.CL),
-              vjust = -0.6, size = 3.5, colour = "black") +
+    geom_text(aes(label = .group, 
+                  y = upper.CL),
+              vjust = -0.6, size = 3.5, colour = "#00181F") +
     facet_wrap(vars(stat_label), scales = "free_y", ncol = 2) +
+    scale_colour_manual(values = model_colours) +
     scale_y_continuous(expand = expansion(mult = c(0.05, 0.2))) +
-    labs(x = NULL, y = "Estimated Mean", title = levs[i]) +
-    theme_classic() +
+    labs(x = NULL, 
+         y = "Estimated Mean", 
+         title = levs[i]) +
+    figure_theme +
     theme(
       axis.text.x = element_text(angle = 45, hjust = 1),
       legend.position = "none",
