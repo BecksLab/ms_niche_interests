@@ -277,7 +277,7 @@ else
         result_random = run_and_filter_random(S, C_rand, verify_web, BASAL_RANGE, CONNECTANCE_RANGE)
         push!(master_df, (run_ID, "random_$i", "Random", S, missing, C_rand, result_random.percent_basal, result_random.connectance, result_random.adj, missing, missing))
 
-        # MaxEnt (Fixed Attempt)
+        # MaxEnt Models
         L_target = round(Int, C_rand * S^2)
         jdd = joint_degree_dist_maxent(S, L_target)
         local deg_samp
