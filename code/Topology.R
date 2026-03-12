@@ -192,4 +192,4 @@ for (i in seq_along(levs)) {
   plot_layout(heights = c(2, 2, 1), guides = "collect")
 
 # Save
-ggsave("figures/emm_summary.png", width = 9, height = 12, dpi = 400)
+ggsave("../figures/emm_summary.png", width = 9, height = 12, dpi = 400)

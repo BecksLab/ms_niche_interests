@@ -67,11 +67,23 @@ The Research Question: Do these different philosophical starting points (mechani
 
 # Methods
 
-Model Selection & Implementation: Describe the seven model classes:
+## Model Selection and Implementation
 
-Structural: Niche, Cascade, MaxEnt (Topological templates) vs realised/dynamic: ATN (mechanical/allometric), ADBM (energetic/optimal foraging), and Latent Trait (statistical/allometric)
+Describe the seven model classes - Structural: Niche, Cascade, MaxEnt (Topological templates) vs realised/dynamic: ATN (mechanical/allometric), ADBM (energetic/optimal foraging), and Latent Trait (statistical/allometric)
 
-Simulation Framework: Explain how an identical species pool was used across all models to isolate the model effect from the data effect. SOmething about how we constrained networks and also species class assignments if and when valid in constraining the model vs needed as input for the BEFW
+| Model | Type | Main Inputs | Key Assumptions |
+|---------------|---------------|------------------|-------------------------|
+| Niche model [@williams2000] | Structural | Species niche values | Trophic interactions structured by a 1D feeding niche; species consume all prey within a contiguous range; allows cannibalism. |
+| Cascade model [@cohen1990] | Structural | Species rank | Consumers feed only on species with lower ranks; strictly hierarchical; no loops or omnivory. |
+| MaxEnt model [@banville2023] | Structural | Species richness, connectance | Links assigned to maximize entropy; captures global network properties without species-specific mechanisms. |
+| Allometric Diet Breadth Model (ADBM) [@petchey2008] | Realised / Dynamic | Body mass, prey energy content | Consumers maximize energy intake; diet breadth determined by profitability and handling time; allometric scaling governs parameters. |
+| Allometric Trophic Network (ATN) [@brose2006] | Realised / Dynamic | Body mass | Interactions constrained by body-mass ratios; mechanical size limits structure networks; probability of interaction follows Ricker function. |
+| Latent trait model [@rohr2010] | Realised / Dynamic | Species traits (*e.g.,* body mass) | Interactions inferred statistically based on hidden trait correlations; can incorporate probabilistic constraints on links. |
+
+: Summary of food web models used in this study. Structural models (Niche, Cascade, MaxEnt) generate network topology based on abstract or statistical rules, while realised/dynamic models (ADBM, ATN, Latent trait) incorporate species-specific traits and biological mechanisms to predict interactions. For each model, we list the main inputs and the key assumptions that govern link formation. {#tbl-models}
+
+
+Simulation Framework: Explain how an identical species pool was used across all models to isolate the model effect from the data effect. Something about how we constrained networks and also species class assignments if and when valid in constraining the model vs needed as input for the BEFW
 
 Dynamic Perturbation: Detail the use of a bioenergetic food web model to simulate species loss and cascading extinctions.
 
@@ -80,6 +92,8 @@ Metrics for Comparison: Define the macro-scale (connectance), meso-scale (motifs
 # Results
 
 Structural Signatures: Report how much variance is explained by the model choice.
+
+![Linear discriminant analysis (LDA) of ecological network metrics for the seven model types. Each point represents a replicate, and ellipses indicate 95% confidence regions for each model. The second column represents the correlation of the various network metrics with the respective LDA axes.](figures/lda.png){#fig-structure}
 
 The Niche Model Template: Identify if the structural models occupy a central 'mean space' or if the dynamic models diverge into non-overlapping regions.
 

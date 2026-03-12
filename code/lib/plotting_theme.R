@@ -34,7 +34,7 @@ model_colours <- c(
   "LTM"      = "#F5A430", 
   "ADBM"     = "#EA7200", 
   "Random"   = "#002B36", 
-  "Niche"    = "#175678", 
+  "Niche"    = "#A6D854", 
   "Cascade"  = "#006D75",
   "MaxEnt"   = "#53A39E"
 )
