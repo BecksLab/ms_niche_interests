@@ -226,7 +226,7 @@
 1%
 }%
 }
-\date{2026-01-27}
+\date{2026-03-12}
 
 \usepackage{setspace}
 \usepackage[left]{lineno}
@@ -285,22 +285,197 @@ food webs%
 \linenumbers
 
 
-Some random text.
+\#~Introduction
 
-A reference\ldots{} (Poisot et al., 2015)
+The Niche Model Hegemony: Establish how the Niche Model (and its
+topological derivatives like the Cascade model) has historically served
+as the ``structural prior'' or template for most network theory.
 
-Blah Blah Blah\ldots{} stuff
+The Philosophy Gap: Contrast structural/topological models (which
+prioritise species-agnostic link distributions) with
+``realised/dynamic'' models like ATN and ADBM (which prioritise
+biological mechanisms like bioenergetics and optimal foraging).
+
+The Research Question: Do these different philosophical starting points
+(mechanical vs.~statistical) lead to the same conclusions about
+community stability, or does the choice of ``template'' fundamentally
+bias our understanding of extinction dynamics?.
+
+\section{Methods}\label{methods}
+
+\subsection{Model Selection and
+Implementation}\label{model-selection-and-implementation}
+
+Describe the seven model classes - Structural: Niche, Cascade, MaxEnt
+(Topological templates) vs realised/dynamic: ATN
+(mechanical/allometric), ADBM (energetic/optimal foraging), and Latent
+Trait (statistical/allometric)
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2055}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2055}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2466}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.3425}}@{}}
+\caption{Summary of food web models used in this study. Structural
+models (Niche, Cascade, MaxEnt) generate network topology based on
+abstract or statistical rules, while realised/dynamic models (ADBM, ATN,
+Latent trait) incorporate species-specific traits and biological
+mechanisms to predict interactions. For each model, we list the main
+inputs and the key assumptions that govern link
+formation.}\label{tbl-models}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Model
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Type
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Main Inputs
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Key Assumptions
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Model
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Type
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Main Inputs
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Key Assumptions
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Niche model (Williams \& Martinez, 2000) & Structural & Species niche
+values & Trophic interactions structured by a 1D feeding niche; species
+consume all prey within a contiguous range; allows cannibalism. \\
+Cascade model (Cohen et al., 1990) & Structural & Species rank &
+Consumers feed only on species with lower ranks; strictly hierarchical;
+no loops or omnivory. \\
+MaxEnt model (Banville et al., 2023) & Structural & Species richness,
+connectance & Links assigned to maximize entropy; captures global
+network properties without species-specific mechanisms. \\
+Allometric Diet Breadth Model (ADBM) (Petchey et al., 2008) & Realised /
+Dynamic & Body mass, prey energy content & Consumers maximize energy
+intake; diet breadth determined by profitability and handling time;
+allometric scaling governs parameters. \\
+Allometric Trophic Network (ATN) (Brose et al., 2006) & Realised /
+Dynamic & Body mass & Interactions constrained by body-mass ratios;
+mechanical size limits structure networks; probability of interaction
+follows Ricker function. \\
+Latent trait model (Rohr et al., 2010) & Realised / Dynamic & Species
+traits (\emph{e.g.,} body mass) & Interactions inferred statistically
+based on hidden trait correlations; can incorporate probabilistic
+constraints on links. \\
+\end{longtable}
+
+Simulation Framework: Explain how an identical species pool was used
+across all models to isolate the model effect from the data effect.
+Something about how we constrained networks and also species class
+assignments if and when valid in constraining the model vs needed as
+input for the BEFW
+
+Dynamic Perturbation: Detail the use of a bioenergetic food web model to
+simulate species loss and cascading extinctions.
+
+Metrics for Comparison: Define the macro-scale (connectance), meso-scale
+(motifs), and micro-scale (generality/vulnerability) properties used to
+evaluate structural stories. As well as some of the outputs from the
+dynamic models - persistence/stability
+
+\section{Results}\label{results}
+
+Structural Signatures: Report how much variance is explained by the
+model choice.
+
+\begin{figure}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{figures/lda.png}}
+
+}
+
+\caption{\label{fig-structure}Linear discriminant analysis (LDA) of
+ecological network metrics for the seven model types. Each point
+represents a replicate, and ellipses indicate 95\% confidence regions
+for each model. The second column represents the correlation of the
+various network metrics with the respective LDA axes.}
+
+\end{figure}%
+
+The Niche Model Template: Identify if the structural models occupy a
+central `mean space' or if the dynamic models diverge into
+non-overlapping regions.
+
+Divergent Stories in Dynamics: Show how models with similar global
+structures (like connectance) can lead to wildly different pathways of
+change/collapse/straight lines.
+
+\section{Discussion}\label{discussion}
+
+Reconstruction is Not Neutral: Discuss how models act as structural
+priors that condition ecological inference. Well maybe - paleo webs
+seems to suggest this
+
+Template Dependence: Address the core question: Is everything a
+derivative of the niche model? If dynamic models show unique cascade
+patterns not captured by the niche model, argue that the niche template
+may be insufficient for dynamic questions.
+
+Scale-Dependent Robustness: Reflect on why species-level patterns might
+look similar across models while the fine-grained story of dynamic
+change is highly model-contingent.
+
+Implications for Theory: Suggest that researchers must align their
+reconstruction framework with their inferential goals rather than
+defaulting to a one-size-fits-all niche template.
 
 \section*{References}\label{references}
 \addcontentsline{toc}{section}{References}
 
 \phantomsection\label{refs}
 \begin{CSLReferences}{1}{0}
-\bibitem[\citeproctext]{ref-poisotSpeciesWhyEcological2015}
-Poisot, T., Stouffer, D. B., \& Gravel, D. (2015). Beyond species: Why
-ecological interaction networks vary through space and time.
-\emph{Oikos}, \emph{124}(3), 243--251.
-\url{https://doi.org/10.1111/oik.01719}
+\bibitem[\citeproctext]{ref-banville2023}
+Banville, F., Gravel, D., \& Poisot, T. (2023). What constrains food
+webs? A maximum entropy framework for predicting their structure with
+minimal biases. \emph{PLOS Computational Biology}, \emph{19}(9),
+e1011458. \url{https://doi.org/10.1371/journal.pcbi.1011458}
+
+\bibitem[\citeproctext]{ref-brose2006}
+Brose, U., Jonsson, T., Berlow, E. L., Warren, P., Banasek-Richter, C.,
+Bersier, L.-F., Blanchard, J. L., Brey, T., Carpenter, S. R.,
+Blandenier, M.-F. C., Cushing, L., Dawah, H. A., Dell, T., Edwards, F.,
+Harper-Smith, S., Jacob, U., Ledger, M. E., Martinez, N. D., Memmott,
+J., \ldots{} Cohen, J. E. (2006). Consumer{\textendash}Resource
+Body-Size Relationships in Natural Food Webs. \emph{Ecology},
+\emph{87}(10), 2411--2417.
+https://doi.org/\url{https://doi.org/10.1890/0012-9658(2006)87\%5B2411:CBRINF\%5D2.0.CO;2}
+
+\bibitem[\citeproctext]{ref-cohen1990}
+Cohen, J. E., Briand, F., \& Newman, C. (1990). \emph{Community Food
+Webs: Data and Theory}. Springer-Verlag.
+\url{https://www.springer.com/gp/book/9783642837869}
+
+\bibitem[\citeproctext]{ref-petchey2008}
+Petchey, O. L., Beckerman, A. P., Riede, J. O., \& Warren, P. H. (2008).
+Size, foraging, and food web structure. \emph{Proceedings of the
+National Academy of Sciences}, \emph{105}(11), 4191--4196.
+\url{https://doi.org/10.1073/pnas.0710672105}
+
+\bibitem[\citeproctext]{ref-rohr2010}
+Rohr, R., Scherer, H., Kehrli, P., Mazza, C., \& Bersier, L.-F. (2010).
+Modeling food webs: Exploring unexplained structure using latent traits.
+\emph{The American Naturalist}, \emph{176}(2), 170--177.
+\url{https://doi.org/10.1086/653667}
+
+\bibitem[\citeproctext]{ref-williams2000}
+Williams, R. J., \& Martinez, N. D. (2000). Simple rules yield complex
+food webs. \emph{Nature}, \emph{404}(6774), 180--183.
+\url{https://doi.org/10.1038/35004572}
 
 \end{CSLReferences}
 
