@@ -39,3 +39,6 @@ code/.Rhistory
 .Rhistory
 .Rapp.history
 .RData
+code/scrap.jl
+
+**/*.quarto_ipynb

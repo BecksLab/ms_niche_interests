@@ -65,7 +65,7 @@ function network_summary(N::SpeciesInteractionNetwork{<:Partiteness,<:Binary})
         :richness => richness(N),
         :connectance => SpeciesInteractionNetworks.connectance(N),
         :complexity => complexity(N),
-        :trophic_level => findmax(collect(values(tls)))[2],
+        :trophic_level => findmax(collect(values(tls)))[1],
         :generality => std(gen / l_s),
         :vulnerability => std(vul / l_s),
         # note for motif calcs one needs to exclude cannibalism (as per Stouffer)

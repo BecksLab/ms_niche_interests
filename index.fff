@@ -1,0 +1,15 @@
+\begin{figure}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{figures/lda.png}}
+
+}
+
+\caption{\label{fig-structure}Linear discriminant analysis (LDA) of
+ecological network metrics for the seven model types. Each point
+represents a replicate, and ellipses indicate 95\% confidence regions
+for each model. The second column represents the correlation of the
+various network metrics with the respective LDA axes.}
+
+\end{figure}
