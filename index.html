@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.27">
+<meta name="generator" content="quarto-1.9.36">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -11,11 +11,14 @@
 <meta name="author" content="Laura Landon Blake">
 <meta name="author" content="Andrew P. Beckerman">
 <meta name="author" content="Dylan Z. Childs">
-<meta name="dcterms.date" content="2026-03-12">
+<meta name="dcterms.date" content="2026-03-23">
 <meta name="keywords" content="food webs">
 
 <title>Is everything a Niche model?</title>
 <style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -31,7 +34,6 @@ ul.task-list li input[type="checkbox"] {
 div.csl-bib-body { }
 div.csl-entry {
   clear: both;
-  margin-bottom: 0em;
 }
 .hanging-indent div.csl-entry {
   margin-left:2em;
@@ -53,15 +55,14 @@ div.csl-indent {
 <script src="site_libs/clipboard/clipboard.min.js"></script>
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-845c23b38eaddc0f92fda52bfe77a8c8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-19b75d10122142dd3a7fa784dfdce8d2.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-133a0a4dda30ced7f07b755c880e46a0.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
@@ -82,16 +83,16 @@ div.csl-indent {
 <meta name="citation_author" content="Laura Landon Blake">
 <meta name="citation_author" content="Andrew P. Beckerman">
 <meta name="citation_author" content="Dylan Z. Childs">
-<meta name="citation_publication_date" content="2026-03-12">
-<meta name="citation_cover_date" content="2026-03-12">
+<meta name="citation_publication_date" content="2026-03-23">
+<meta name="citation_cover_date" content="2026-03-23">
 <meta name="citation_year" content="2026">
-<meta name="citation_online_date" content="2026-03-12">
+<meta name="citation_online_date" content="2026-03-23">
 <meta name="citation_language" content="en">
 <meta name="citation_reference" content="citation_title=Simple rules yield complex food webs;,citation_author=Richard J. Williams;,citation_author=Neo D. Martinez;,citation_publication_date=2000-03;,citation_cover_date=2000-03;,citation_year=2000;,citation_fulltext_html_url=https://www.nature.com/articles/35004572;,citation_issue=6774;,citation_doi=10.1038/35004572;,citation_volume=404;,citation_language=en;,citation_journal_title=Nature;">
-<meta name="citation_reference" content="citation_title=Community Food Webs: Data and Theory;,citation_author=Joel E Cohen;,citation_author=Frederic Briand;,citation_author=Charles Newman;,citation_publication_date=1990;,citation_cover_date=1990;,citation_year=1990;,citation_fulltext_html_url=https://www.springer.com/gp/book/9783642837869;,citation_language=en;,citation_series_title=Biomathematics;">
+<meta name="citation_reference" content="citation_title=Community food webs: Data and theory;,citation_author=Joel E Cohen;,citation_author=Frederic Briand;,citation_author=Charles Newman;,citation_publication_date=1990;,citation_cover_date=1990;,citation_year=1990;,citation_fulltext_html_url=https://www.springer.com/gp/book/9783642837869;,citation_language=en;,citation_series_title=Biomathematics;">
 <meta name="citation_reference" content="citation_title=What constrains food webs? A maximum entropy framework for predicting their structure with minimal biases;,citation_author=Francis Banville;,citation_author=Dominique Gravel;,citation_author=Timothée Poisot;,citation_publication_date=2023-09-05;,citation_cover_date=2023-09-05;,citation_year=2023;,citation_fulltext_html_url=https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1011458;,citation_issue=9;,citation_doi=10.1371/journal.pcbi.1011458;,citation_volume=19;,citation_language=en;,citation_journal_title=PLOS Computational Biology;">
 <meta name="citation_reference" content="citation_title=Size, foraging, and food web structure;,citation_author=Owen L. Petchey;,citation_author=Andrew P. Beckerman;,citation_author=Jens O. Riede;,citation_author=Philip H. Warren;,citation_publication_date=2008-03-18;,citation_cover_date=2008-03-18;,citation_year=2008;,citation_fulltext_html_url=https://pnas.org/doi/full/10.1073/pnas.0710672105;,citation_issue=11;,citation_doi=10.1073/pnas.0710672105;,citation_volume=105;,citation_language=en;,citation_journal_title=Proceedings of the National Academy of Sciences;">
-<meta name="citation_reference" content="citation_title=ConsumerResource Body-Size Relationships in Natural Food Webs;,citation_author=Ulrich Brose;,citation_author=Tomas Jonsson;,citation_author=Eric L. Berlow;,citation_author=Philip Warren;,citation_author=Carolin Banasek-Richter;,citation_author=Louis-Félix Bersier;,citation_author=Julia L. Blanchard;,citation_author=Thomas Brey;,citation_author=Stephen R. Carpenter;,citation_author=Marie-France Cattin Blandenier;,citation_author=Lara Cushing;,citation_author=Hassan Ali Dawah;,citation_author=Tony Dell;,citation_author=Francois Edwards;,citation_author=Sarah Harper-Smith;,citation_author=Ute Jacob;,citation_author=Mark E. Ledger;,citation_author=Neo D. Martinez;,citation_author=Jane Memmott;,citation_author=Katja Mintenbeck;,citation_author=John K. Pinnegar;,citation_author=Björn C. Rall;,citation_author=Thomas S. Rayner;,citation_author=Daniel C. Reuman;,citation_author=Liliane Ruess;,citation_author=Werner Ulrich;,citation_author=Richard J. Williams;,citation_author=Guy Woodward;,citation_author=Joel E. Cohen;,citation_publication_date=2006;,citation_cover_date=2006;,citation_year=2006;,citation_fulltext_html_url=http://esajournals.onlinelibrary.wiley.com/doi/abs/10.1890/0012-9658%282006%2987%5B2411%3ACBRINF%5D2.0.CO%3B2;,citation_issue=10;,citation_doi=https://doi.org/10.1890/0012-9658(2006)87[2411:CBRINF]2.0.CO;2;,citation_volume=87;,citation_language=en;,citation_journal_title=Ecology;">
+<meta name="citation_reference" content="citation_title=Consumerresource body-size relationships in natural food webs;,citation_author=Ulrich Brose;,citation_author=Tomas Jonsson;,citation_author=Eric L. Berlow;,citation_author=Philip Warren;,citation_author=Carolin Banasek-Richter;,citation_author=Louis-Félix Bersier;,citation_author=Julia L. Blanchard;,citation_author=Thomas Brey;,citation_author=Stephen R. Carpenter;,citation_author=Marie-France Cattin Blandenier;,citation_author=Lara Cushing;,citation_author=Hassan Ali Dawah;,citation_author=Tony Dell;,citation_author=Francois Edwards;,citation_author=Sarah Harper-Smith;,citation_author=Ute Jacob;,citation_author=Mark E. Ledger;,citation_author=Neo D. Martinez;,citation_author=Jane Memmott;,citation_author=Katja Mintenbeck;,citation_author=John K. Pinnegar;,citation_author=Björn C. Rall;,citation_author=Thomas S. Rayner;,citation_author=Daniel C. Reuman;,citation_author=Liliane Ruess;,citation_author=Werner Ulrich;,citation_author=Richard J. Williams;,citation_author=Guy Woodward;,citation_author=Joel E. Cohen;,citation_publication_date=2006;,citation_cover_date=2006;,citation_year=2006;,citation_fulltext_html_url=http://esajournals.onlinelibrary.wiley.com/doi/abs/10.1890/0012-9658%282006%2987%5B2411%3ACBRINF%5D2.0.CO%3B2;,citation_issue=10;,citation_doi=https://doi.org/10.1890/0012-9658(2006)87[2411:CBRINF]2.0.CO;2;,citation_volume=87;,citation_language=en;,citation_journal_title=Ecology;">
 <meta name="citation_reference" content="citation_title=Modeling food webs: Exploring unexplained structure using latent traits.;,citation_author=Rudolf&nbsp;Philippe Rohr;,citation_author=Heike Scherer;,citation_author=Patrik Kehrli;,citation_author=Christian Mazza;,citation_author=Louis-Félix Bersier;,citation_publication_date=2010-08;,citation_cover_date=2010-08;,citation_year=2010;,citation_fulltext_html_url=https://www.journals.uchicago.edu/doi/10.1086/653667;,citation_issue=2;,citation_doi=10.1086/653667;,citation_volume=176;,citation_journal_title=The American Naturalist;">
 </head>
 
@@ -158,7 +159,7 @@ div.csl-indent {
                 <div>
             <div class="quarto-title-meta-heading">Published</div>
             <div class="quarto-title-meta-contents">
-              <p class="date">March 12, 2026</p>
+              <p class="date">March 23, 2026</p>
             </div>
           </div>
           
@@ -248,13 +249,13 @@ Table&nbsp;1: Summary of food web models used in this study. Structural models (
 <td>Trophic interactions structured by a 1D feeding niche; species consume all prey within a contiguous range; allows cannibalism.</td>
 </tr>
 <tr class="even">
-<td>Cascade model <span class="citation" data-cites="cohen1990">(<a href="#ref-cohen1990" role="doc-biblioref">Cohen, Briand, and Newman 1990</a>)</span></td>
+<td>Cascade model <span class="citation" data-cites="cohen1990">(<a href="#ref-cohen1990" role="doc-biblioref">Cohen et al. 1990</a>)</span></td>
 <td>Structural</td>
 <td>Species rank</td>
 <td>Consumers feed only on species with lower ranks; strictly hierarchical; no loops or omnivory.</td>
 </tr>
 <tr class="odd">
-<td>MaxEnt model <span class="citation" data-cites="banville2023">(<a href="#ref-banville2023" role="doc-biblioref">Banville, Gravel, and Poisot 2023</a>)</span></td>
+<td>MaxEnt model <span class="citation" data-cites="banville2023">(<a href="#ref-banville2023" role="doc-biblioref">Banville et al. 2023</a>)</span></td>
 <td>Structural</td>
 <td>Species richness, connectance</td>
 <td>Links assigned to maximize entropy; captures global network properties without species-specific mechanisms.</td>
@@ -312,15 +313,15 @@ Figure&nbsp;1: Linear discriminant analysis (LDA) of ecological network metrics 
 </section>
 <section id="references" class="level1 unnumbered">
 <h1 class="unnumbered">References</h1>
-<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="refs" class="references csl-bib-body hanging-indent" role="list">
 <div id="ref-banville2023" class="csl-entry" role="listitem">
 Banville, Francis, Dominique Gravel, and Timothée Poisot. 2023. <span>“What Constrains Food Webs? A Maximum Entropy Framework for Predicting Their Structure with Minimal Biases.”</span> <em>PLOS Computational Biology</em> 19 (9): e1011458. <a href="https://doi.org/10.1371/journal.pcbi.1011458">https://doi.org/10.1371/journal.pcbi.1011458</a>.
 </div>
 <div id="ref-brose2006" class="csl-entry" role="listitem">
-Brose, Ulrich, Tomas Jonsson, Eric L. Berlow, Philip Warren, Carolin Banasek-Richter, Louis-Félix Bersier, Julia L. Blanchard, et al. 2006. <span>“Consumer<span></span>Resource Body-Size Relationships in Natural Food Webs.”</span> <em>Ecology</em> 87 (10): 2411–17. https://doi.org/<a href="https://doi.org/10.1890/0012-9658(2006)87[2411:CBRINF]2.0.CO;2">https://doi.org/10.1890/0012-9658(2006)87[2411:CBRINF]2.0.CO;2</a>.
+Brose, Ulrich, Tomas Jonsson, Eric L. Berlow, et al. 2006. <span>“Consumer<span></span>resource Body-Size Relationships in Natural Food Webs.”</span> <em>Ecology</em> 87 (10): 2411–17. https://doi.org/<a href="https://doi.org/10.1890/0012-9658(2006)87[2411:CBRINF]2.0.CO;2">https://doi.org/10.1890/0012-9658(2006)87[2411:CBRINF]2.0.CO;2</a>.
 </div>
 <div id="ref-cohen1990" class="csl-entry" role="listitem">
-Cohen, Joel E, Frederic Briand, and Charles Newman. 1990. <em>Community Food Webs: Data and Theory</em>. Biomathematics. Berlin Heidelberg: Springer-Verlag. <a href="https://www.springer.com/gp/book/9783642837869">https://www.springer.com/gp/book/9783642837869</a>.
+Cohen, Joel E, Frederic Briand, and Charles Newman. 1990. <em>Community Food Webs: Data and Theory</em>. Biomathematics. Springer-Verlag. <a href="https://www.springer.com/gp/book/9783642837869">https://www.springer.com/gp/book/9783642837869</a>.
 </div>
 <div id="ref-petchey2008" class="csl-entry" role="listitem">
 Petchey, Owen L., Andrew P. Beckerman, Jens O. Riede, and Philip H. Warren. 2008. <span>“Size, Foraging, and Food Web Structure.”</span> <em>Proceedings of the National Academy of Sciences</em> 105 (11): 4191–96. <a href="https://doi.org/10.1073/pnas.0710672105">https://doi.org/10.1073/pnas.0710672105</a>.

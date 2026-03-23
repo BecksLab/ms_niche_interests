@@ -65,6 +65,7 @@
 
 
 \usepackage{longtable,booktabs,array}
+\newcounter{none} % for unnumbered tables
 \usepackage{calc} % for calculating minipage widths
 % Correct order of tables after \paragraph or \subparagraph
 \usepackage{etoolbox}
@@ -226,7 +227,7 @@
 1%
 }%
 }
-\date{2026-03-12}
+\date{2026-03-23}
 
 \usepackage{setspace}
 \usepackage[left]{lineno}
@@ -437,7 +438,7 @@ defaulting to a one-size-fits-all niche template.
 \section*{References}\label{references}
 \addcontentsline{toc}{section}{References}
 
-\phantomsection\label{refs}
+\protect\phantomsection\label{refs}
 \begin{CSLReferences}{1}{0}
 \bibitem[\citeproctext]{ref-banville2023}
 Banville, F., Gravel, D., \& Poisot, T. (2023). What constrains food
@@ -450,14 +451,14 @@ Brose, U., Jonsson, T., Berlow, E. L., Warren, P., Banasek-Richter, C.,
 Bersier, L.-F., Blanchard, J. L., Brey, T., Carpenter, S. R.,
 Blandenier, M.-F. C., Cushing, L., Dawah, H. A., Dell, T., Edwards, F.,
 Harper-Smith, S., Jacob, U., Ledger, M. E., Martinez, N. D., Memmott,
-J., \ldots{} Cohen, J. E. (2006). Consumer{\textendash}Resource
-Body-Size Relationships in Natural Food Webs. \emph{Ecology},
+J., \ldots{} Cohen, J. E. (2006). Consumer{\textendash}resource
+body-size relationships in natural food webs. \emph{Ecology},
 \emph{87}(10), 2411--2417.
 https://doi.org/\url{https://doi.org/10.1890/0012-9658(2006)87\%5B2411:CBRINF\%5D2.0.CO;2}
 
 \bibitem[\citeproctext]{ref-cohen1990}
-Cohen, J. E., Briand, F., \& Newman, C. (1990). \emph{Community Food
-Webs: Data and Theory}. Springer-Verlag.
+Cohen, J. E., Briand, F., \& Newman, C. (1990). \emph{Community food
+webs: Data and theory}. Springer-Verlag.
 \url{https://www.springer.com/gp/book/9783642837869}
 
 \bibitem[\citeproctext]{ref-petchey2008}
