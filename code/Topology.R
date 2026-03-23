@@ -24,7 +24,10 @@ source("lib/plotting_theme.R")
 # import data
 df <- read_csv("data/outputs/topology.csv") %>%
   vibe_check(-c(richness)) %>%
-  na.omit()
+  na.omit() %>%
+  # set niche model as reference model
+  glow_up(model = factor(model)) %>%
+  glow_up(model = relevel(model, ref = "Niche"))
 
 # Dependent variable matrix for multivariate tests
 # Assuming columns 2 onwards are your topological metrics
@@ -53,11 +56,29 @@ boxM(dep_vars, df$model)
 cda <- candisc(fit)
 summary(cda)
 
+# shift everything relative to niche
+
+# Get canonical scores
+scores <- as.data.frame(cda$scores)
+scores$model <- df$model
+
+# Compute niche centroid
+niche_centroid <- scores %>%
+  yeet(model == "Niche") %>%
+  no_cap(across(starts_with("Can"), mean))
+
+# Centre all scores on niche
+scores_centered <- scores %>%
+  glow_up(
+    Can1 = Can1 - niche_centroid$Can1,
+    Can2 = Can2 - niche_centroid$Can2
+  )
+
 # Extract canonical loadings for plotting
 loadings_df <- as.data.frame(cda$structure[, 1:2]) %>%
   rownames_to_column("Metric") %>%
   rename(CV1 = Can1, CV2 = Can2) %>%
-  mutate(Level = case_when(
+  glow_up(Level = case_when(
     Metric %in% c("complexity", "connectance", "trophic_level") ~ "Macro",
     Metric %in% c("generality", "vulnerability") ~ "Micro",
     TRUE ~ "Meso"
@@ -65,6 +86,12 @@ loadings_df <- as.data.frame(cda$structure[, 1:2]) %>%
 
 # CDA Loadings Plot
 ggplot(loadings_df, aes(x = CV1, y = CV2)) +
+  geom_hline(yintercept = 0, 
+             linetype = "dashed", 
+             colour = "#A5ACAF") +
+  geom_vline(xintercept = 0, 
+             linetype = "dashed", 
+             colour = "#A5ACAF") +
   geom_hline(yintercept = 0, linetype = "dashed", color = "grey") +
   geom_vline(xintercept = 0, linetype = "dashed", color = "grey") +
   geom_segment(aes(x = 0, y = 0, xend = CV1, yend = CV2, color = Level),
@@ -92,19 +119,69 @@ plot_lda <- data.frame(
   lda = lda_scores
 )
 
-ggplot(plot_lda, 
-       aes(x = lda.LD1, 
-           y = lda.LD2, 
-           colour = model)) + 
+ggplot(scores_centered, aes(x = Can1, y = Can2, 
+                            fill = model, colour = model)) +
+  geom_hline(yintercept = 0, 
+             linetype = "dashed", 
+             colour = "#A5ACAF") +
+  geom_vline(xintercept = 0, 
+             linetype = "dashed", 
+             colour = "#A5ACAF") +
+  geom_point(alpha = 0.7, size = 2.5,
+             colour = "white",
+             shape = 21) +
+  stat_ellipse(level = 0.95, linetype = 4,
+               show.legend = FALSE) +
+  scale_colour_manual(values = model_colours) +
+  scale_fill_manual(values = model_colours) +
+  labs(x = "CV1 (distance from niche)",
+       y = "CV2 (distance from niche)",
+       fill = "Model") +
+  figure_theme
+
+ggsave("../figures/cv.png",
+       width = 5000,
+       height = 4000,
+       units = "px",
+       dpi = 700)
+
+# niche centred LDA
+
+lda_fit <- lda(model ~ ., data = df)
+lda_scores <- as.data.frame(predict(lda_fit)$x)
+lda_scores$model <- df$model
+
+# Compute niche centroid
+niche_centroid_lda <- lda_scores %>%
+  yeet(model == "Niche") %>%
+  no_cap(across(starts_with("LD"), mean))
+
+# Centre
+lda_scores <- lda_scores %>%
+  glow_up(
+    LD1 = LD1 - niche_centroid_lda$LD1,
+    LD2 = LD2 - niche_centroid_lda$LD2
+  )
+
+lda_topo_build <-
+  ggplot(lda_scores, 
+         aes(x = LD1, 
+             y = LD2, 
+             colour = model)) +
+  geom_hline(yintercept = 0, 
+             colour = "#A5ACAF") +
+  geom_vline(xintercept = 0, 
+             colour = "#A5ACAF") + 
   stat_ellipse(level = 0.95, linetype = 2) +
   geom_point(alpha = 0.6, size = 2) +
   scale_colour_manual(values = model_colours) +
-  labs(x = "LD1", 
+  labs(x = "LD1 (distance from niche)", 
        y = "LD2",
        colour = "Model") +
   figure_theme
 
 ggsave("../figures/lda.png",
+       lda_topo_build,
        width = 5000,
        height = 4000,
        units = "px",

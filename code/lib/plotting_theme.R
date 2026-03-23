@@ -31,10 +31,10 @@ figure_theme =
 model_colours <- c(
   # Group 1: The Anchor
   "ATN"      = "#FFD682",
-  "LTM"      = "#F5A430", 
+  "LTM"      = "#FB8D6C", 
   "ADBM"     = "#EA7200", 
   "Random"   = "#002B36", 
-  "Niche"    = "#A6D854", 
+  "Niche"    = "#7A74C2", 
   "Cascade"  = "#006D75",
   "MaxEnt"   = "#53A39E"
 )
