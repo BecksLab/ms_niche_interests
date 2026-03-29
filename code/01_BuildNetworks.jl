@@ -39,7 +39,8 @@ using Dates           # For timestamping the output file
 using Statistics      # Required by helpers
 using LinearAlgebra   # Required by helpers
 using Graphs          # Required by helpers/models
-using ProgressMeter   # For tracking MaxEnt optimization
+using ProgressMeter   # For tracking MaxEnt optimisation
+using FoodWebTools    # For network generating models
 
 # --- 2. Load All Code ---
 
