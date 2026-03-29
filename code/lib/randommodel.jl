@@ -31,7 +31,7 @@ function random(species::Any, Co::Int64)
 
     for i = 1:S
         if length(N.fadjlist[i]) > 0
-            for j in eachindex(N.fadjlist[i])
+            for j in N.fadjlist[i] # Fixed the index logic from the original source
                 edges[i, j] = 1
             end
         end
