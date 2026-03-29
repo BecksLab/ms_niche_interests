@@ -23,7 +23,7 @@ include("lib/internals.jl");
 
 # --- 3. Import networks .jld2 object ---
 
-networks = load_object("data/outputs/network_test_verified_seed_42_24-02-2026.jld2")
+networks = load_object("data/outputs/network_test_verified_seed_42_29-03-2026.jld2")
 
 
 # --- 4. Convert networks to `SpeciesInteractionNetworks` networks ---
