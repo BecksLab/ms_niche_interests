@@ -87,10 +87,8 @@ loadings_df <- as.data.frame(cda$structure[, 1:2]) %>%
 # CDA Loadings Plot
 ggplot(loadings_df, aes(x = CV1, y = CV2)) +
   geom_hline(yintercept = 0, 
-             linetype = "dashed", 
              colour = "#A5ACAF") +
   geom_vline(xintercept = 0, 
-             linetype = "dashed", 
              colour = "#A5ACAF") +
   geom_hline(yintercept = 0, linetype = "dashed", color = "grey") +
   geom_vline(xintercept = 0, linetype = "dashed", color = "grey") +
@@ -119,13 +117,12 @@ plot_lda <- data.frame(
   lda = lda_scores
 )
 
-ggplot(scores_centered, aes(x = Can1, y = Can2, 
+lda_topo_build <- 
+  ggplot(scores_centered, aes(x = Can1, y = Can2, 
                             fill = model, colour = model)) +
   geom_hline(yintercept = 0, 
-             linetype = "dashed", 
              colour = "#A5ACAF") +
   geom_vline(xintercept = 0, 
-             linetype = "dashed", 
              colour = "#A5ACAF") +
   geom_point(alpha = 0.7, size = 2.5,
              colour = "white",
@@ -140,6 +137,7 @@ ggplot(scores_centered, aes(x = Can1, y = Can2,
   figure_theme
 
 ggsave("../figures/cv.png",
+       lda_topo_build,
        width = 5000,
        height = 4000,
        units = "px",
