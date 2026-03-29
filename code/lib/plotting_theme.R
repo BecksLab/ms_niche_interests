@@ -30,13 +30,13 @@ figure_theme =
 # 1. DISCRETE MODEL COLORS
 model_colours <- c(
   # Group 1: The Anchor
-  "ATN"      = "#FFD682",
+  "ATN"      = "#FFB81C",
   "LTM"      = "#FB8D6C", 
   "ADBM"     = "#EA7200", 
   "Random"   = "#002B36", 
   "Niche"    = "#7A74C2", 
   "Cascade"  = "#006D75",
-  "MaxEnt"   = "#53A39E"
+  "MaxEnt"   = "#9CDBD9"
 )
 
 pal_df <- data.frame(l = names(model_colours), c = model_colours)
