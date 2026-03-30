@@ -90,8 +90,6 @@ ggplot(loadings_df, aes(x = CV1, y = CV2)) +
              colour = "#A5ACAF") +
   geom_vline(xintercept = 0, 
              colour = "#A5ACAF") +
-  geom_hline(yintercept = 0, linetype = "dashed", color = "grey") +
-  geom_vline(xintercept = 0, linetype = "dashed", color = "grey") +
   geom_segment(aes(x = 0, y = 0, xend = CV1, yend = CV2, color = Level),
                arrow = arrow(length = unit(0.2, "cm")), linewidth = 1) +
   geom_text_repel(aes(label = Metric)) +
@@ -117,15 +115,13 @@ plot_lda <- data.frame(
   lda = lda_scores
 )
 
-lda_topo_build <- 
-  ggplot(scores_centered, aes(x = Can1, y = Can2, 
+ggplot(scores_centered, aes(x = Can1, y = Can2, 
                             fill = model, colour = model)) +
   geom_hline(yintercept = 0, 
              colour = "#A5ACAF") +
   geom_vline(xintercept = 0, 
              colour = "#A5ACAF") +
   geom_point(alpha = 0.7, size = 2.5,
-             colour = "white",
              shape = 21) +
   stat_ellipse(level = 0.95, linetype = 4,
                show.legend = FALSE) +
@@ -137,7 +133,6 @@ lda_topo_build <-
   figure_theme
 
 ggsave("../figures/cv.png",
-       lda_topo_build,
        width = 5000,
        height = 4000,
        units = "px",
@@ -171,7 +166,7 @@ lda_topo_build <-
   geom_vline(xintercept = 0, 
              colour = "#A5ACAF") + 
   stat_ellipse(level = 0.95, linetype = 2) +
-  geom_point(alpha = 0.6, size = 2) +
+  geom_point(alpha = 0.6, size = 2.5) +
   scale_colour_manual(values = model_colours) +
   labs(x = "LD1 (distance from niche)", 
        y = "LD2",
