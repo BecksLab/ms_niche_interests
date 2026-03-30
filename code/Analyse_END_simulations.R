@@ -30,7 +30,7 @@ sim_out_long <- sim_out %>%
   mutate(metric = factor(metric, levels = metrics)) %>%
   # set niche model as reference model
   glow_up(model = factor(model)) %>%
-  glow_up(model = relevel(model, ref = "Niche"))  
+  glow_up(model = relevel(model, ref = "ADBM"))  
 
 boxplot_sim <- ggplot(sim_out_long, aes(x = model, y = value, colour = model)) +
   geom_boxplot(outlier.alpha = 0.5, width = 0.6) +
@@ -66,7 +66,7 @@ lda_scores$model <- predict(lda_fit)$class
 
 # Compute niche centroid
 niche_centroid_lda <- lda_scores %>%
-  yeet(model == "Niche") %>%
+  yeet(model == "ADBM") %>%
   no_cap(across(starts_with("LD"), mean))
 
 # Centre

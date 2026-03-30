@@ -27,7 +27,7 @@ df <- read_csv("data/outputs/topology.csv") %>%
   na.omit() %>%
   # set niche model as reference model
   glow_up(model = factor(model)) %>%
-  glow_up(model = relevel(model, ref = "Niche"))
+  glow_up(model = relevel(model, ref = "ADBM"))
 
 # Dependent variable matrix for multivariate tests
 # Assuming columns 2 onwards are your topological metrics
@@ -64,10 +64,10 @@ scores$model <- df$model
 
 # Compute niche centroid
 niche_centroid <- scores %>%
-  yeet(model == "Niche") %>%
+  yeet(model == "ADBM") %>%
   no_cap(across(starts_with("Can"), mean))
 
-# Centre all scores on niche
+# Center all scores on niche
 scores_centered <- scores %>%
   glow_up(
     Can1 = Can1 - niche_centroid$Can1,
@@ -116,20 +116,18 @@ plot_lda <- data.frame(
 )
 
 ggplot(scores_centered, aes(x = Can1, y = Can2, 
-                            fill = model, colour = model)) +
+                            colour = model)) +
   geom_hline(yintercept = 0, 
              colour = "#A5ACAF") +
   geom_vline(xintercept = 0, 
              colour = "#A5ACAF") +
-  geom_point(alpha = 0.7, size = 2.5,
-             shape = 21) +
+  geom_point(alpha = 0.7, size = 2.5) +
   stat_ellipse(level = 0.95, linetype = 4,
                show.legend = FALSE) +
   scale_colour_manual(values = model_colours) +
-  scale_fill_manual(values = model_colours) +
   labs(x = "CV1 (distance from niche)",
        y = "CV2 (distance from niche)",
-       fill = "Model") +
+       colour = "Model") +
   figure_theme
 
 ggsave("../figures/cv.png",
@@ -146,7 +144,7 @@ lda_scores$model <- df$model
 
 # Compute niche centroid
 niche_centroid_lda <- lda_scores %>%
-  yeet(model == "Niche") %>%
+  yeet(model == "ADBM") %>%
   no_cap(across(starts_with("LD"), mean))
 
 # Centre
