@@ -56,13 +56,13 @@ function network_summary(N::SpeciesInteractionNetwork{<:Partiteness,<:Binary})
     ind_maxgen = findmax(gen)[2]
 
     L = links(N)
-    S = richness(N)
+    S = SpeciesInteractionNetworks.richness(N)
     l_s = L / S
 
     tls = _trophic_level(N)
 
     D = Dict{Symbol,Any}(
-        :richness => richness(N),
+        :richness => SpeciesInteractionNetworks.richness(N),
         :connectance => SpeciesInteractionNetworks.connectance(N),
         :complexity => complexity(N),
         :trophic_level => findmax(collect(values(tls)))[1],
@@ -72,19 +72,19 @@ function network_summary(N::SpeciesInteractionNetwork{<:Partiteness,<:Binary})
         :S1 =>
             length(
                 findmotif(motifs(Unipartite, 3)[1], remove_cannibals(N)),
-            )/(richness(N)^2),
+            )/(SpeciesInteractionNetworks.richness(N)^2),
         :S2 =>
             length(
                 findmotif(motifs(Unipartite, 3)[2], remove_cannibals(N)),
-            )/(richness(N)^2),
+            )/(SpeciesInteractionNetworks.richness(N)^2),
         :S4 =>
             length(
                 findmotif(motifs(Unipartite, 3)[4], remove_cannibals(N)),
-            )/(richness(N)^2),
+            )/(SpeciesInteractionNetworks.richness(N)^2),
         :S5 =>
             length(
                 findmotif(motifs(Unipartite, 3)[5], remove_cannibals(N)),
-            )/(richness(N)^2),
+            )/(SpeciesInteractionNetworks.richness(N)^2),
     )
 
     return D
@@ -98,7 +98,7 @@ remove_cannibals(N::SpeciesInteractionNetwork{<:Partiteness,<:Binary})
 function remove_cannibals(N::SpeciesInteractionNetwork{<:Partiteness,<:Binary})
 
     # get adj matrix
-    S = richness(N)
+    S = SpeciesInteractionNetworks.richness(N)
     A = zeros(Bool, (S, S))
     for i in axes(A, 1)
         for j in axes(A, 2)
