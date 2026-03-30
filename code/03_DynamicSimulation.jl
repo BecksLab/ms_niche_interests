@@ -26,7 +26,7 @@ using Statistics
 include("lib/sim.jl");
 
 # --- 3. Import networks .jld2 object ---
-path = joinpath(@__DIR__, "data", "outputs", "network_test_verified_seed_42_29-10-2025.jld2")
+path = joinpath(@__DIR__, "data", "outputs", "network_test_verified_seed_42_29-03-2026.jld2")
 networks = load_object(path)
 sort!(networks, :fw_ID) 
 
@@ -46,6 +46,11 @@ simulation_summary = DataFrame(
     evenness = Float64[],
     resilience = Float64[],
     reactivity = Float64[]
+)
+
+final_network = DataFrame(
+    fw_ID = String[],
+    adj_matrix = Any[]
 )
 
 for i in 1:nrow(networks)
@@ -103,9 +108,24 @@ for i in 1:nrow(networks)
     end
 
     push!(simulation_summary, (; fw_ID=string(fwid), model=string(model_name), out...); promote=true)
+
+    # export the final adj. matrix to get topology later
+    final_biomasses = sol.u[end]
+
+    # find survivors
+    survival_threshold = 1e-6
+    survivors = findall(x -> x > survival_threshold, final_biomasses)
+
+    # get final adjacency matrix (assuming initial matrix is `A`)
+    final_adj_matrix = adj[survivors, survivors]    
+
+    push!(final_network, (fw_ID=string(fwid), adj_matrix=final_adj_matrix))
+
 end
    
 
 # --- 5. Save Simulation Summary ---
 mkpath(joinpath(@__DIR__, "data", "outputs"))
 CSV.write(joinpath(@__DIR__, "data", "outputs", "END_simulation_summary.csv"), simulation_summary)
+
+JLD2.save_object(joinpath(@__DIR__, "data", "outputs", "END_final_adj.jld2"), final_network)
