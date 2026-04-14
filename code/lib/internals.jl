@@ -59,32 +59,42 @@ function network_summary(N::SpeciesInteractionNetwork{<:Partiteness,<:Binary})
     S = SpeciesInteractionNetworks.richness(N)
     l_s = L / S
 
-    tls = _trophic_level(N)
+    tl = _trophic_level(N)
+
+    A = Matrix(N.edges.edges)
+
+    top = sum(vec(sum(A, dims = 1) .== 0))
+
+    chain = chain_metrics(N; max_depth = 6)
 
     D = Dict{Symbol,Any}(
-        :richness => SpeciesInteractionNetworks.richness(N),
+        :richness => S,
         :connectance => SpeciesInteractionNetworks.connectance(N),
         :complexity => complexity(N),
-        :trophic_level => findmax(collect(values(tls)))[1],
+        :trophic_level => mean(collect(values(tl))),
+        :distance => distancetobase(N, collect(keys(_gen))[ind_maxgen]),
         :generality => std(gen / l_s),
         :vulnerability => std(vul / l_s),
+        :top => top / S,
+        :ChLen => chain.ChLen,
+        #:centrality => mean(collect(values(centrality(N)))),
         # note for motif calcs one needs to exclude cannibalism (as per Stouffer)
         :S1 =>
             length(
                 findmotif(motifs(Unipartite, 3)[1], remove_cannibals(N)),
-            )/(SpeciesInteractionNetworks.richness(N)^2),
+            )/(S^2),
         :S2 =>
             length(
                 findmotif(motifs(Unipartite, 3)[2], remove_cannibals(N)),
-            )/(SpeciesInteractionNetworks.richness(N)^2),
+            )/(S^2),
         :S4 =>
             length(
                 findmotif(motifs(Unipartite, 3)[4], remove_cannibals(N)),
-            )/(SpeciesInteractionNetworks.richness(N)^2),
+            )/(S^2),
         :S5 =>
             length(
                 findmotif(motifs(Unipartite, 3)[5], remove_cannibals(N)),
-            )/(SpeciesInteractionNetworks.richness(N)^2),
+            )/(S^2),
     )
 
     return D
@@ -179,3 +189,107 @@ function _trophic_level(N::SpeciesInteractionNetwork)
     # return trophic level Dict
     return pls
 end
+
+function compute_reachable_to_top(N, top_set)
+
+    reachable = Set(top_set)
+    changed = true
+
+    while changed
+        changed = false
+
+        for s in species(N)
+            if any(n in reachable for n in predecessors(N, s))
+                if !(s in reachable)
+                    push!(reachable, s)
+                    changed = true
+                end
+            end
+        end
+    end
+
+    return reachable
+end
+
+function chain_metrics(N; max_depth=6)
+
+    # --- STEP 1: Identify basal and top ---
+    gen = SpeciesInteractionNetworks.generality(N)
+    basal = collect(keys(filter(((k, v),) -> v == 0, gen)))
+
+    vul = SpeciesInteractionNetworks.vulnerability(N)
+    top_set = Set(keys(filter(((k, v),) -> v == 0, vul)))
+
+    # If no structure exists → return early
+    if isempty(basal) || isempty(top_set)
+        return (ChLen = NaN, ChSD = NaN, ChNum = 0.0)
+    end
+
+    # --- STEP 2: Reachability pruning ---
+    reachable = compute_reachable_to_top(N, top_set)
+
+    # --- STEP 3: Memoized DFS ---
+    memo = Dict{Any, Vector{Int}}()
+
+    function dfs(node, visited, depth)
+
+        if depth > max_depth
+            return Int[]
+        end
+
+        if node in visited
+            return Int[]
+        end
+
+        # prune unreachable nodes
+        if node ∉ reachable
+            return Int[]
+        end
+
+        if haskey(memo, node)
+            return memo[node]
+        end
+
+        push!(visited, node)
+
+        lengths = Int[]
+
+        # If this is a top node → chain ends here
+        if node in top_set
+            push!(lengths, 0)
+        end
+
+        # Traverse UP the food web
+        for nxt in predecessors(N, node)
+            sub_lengths = dfs(nxt, visited, depth + 1)
+            for l in sub_lengths
+                push!(lengths, l + 1)
+            end
+        end
+
+        delete!(visited, node)
+
+        memo[node] = lengths
+        return lengths
+    end
+
+    # --- STEP 4: Collect all chain lengths ---
+    all_lengths = Int[]
+
+    for b in basal
+        append!(all_lengths, dfs(b, Set(), 0))
+    end
+
+    # --- STEP 5: Return summary stats ---
+    if isempty(all_lengths)
+        return (ChLen = NaN, ChSD = NaN, ChNum = 0.0)
+    end
+
+    return (
+        ChLen = mean(all_lengths),
+        ChSD  = std(all_lengths),
+        ChNum = log(length(all_lengths))
+    )
+end
+
+mean.(collect.(values.(centrality.(networks.InteractionNetwork))))

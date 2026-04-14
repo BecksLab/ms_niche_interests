@@ -43,6 +43,10 @@ topology = DataFrame(
     trophic_level = Float64[],
     generality = Float64[],
     vulnerability = Float64[],
+    top = Float64[],
+    ChLen = Float64[],
+    distance = Float64[],
+    #centrality = Float64[],
     S1 = Float64[],
     S2 = Float64[],
     S4 = Float64[],
@@ -63,49 +67,3 @@ end
 
 # write summaries as .csv
 CSV.write("data/outputs/topology.csv", topology)
-
-# --- 6. Linear Discriminant Analysis (LDA) ---
-
-# prep data
-x = Matrix(topology[:, 3:end])
-x_labels = convert(Vector{String}, topology[:, :model])
-
-# Compute overall mean
-μ = mean(x, dims=1)
-
-classes = unique(x_labels)
-n_features = size(x, 2)
-
-# Within-class scatter (SW) and between-class scatter (SB)
-SW = zeros(n_features, n_features)
-SB = zeros(n_features, n_features)
-
-for c in classes
-    Xc = x[x_labels .== c, :]
-    μc = mean(Xc, dims=1)
-    SW += cov(Xc) * (size(Xc, 1) - 1)
-    n_c = size(Xc, 1)
-    mean_diff = (μc - μ)'
-    SB += n_c * (mean_diff * mean_diff')
-end
-
-# Solve the generalized eigenvalue problem: inv(SW)*SB
-eigenvals, eigenvecs = eigen(Symmetric(inv(SW) * SB))
-
-# Sort eigenvectors by eigenvalues (descending)
-sorted_idx = sortperm(eigenvals, rev=true)
-W = eigenvecs[:, sorted_idx[1:2]]   # top 2 discriminants
-
-# Project data
-X_lda = x * W
-
-# Plot
-
-scatter()
-for c in classes
-    idx = findall(x_labels .== c)
-    scatter!(X_lda[idx, 1], X_lda[idx, 2], label=c)
-end
-xlabel!("LD1")
-ylabel!("LD2")
-title!("LDA Projection")
