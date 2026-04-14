@@ -282,7 +282,7 @@ else
         L_target = round(Int, C_rand * S^2)
         jdd = joint_degree_dist_maxent(S, L_target)
         local deg_samp
-        while true # Ensure we get a valid sequence even in Workflow A
+        while true # Ensure we get a valid sequence
             deg_samp = simulate_degrees(jdd)
             if sum(deg_samp.kin) == sum(deg_samp.kout) && sum(deg_samp.kin) > 0; break; end
         end
