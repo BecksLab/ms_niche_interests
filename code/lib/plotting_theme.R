@@ -8,7 +8,7 @@ library(patchwork)
 figure_theme = 
   theme_classic() +
   theme(panel.border = element_rect(colour = '#00181F',
-                                    fill = "white"), # Transparent fill
+                                    fill = "white"),
         panel.grid.minor = element_blank(),
         panel.grid.major.x = element_blank(),
         axis.line = element_blank(),
@@ -18,7 +18,7 @@ figure_theme =
         panel.background = element_rect(fill = "white", colour = NA),
         legend.background = element_rect(fill = "white", colour = NA),
         legend.key = element_blank(),
-        text = element_text(color = "#00181F"), # Soft gray text for better readability
+        text = element_text(color = "#00181F"),
         plot.margin = margin(10, 5, 5, 10),
         legend.margin = margin(1, 2, 1, 2)
   )
@@ -29,12 +29,11 @@ figure_theme =
 
 # 1. DISCRETE MODEL COLORS
 model_colours <- c(
-  # Group 1: The Anchor
   "ATN"      = "#FFB81C",
-  "LTM"      = "#FB8D6C", 
-  "ADBM"     = "#EA7200", 
-  "Random"   = "#002B36", 
-  "Niche"    = "#7A74C2", 
+  "LTM"      = "#FB8D6C",
+  "ADBM"     = "#EA7200",
+  "Random"   = "#002B36",
+  "Niche"    = "#C085C2",
   "Cascade"  = "#006D75",
   "MaxEnt"   = "#9CDBD9"
 )
@@ -48,3 +47,6 @@ col_cont <- c("#CCF5FF", "#83C5BE", "#002B36")
 # 3. DIVERGING RAMP
 
 col_div <- c("#006D75", "#F4F1DE", "#EA7200")
+
+# for grey accent
+shark_silver <- "#A2AAAD"
