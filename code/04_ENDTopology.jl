@@ -45,11 +45,9 @@ topology = DataFrame(
     top = Float64[],
     ChLen = Float64[],
     distance = Float64[],
-    #centrality = Float64[],
-    S1 = Float64[],
-    S2 = Float64[],
-    S4 = Float64[],
-    S5 = Float64[],
+    centrality = Float64[],
+    clustering = Float64[],
+    trophicCoherence = Float64[],
 );
 
 # note for simplicity we use a wrapper function

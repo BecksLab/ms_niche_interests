@@ -59,13 +59,17 @@ function network_summary(N::SpeciesInteractionNetwork{<:Partiteness,<:Binary})
     S = SpeciesInteractionNetworks.richness(N)
     l_s = L / S
 
-    tl = _trophic_level(N)
+    tl = trophic_level(N)
 
     A = Matrix(N.edges.edges)
 
     top = sum(vec(sum(A, dims = 1) .== 0))
 
     chain = chain_metrics(N; max_depth = 6)
+
+    # for centrality - freeman centralisation
+    c = collect(values(centrality(N)))
+    Cmax = maximum(c)
 
     D = Dict{Symbol,Any}(
         :richness => S,
@@ -77,24 +81,9 @@ function network_summary(N::SpeciesInteractionNetwork{<:Partiteness,<:Binary})
         :vulnerability => std(vul / l_s),
         :top => top / S,
         :ChLen => chain.ChLen,
-        #:centrality => mean(collect(values(centrality(N)))),
-        # note for motif calcs one needs to exclude cannibalism (as per Stouffer)
-        :S1 =>
-            length(
-                findmotif(motifs(Unipartite, 3)[1], remove_cannibals(N)),
-            )/(S^2),
-        :S2 =>
-            length(
-                findmotif(motifs(Unipartite, 3)[2], remove_cannibals(N)),
-            )/(S^2),
-        :S4 =>
-            length(
-                findmotif(motifs(Unipartite, 3)[4], remove_cannibals(N)),
-            )/(S^2),
-        :S5 =>
-            length(
-                findmotif(motifs(Unipartite, 3)[5], remove_cannibals(N)),
-            )/(S^2),
+        :centrality => sum(Cmax .- c),
+        :clustering => clustering(A),
+        :trophicCoherence => trophic_coherence(N)
     )
 
     return D
@@ -159,7 +148,7 @@ _trophic_level(N::SpeciesInteractionNetwork)
     and Omnivory in Complex Food Webs: Theory and Data.” The American Naturalist 
     163 (3): 458–68. https://doi.org/10.1086/381964.
 """
-function _trophic_level(N::SpeciesInteractionNetwork)
+function trophic_level(N::SpeciesInteractionNetwork)
 
     sp = species(N)
 
@@ -292,4 +281,88 @@ function chain_metrics(N; max_depth=6)
     )
 end
 
-mean.(collect.(values.(centrality.(networks.InteractionNetwork))))
+"""
+clustering(A::Matrix{Bool})
+
+    Returns the mean clustering coefficient
+"""
+function clustering(A::Matrix{Bool})
+
+    N = size(A, 1)
+    
+    # Calculate the Undirected Degree (k_i)
+    # K_i is the total number of neighbors (in-degree + out-degree).
+    A_undir = (A + A') .> 0 # A_undir[i,j] = 1 if there is a link i<->j or i->j or i<-j
+
+    # The undirected degree k_i for species i is the sum of the i-th row (or column) of A_undir.
+    k_undir = sum(A_undir, dims=2)[:]
+    
+    # Calculate the Number of Triangles (T_i)
+    # In an undirected graph, the number of triangles T_i involving node i is half the (i, i) entry of A_undir^3.
+    # We can calculate the total number of undirected links between neighbors of i directly.
+    # The element (A_undir^2)_{ij} is the number of 2-paths between i and j.
+    # The number of triangles T_i is the sum of links between the neighbors of i.
+    
+    # Let D be the number of cycles of length 3 (triangles)
+    D = diag(A_undir^3) ./ 2
+
+    # Calculate the Local Clustering Coefficient (C_i)
+    C_values = Float64[] # Store local clustering coefficients
+
+    for i in 1:N
+        k_i = k_undir[i]
+        
+        # Denominator: Number of possible 2-paths (connections between neighbors)
+        # This is the number of pairs of neighbors: k_i * (k_i - 1) / 2
+        denominator = k_i * (k_i - 1) / 2
+        
+        if denominator == 0
+            # Species with degree 0 or 1 cannot be part of a triangle.
+            push!(C_values, 0.0) 
+            continue
+        end
+
+        T_i = D[i] # Number of completed triangles involving node i
+        
+        # Local Clustering Coefficient C_i
+        C_i = T_i / denominator
+        push!(C_values, C_i)
+    end
+    
+    # Calculate the Mean Clustering Coefficient
+    mean_C = mean(C_values)
+    
+    return mean_C
+end
+
+"""
+trophic_coherence(N::SpeciesInteractionNetwork)
+
+Returns the trophic incoherence parameter q.
+Lower q indicates higher trophic coherence.
+"""
+function trophic_coherence(N::SpeciesInteractionNetwork)
+
+    A = Matrix(N.edges.edges)
+    tl = trophic_level(N)
+
+    spp = species(N)
+    s = [tl[k] for k in spp]
+
+    trophic_dist = Float64[]
+
+    for i in eachindex(spp)
+        for j in eachindex(spp)
+
+            if A[i, j] == true
+                push!(trophic_dist, s[i] - s[j])
+            end
+
+        end
+    end
+
+    # variance of trophic distances
+    q = std(trophic_dist)
+
+    return q
+end

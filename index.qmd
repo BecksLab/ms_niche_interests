@@ -59,11 +59,11 @@ number-sections: true
 
 # Introduction
 
-The Niche Model Hegemony: Establish how the Niche Model (and its topological derivatives like the Cascade model) has historically served as the "structural prior" or template for most network theory.
+The Niche Model Hegemony: Establish how the Niche Model (and its topological derivatives like the Cascade model) has historically served as the structural prior or template for most network theory.
 
-The Philosophy Gap: Contrast structural/topological models (which prioritise species-agnostic link distributions) with "realised/dynamic" models like ATN and ADBM (which prioritise biological mechanisms like bioenergetics and optimal foraging).
+The Philosophy Gap: Contrast structural/topological models (which prioritise species-agnostic link distributions) with realised/dynamic models like ATN and ADBM (which prioritise biological mechanisms like bioenergetics and optimal foraging).
 
-The Research Question: Do these different philosophical starting points (mechanical vs. statistical) lead to the same conclusions about community stability, or does the choice of "template" fundamentally bias our understanding of extinction dynamics?.
+The Research Question: Do these different philosophical starting points (mechanical vs. statistical) lead to the same conclusions about community stability, or does the choice of template fundamentally bias our understanding of network dynamics?.
 
 # Methods
 
@@ -82,8 +82,7 @@ Describe the seven model classes - Structural: Niche, Cascade, MaxEnt (Topologic
 
 : Summary of food web models used in this study. Structural models (Niche, Cascade, MaxEnt) generate network topology based on abstract or statistical rules, while realised/dynamic models (ADBM, ATN, Latent trait) incorporate species-specific traits and biological mechanisms to predict interactions. For each model, we list the main inputs and the key assumptions that govern link formation. {#tbl-models}
 
-
-Simulation Framework: Explain how an identical species pool was used across all models to isolate the model effect from the data effect. Something about how we constrained networks and also species class assignments if and when valid in constraining the model vs needed as input for the BEFW
+Simulation Framework: Explain how an identical species pool was used across all models to isolate the model effect from the data effect. Something about how we constrained networks and also species class assignments if and when valid in constraining the model vs needed as input for the BEFW model.
 
 Dynamic Perturbation: Detail the use of a bioenergetic food web model to simulate species loss and cascading extinctions.
 
