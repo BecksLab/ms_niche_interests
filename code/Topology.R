@@ -27,7 +27,7 @@ df <- read_csv("data/outputs/topology.csv") %>%
   na.omit() %>%
   # set niche model as reference model
   glow_up(model = factor(model)) %>%
-  glow_up(model = relevel(model, ref = "ADBM"))
+  glow_up(model = relevel(model, ref = "Niche"))
 
 # Dependent variable matrix for multivariate tests
 # Assuming columns 2 onwards are your topological metrics
@@ -64,7 +64,7 @@ scores$model <- df$model
 
 # Compute niche centroid
 niche_centroid <- scores %>%
-  yeet(model == "ADBM") %>%
+  yeet(model == "Niche") %>%
   no_cap(across(starts_with("Can"), mean))
 
 # Center all scores on niche
@@ -79,9 +79,11 @@ loadings_df <- as.data.frame(cda$structure[, 1:2]) %>%
   rownames_to_column("Metric") %>%
   rename(CV1 = Can1, CV2 = Can2) %>%
   glow_up(Level = case_when(
-    Metric %in% c("complexity", "connectance", "trophic_level") ~ "Macro",
-    Metric %in% c("generality", "vulnerability") ~ "Micro",
-    TRUE ~ "Meso"
+    Metric %in% c("complexity", "connectance", "trophic_level", "ChLen") ~ "Macro",
+    Metric %in% c("generality") ~ "Role",
+    Metric %in% c("vulnerability", "top") ~ "Heterogeneity",
+    Metric %in% c("distance") ~ "Path",
+    TRUE ~ "Scaling"
   ))
 
 # CDA Loadings Plot
@@ -94,7 +96,7 @@ ggplot(loadings_df, aes(x = CV1, y = CV2)) +
                arrow = arrow(length = unit(0.2, "cm")), linewidth = 1) +
   geom_text_repel(aes(label = Metric)) +
   coord_equal(xlim = c(-1, 1), ylim = c(-1, 1)) +
-  scale_colour_manual(values = c("#006D75", "#2F2F2F", "#EA7200")) +
+  scale_colour_manual(values = c("#006D75", "#2F2F2F", "#EA7200", "#B2B4B2", "#FFB81C")) +
   figure_theme
 
 ggsave("../figures/lda_corr.png",
@@ -144,7 +146,7 @@ lda_scores$model <- df$model
 
 # Compute niche centroid
 niche_centroid_lda <- lda_scores %>%
-  yeet(model == "ADBM") %>%
+  yeet(model == "Niche") %>%
   no_cap(across(starts_with("LD"), mean))
 
 # Centre
@@ -216,13 +218,16 @@ emm_df <- emm_df %>%
     TRUE ~ as.character(metric)
   )) %>%
   mutate(level = case_when(
-    metric %in% c("complexity", "connectance", "trophic_level") ~ "Macro",
-    metric %in% c("generality", "vulnerability") ~ "Micro",
-    TRUE ~ "Meso"
+    metric %in% c("complexity", "connectance", "trophic_level", "S2", "S1", "ChLen") ~ "Macro",
+    metric %in% c("generality") ~ "Role",
+    metric %in% c("vulnerability", "top") ~ "Heterogeneity",
+    metric %in% c("distance") ~ "Path",
+    metric %in% c("centrality") ~ "Hubs",
+    TRUE ~ "Scaling"
   ))
 
 # --- 2. Create Categorized Plot List ---
-levs <- c("Macro", "Meso", "Micro")
+levs <- c("Macro", "Role", "Heterogeneity", "Path", "Scaling")
 plot_list_emm <- vector("list", length = 3)
 
 for (i in seq_along(levs)) {
@@ -256,8 +261,55 @@ for (i in seq_along(levs)) {
 
 # --- 3. Patchwork Assembly ---
 # Adjusting heights to accommodate the number of facets in each level
-(plot_list_emm[[1]] / plot_list_emm[[2]] / plot_list_emm[[3]]) +
-  plot_layout(heights = c(2, 2, 1), guides = "collect")
+(plot_list_emm[[1]] / (plot_list_emm[[2]] + plot_list_emm[[4]]) / 
+    plot_list_emm[[3]] / plot_list_emm[[5]])+
+  plot_layout(heights = c(3, 1, 1, 1), guides = "collect")
 
 # Save
 ggsave("../figures/emm_summary.png", width = 9, height = 12, dpi = 400)
+
+# =========================
+# 5. Standard Errors
+# =========================
+
+sims <- 
+  read_csv("data/outputs/topology.csv") %>%
+  na.omit() %>%
+  pivot_longer(-c(model),
+               names_to = "metric") %>%
+  squad_up(model, metric)
+
+# use Niche model as reference point
+ref_stats <- sims %>%
+  yeet(model == "Niche") %>%
+  squad_up(metric) %>%
+  no_cap(mu_ref = mean(value),
+         sd_ref = sd(value))
+
+comparison <- sims %>%
+  squad_up(model, metric) %>%
+  no_cap(mu_model = mean(value, na.rm = TRUE)) %>%
+  left_join(ref_stats, by = "metric") %>%
+  glow_up(z = (mu_model - mu_ref) / sd_ref)
+
+ggplot(comparison %>%
+         yeet(metric != "richness")) +
+  geom_hline(yintercept = 2, 
+             linetype = "dashed", 
+             colour = shark_silver) +
+  geom_hline(yintercept = -2, 
+             linetype = "dashed", 
+             colour = shark_silver) +
+  geom_point(aes(x = metric,
+                 y = z,
+                 colour = model),
+             alpha = 0.7) +
+  scale_colour_manual(values = model_colours) +
+  labs(x = "Model",
+       y = "Normalised Error (niche as reference)") +
+  figure_theme +
+  theme(panel.grid.major = element_blank(),
+        strip.text = ggtext::element_markdown()) 
+
+
+
