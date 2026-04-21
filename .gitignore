@@ -31,6 +31,8 @@ JuliaLocalPreferences.toml
 
 /.quarto/
 .vscode/settings.json
+
+# MacOS nonsense
 .DS_Store
 
 # R
@@ -42,3 +44,17 @@ code/.Rhistory
 code/scrap.jl
 
 **/*.quarto_ipynb
+
+
+# quarto
+.ipynb_checkpoints
+*/.ipynb_checkpoints/*
+
+docs/
+
+/.quarto/
+
+/agujournal2019.cls
+/trackchanges.sty
+
+/.luarc.json
