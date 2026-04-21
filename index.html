@@ -194,7 +194,11 @@ div.csl-indent {
   <ul>
   <li><a href="#methods" id="toc-methods" class="nav-link active" data-scroll-target="#methods"><span class="header-section-number">1</span> Methods</a>
   <ul class="collapse">
-  <li><a href="#model-selection-and-implementation" id="toc-model-selection-and-implementation" class="nav-link" data-scroll-target="#model-selection-and-implementation"><span class="header-section-number">1.1</span> Model Selection and Implementation</a></li>
+  <li><a href="#network-generation" id="toc-network-generation" class="nav-link" data-scroll-target="#network-generation"><span class="header-section-number">1.1</span> Network generation</a></li>
+  <li><a href="#network-structure" id="toc-network-structure" class="nav-link" data-scroll-target="#network-structure"><span class="header-section-number">1.2</span> Network structure</a></li>
+  <li><a href="#dynamic-simulations" id="toc-dynamic-simulations" class="nav-link" data-scroll-target="#dynamic-simulations"><span class="header-section-number">1.3</span> Dynamic simulations</a></li>
+  <li><a href="#post-simulation-structure" id="toc-post-simulation-structure" class="nav-link" data-scroll-target="#post-simulation-structure"><span class="header-section-number">1.4</span> Post-simulation structure</a></li>
+  <li><a href="#experimental-design" id="toc-experimental-design" class="nav-link" data-scroll-target="#experimental-design"><span class="header-section-number">1.5</span> Experimental design</a></li>
   </ul></li>
   <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results"><span class="header-section-number">2</span> Results</a></li>
   <li><a href="#discussion" id="toc-discussion" class="nav-link" data-scroll-target="#discussion"><span class="header-section-number">3</span> Discussion</a></li>
@@ -217,9 +221,11 @@ div.csl-indent {
 <p>The Research Question: Do these different philosophical starting points (mechanical vs.&nbsp;statistical) lead to the same conclusions about community stability, or does the choice of template fundamentally bias our understanding of network dynamics?.</p>
 <section id="methods" class="level1" data-number="1">
 <h1 data-number="1"><span class="header-section-number">1</span> Methods</h1>
-<section id="model-selection-and-implementation" class="level2" data-number="1.1">
-<h2 data-number="1.1" class="anchored" data-anchor-id="model-selection-and-implementation"><span class="header-section-number">1.1</span> Model Selection and Implementation</h2>
-<p>Describe the seven model classes - Structural: Niche, Cascade, MaxEnt (Topological templates) vs realised/dynamic: ATN (mechanical/allometric), ADBM (energetic/optimal foraging), and Latent Trait (statistical/allometric)</p>
+<section id="network-generation" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="network-generation"><span class="header-section-number">1.1</span> Network generation</h2>
+<p>We generated food webs using six established generative models and a maximum entropy (MaxEnt) null model, spanning structural (Niche, Cascade, Random, MaxEnt) and trait-based approaches (Latent Trait Model, Allometric Trophic Network, Allometric Diet Breadth Model). All simulations were implemented in Julia using FoodWebTools and custom extensions.</p>
+<p>To isolate model effects from input variation, all trait-based models were parameterised using an identical species pool at each replicate. Species richness was fixed (S=15), and for each iteration we sampled (i) a target basal fraction (U(0.1,0.3)), (ii) metabolic classes consistent with this fraction, and (iii) body masses from class-specific log-uniform distributions. These inputs were shared across the Latent Trait, ATN, and ADBM models. Structural models were instead parameterised by a target connectance drawn from U(0.05, 0.3).</p>
+<p>Networks were generated using a rejection-sampling procedure to enforce comparable emergent properties. A network was retained only if its realised basal fraction and connectance fell within the target ranges (0.1–0.3 and 0.05–0.3, respectively). For trait-based models, networks were accepted only when all three models successfully generated valid networks from the same species pool. We obtained 100 valid replicates per model, with an upper bound on sampling attempts to prevent non-termination. MaxEnt networks were constructed by sampling joint in- and out-degree distributions consistent with a target number of links, followed by entropy-maximising rewiring under degree constraints. These networks were subjected to the same acceptance criteria as other models. For each network, we recorded the adjacency matrix, model identity, input parameters, emergent structural properties, and (where applicable) species traits.</p>
 <div id="tbl-models" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-models-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -283,9 +289,25 @@ Table&nbsp;1: Summary of food web models used in this study. Structural models (
 </div>
 </figure>
 </div>
-<p>Simulation Framework: Explain how an identical species pool was used across all models to isolate the model effect from the data effect. Something about how we constrained networks and also species class assignments if and when valid in constraining the model vs needed as input for the BEFW model.</p>
-<p>Dynamic Perturbation: Detail the use of a bioenergetic food web model to simulate species loss and cascading extinctions.</p>
-<p>Metrics for Comparison: Define the macro-scale (connectance), meso-scale (motifs), and micro-scale (generality/vulnerability) properties used to evaluate structural stories. As well as some of the outputs from the dynamic models - persistence/stability</p>
+</section>
+<section id="network-structure" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="network-structure"><span class="header-section-number">1.2</span> Network structure</h2>
+<p>All networks were converted to directed interaction networks and analysed using a standardised pipeline. We quantified structural properties across multiple scales, including connectance, trophic level, generality, vulnerability, clustering, centrality, trophic coherence, and path length. These metrics were used to characterise the structural signature of each model.</p>
+</section>
+<section id="dynamic-simulations" class="level2" data-number="1.3">
+<h2 data-number="1.3" class="anchored" data-anchor-id="dynamic-simulations"><span class="header-section-number">1.3</span> Dynamic simulations</h2>
+<p>To evaluate the dynamical consequences of different generative models, all networks were subjected to a common bioenergetic simulation framework. Dynamics were simulated using a Type II functional response and standard allometric scaling.</p>
+<p>Trait-based models were parameterised with their corresponding body masses (rescaled by metabolic class), whereas structural models were assigned a default trophic scaling to enable dynamic simulation. Initial biomasses were randomised.</p>
+<p>Simulations were run for 6000 time units, with summary statistics calculated after a burn-in period (3000–6000). Species were removed when biomass fell below 10^-6, and simulations terminated upon reaching steady state.</p>
+<p>We quantified persistence, equilibrium richness and connectance, total biomass and its variability, maximum trophic level, diversity (Shannon, evenness), and local stability metrics (resilience and reactivity). Final network structure was obtained by retaining only surviving species.</p>
+</section>
+<section id="post-simulation-structure" class="level2" data-number="1.4">
+<h2 data-number="1.4" class="anchored" data-anchor-id="post-simulation-structure"><span class="header-section-number">1.4</span> Post-simulation structure</h2>
+<p>To assess how dynamics reshape network topology, we recalculated all structural metrics on the realised (post-extinction) networks, enabling direct comparison between initial and emergent structure across models.</p>
+</section>
+<section id="experimental-design" class="level2" data-number="1.5">
+<h2 data-number="1.5" class="anchored" data-anchor-id="experimental-design"><span class="header-section-number">1.5</span> Experimental design</h2>
+<p>The analysis was designed to isolate the effect of network-generating assumptions by holding constant (i) species richness, (ii) trait distributions (within trait-based models), and (iii) dynamical rules. Differences in structure and dynamics can therefore be attributed directly to the generative model used to reconstruct trophic interactions.</p>
 </section>
 </section>
 <section id="results" class="level1" data-number="2">

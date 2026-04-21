@@ -304,13 +304,38 @@ our understanding of network dynamics?.
 
 \section{Methods}\label{methods}
 
-\subsection{Model Selection and
-Implementation}\label{model-selection-and-implementation}
+\subsection{Network generation}\label{network-generation}
 
-Describe the seven model classes - Structural: Niche, Cascade, MaxEnt
-(Topological templates) vs realised/dynamic: ATN
-(mechanical/allometric), ADBM (energetic/optimal foraging), and Latent
-Trait (statistical/allometric)
+We generated food webs using six established generative models and a
+maximum entropy (MaxEnt) null model, spanning structural (Niche,
+Cascade, Random, MaxEnt) and trait-based approaches (Latent Trait Model,
+Allometric Trophic Network, Allometric Diet Breadth Model). All
+simulations were implemented in Julia using FoodWebTools and custom
+extensions.
+
+To isolate model effects from input variation, all trait-based models
+were parameterised using an identical species pool at each replicate.
+Species richness was fixed (S=15), and for each iteration we sampled (i)
+a target basal fraction (U(0.1,0.3)), (ii) metabolic classes consistent
+with this fraction, and (iii) body masses from class-specific
+log-uniform distributions. These inputs were shared across the Latent
+Trait, ATN, and ADBM models. Structural models were instead
+parameterised by a target connectance drawn from U(0.05, 0.3).
+
+Networks were generated using a rejection-sampling procedure to enforce
+comparable emergent properties. A network was retained only if its
+realised basal fraction and connectance fell within the target ranges
+(0.1--0.3 and 0.05--0.3, respectively). For trait-based models, networks
+were accepted only when all three models successfully generated valid
+networks from the same species pool. We obtained 100 valid replicates
+per model, with an upper bound on sampling attempts to prevent
+non-termination. MaxEnt networks were constructed by sampling joint in-
+and out-degree distributions consistent with a target number of links,
+followed by entropy-maximising rewiring under degree constraints. These
+networks were subjected to the same acceptance criteria as other models.
+For each network, we recorded the adjacency matrix, model identity,
+input parameters, emergent structural properties, and (where applicable)
+species traits.
 
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2055}}
@@ -373,19 +398,52 @@ based on hidden trait correlations; can incorporate probabilistic
 constraints on links. \\
 \end{longtable}
 
-Simulation Framework: Explain how an identical species pool was used
-across all models to isolate the model effect from the data effect.
-Something about how we constrained networks and also species class
-assignments if and when valid in constraining the model vs needed as
-input for the BEFW model.
+\subsection{Network structure}\label{network-structure}
 
-Dynamic Perturbation: Detail the use of a bioenergetic food web model to
-simulate species loss and cascading extinctions.
+All networks were converted to directed interaction networks and
+analysed using a standardised pipeline. We quantified structural
+properties across multiple scales, including connectance, trophic level,
+generality, vulnerability, clustering, centrality, trophic coherence,
+and path length. These metrics were used to characterise the structural
+signature of each model.
 
-Metrics for Comparison: Define the macro-scale (connectance), meso-scale
-(motifs), and micro-scale (generality/vulnerability) properties used to
-evaluate structural stories. As well as some of the outputs from the
-dynamic models - persistence/stability
+\subsection{Dynamic simulations}\label{dynamic-simulations}
+
+To evaluate the dynamical consequences of different generative models,
+all networks were subjected to a common bioenergetic simulation
+framework. Dynamics were simulated using a Type II functional response
+and standard allometric scaling.
+
+Trait-based models were parameterised with their corresponding body
+masses (rescaled by metabolic class), whereas structural models were
+assigned a default trophic scaling to enable dynamic simulation. Initial
+biomasses were randomised.
+
+Simulations were run for 6000 time units, with summary statistics
+calculated after a burn-in period (3000--6000). Species were removed
+when biomass fell below 10\^{}-6, and simulations terminated upon
+reaching steady state.
+
+We quantified persistence, equilibrium richness and connectance, total
+biomass and its variability, maximum trophic level, diversity (Shannon,
+evenness), and local stability metrics (resilience and reactivity).
+Final network structure was obtained by retaining only surviving
+species.
+
+\subsection{Post-simulation structure}\label{post-simulation-structure}
+
+To assess how dynamics reshape network topology, we recalculated all
+structural metrics on the realised (post-extinction) networks, enabling
+direct comparison between initial and emergent structure across models.
+
+\subsection{Experimental design}\label{experimental-design}
+
+The analysis was designed to isolate the effect of network-generating
+assumptions by holding constant (i) species richness, (ii) trait
+distributions (within trait-based models), and (iii) dynamical rules.
+Differences in structure and dynamics can therefore be attributed
+directly to the generative model used to reconstruct trophic
+interactions.
 
 \section{Results}\label{results}
 
