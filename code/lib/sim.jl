@@ -135,7 +135,7 @@ function get_sim_summary(params, sol, tspan)
     evenness = biomass_evenness_eq,
     resilience = lumbda_eq,
     reactivity = reactivity_eq,
-    final_adj_network = alive_connected_A
+    alive_connected_A = alive_connected_A
     )
 end
 
