@@ -19,31 +19,31 @@ end
 
 ## --- Function to calculate resilience -----------------
 """
-    get_fw_resilience(params::ModelParameters, Beq::AbstractVector, alive_idx::AbstractVector)
+    get_fw_resilience(params::ModelParameters, Beq::AbstractVector, alive_connected_idx::AbstractVector)
     params = model parameters
     Beq = equilibrium biomasses
-    alive_idx = indices of alive species
+    alive_connected_idx = indices of alive and connected species
     Calculate the resilience of the food web at equilibrium.
 """
-function get_fw_resilience(params, Beq, alive_idx)
+function get_fw_resilience(params, Beq, alive_connected_idx)
     j = jacobian(params, Beq)
-    j_alive = j[alive_idx, alive_idx]
-    lumbda_eq = resilience(j_alive)
+    j_alive_connected = j[alive_connected_idx, alive_connected_idx]
+    lumbda_eq = resilience(j_alive_connected)
     return lumbda_eq
 end
 
 ## --- Function to calculate reactivity -----------------
 """
-    get_fw_reactivity(params::ModelParameters, Beq::AbstractVector, alive_idx::AbstractVector)
+    get_fw_reactivity(params::ModelParameters, Beq::AbstractVector, alive_connected_idx::AbstractVector)
     params = model parameters
     Beq = equilibrium biomasses
-    alive_idx = indices of alive species
+    alive_connected_idx = indices of alive and connected species
     Calculate the reactivity of the food web at equilibrium.
 """ 
-function get_fw_reactivity(params, Beq, alive_idx)
+function get_fw_reactivity(params, Beq, alive_connected_idx)
     j = jacobian(params, Beq)
-    j_alive = j[alive_idx, alive_idx]
-    reactivity_eq = reactivity(j_alive)
+    j_alive_connected = j[alive_connected_idx, alive_connected_idx]
+    reactivity_eq = reactivity(j_alive_connected)
     return reactivity_eq
 end
 
@@ -73,13 +73,14 @@ function get_sim_summary(params, sol, tspan)
    has_consumer = vec(sum(A[alive_idx, alive_idx]; dims=1)) .> 0
    # keep species that are alive and have at least one prey or one consumer
    keep_mask = has_prey .| has_consumer
-   alive_idx = alive_idx[keep_mask]
+   alive_connected_idx = alive_idx[keep_mask]
+   
    # reduced vectors/matrices
-   Beq_alive = Beq[alive_idx]
-   alive_A   = A[alive_idx, alive_idx]
+   Beq_alive_connected = Beq[alive_connected_idx]
+   alive_connected_A   = A[alive_connected_idx, alive_connected_idx]
 
    # --- for cases where all species go extinct or become disconnected ---
-    if isempty(alive_idx)
+    if isempty(alive_connected_idx)
         return (
             richness_equilibrium = 0,
             connectance_equilibrium = 0.0,
@@ -90,37 +91,38 @@ function get_sim_summary(params, sol, tspan)
             shannon = 0.0,
             evenness = 0.0,
             resilience = NaN,
-            reactivity = NaN
+            reactivity = NaN,
+            alive_connected_A = alive_connected_A
         )
     end
 
    # species richness and connectance at equilibrium
-   S_eq = length(alive_idx)
-   C_eq = round(count(!iszero, alive_A) / (S_eq * S_eq), digits=3)
+   S_eq = length(alive_connected_idx)
+   C_eq = round(count(!iszero, alive_connected_A) / (S_eq * S_eq), digits=3)
 
    # maximum trophic level at pre-perturbation equilibrium
-   tls = ENDI.trophic_levels(alive_A)
+   tls = ENDI.trophic_levels(alive_connected_A)
    maxTL_eq = maximum(tls)  
 
    # total biomass at equilibrium
-   total_biomass_eq = sum(Beq_alive)
+   total_biomass_eq = sum(Beq_alive_connected)
    
    # CV of total biomass
-   B_mean_eq = mean(sum(biomass_mat[:, alive_idx]; dims=2))
-   B_sd_eq   = std(sum(biomass_mat[:, alive_idx]; dims=2))
+   B_mean_eq = mean(sum(biomass_mat[:, alive_connected_idx]; dims=2))
+   B_sd_eq   = std(sum(biomass_mat[:, alive_connected_idx]; dims=2))
    CV_eq    = B_sd_eq / B_mean_eq
    
    # shannon diversity of biomass distribution
-   biomass_shannon_eq = ENDI.shannon_diversity(Beq_alive)
+   biomass_shannon_eq = ENDI.shannon_diversity(Beq_alive_connected)
 
    # evenness of biomass distribution
-   biomass_evenness_eq = ENDI.evenness(Beq_alive)
+   biomass_evenness_eq = ENDI.evenness(Beq_alive_connected)
 
    # resilience
-   lumbda_eq = get_fw_resilience(params, Beq, alive_idx)
+   lumbda_eq = get_fw_resilience(params, Beq, alive_connected_idx)
 
    # reactivity
-    reactivity_eq = get_fw_reactivity(params, Beq, alive_idx)
+    reactivity_eq = get_fw_reactivity(params, Beq, alive_connected_idx)
 
   return(
     richness_equilibrium = Int(S_eq),
@@ -132,7 +134,8 @@ function get_sim_summary(params, sol, tspan)
     shannon = biomass_shannon_eq,
     evenness = biomass_evenness_eq,
     resilience = lumbda_eq,
-    reactivity = reactivity_eq
+    reactivity = reactivity_eq,
+    final_adj_network = alive_connected_A
     )
 end
 
