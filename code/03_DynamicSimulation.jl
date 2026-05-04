@@ -1,5 +1,7 @@
 #=
 Dynamic simulation output include:
+
+CSV summary output:
 - Persistence; 
 - Maximum trophic level; 
 - Total Biomass; 
@@ -8,6 +10,9 @@ Dynamic simulation output include:
 - Evenness; 
 - Resilience; (using EcoNetPostProcessing.jl) 
 - Reactivity; (using EcoNetPostProcessing.jl) 
+
+JLD2 network output:
+- Alive and connected adjacency matrix at equilibrium
 =#
 
 using Pkg
@@ -31,7 +36,7 @@ networks = load_object(path)
 sort!(networks, :fw_ID) 
 
 # --- 4. Run Dynamic Simulations ---
-tmin, tmax, tspan = 3000, 6000, 1000
+tmin, tmax, tspan = 2000, 5000, 500
 
 simulation_summary = DataFrame(
     fw_ID = String[],
@@ -50,7 +55,8 @@ simulation_summary = DataFrame(
 
 final_network = DataFrame(
     fw_ID = String[],
-    adj_matrix = Any[]
+    model = String[],
+    alive_connected_A = Any[]
 )
 
 for i in 1:nrow(networks)
@@ -59,7 +65,7 @@ for i in 1:nrow(networks)
     model_name   = networks.Model[i]                
     bodymasses   = networks.BodyMasses[i]
     met_class    = networks.MetabolicClasses[i]
-    adj            = networks.AdjacencyMatrix[i]
+    adj          = networks.AdjacencyMatrix[i]
 
     fw = Foodweb(adj)  
 
@@ -104,28 +110,23 @@ for i in 1:nrow(networks)
             evenness = NaN,
             resilience = NaN,
             reactivity = NaN,
+            alive_connected_A = missing
         )
     end
 
-    push!(simulation_summary, (; fw_ID=string(fwid), model=string(model_name), out...); promote=true)
+    # Remove matrix object before saving summary to CSV
+    summary_out = NamedTuple{
+        filter(k -> k != :alive_connected_A, keys(out))
+    }(out)
 
-    # export the final adj. matrix to get topology later
-    final_biomasses = sol.u[end]
+    push!(simulation_summary, (; fw_ID=string(fwid), model=string(model_name), summary_out...); promote = true)
 
-    # find survivors
-    survival_threshold = 1e-6
-    survivors = findall(x -> x > survival_threshold, final_biomasses)
-
-    # get final adjacency matrix (assuming initial matrix is `A`)
-    final_adj_matrix = adj[survivors, survivors]    
-
-    push!(final_network, (fw_ID=string(fwid), adj_matrix=final_adj_matrix))
+    push!(final_network, (fw_ID=string(fwid), model=string(model_name), alive_connected_A=out.alive_connected_A))
 
 end
-   
 
 # --- 5. Save Simulation Summary ---
 mkpath(joinpath(@__DIR__, "data", "outputs"))
-CSV.write(joinpath(@__DIR__, "data", "outputs", "END_simulation_summary.csv"), simulation_summary)
+CSV.write(joinpath(@__DIR__, "data", "outputs", "END_simulation_summary_03_05_2026.csv"), simulation_summary)
 
-JLD2.save_object(joinpath(@__DIR__, "data", "outputs", "END_final_adj.jld2"), final_network)
+JLD2.save_object(joinpath(@__DIR__, "data", "outputs", "END_final_adj_03_05_2026.jld2"), final_network)

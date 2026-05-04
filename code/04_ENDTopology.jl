@@ -1,7 +1,7 @@
 #=
 -------------------------------------------------
-02_Topology.jl
-Calculating structure/topology for generated networks.
+04_ENDTopology.jl
+Calculating structure/topology for the final adj network at equilibrium.
 -------------------------------------------------
 
 =#
@@ -22,19 +22,23 @@ using SpeciesInteractionNetworks
 include("lib/internals.jl");
 
 # --- 3. Import networks .jld2 object ---
-
-networks = load_object("data/outputs/END_final_adj.jld2")
+path = joinpath(@__DIR__, "data", "outputs", "END_final_adj_03_05_2026.jld2")
+networks = load_object(path)
 
 # --- 4. Convert networks to `SpeciesInteractionNetworks` networks ---
 
 # we will also append this to the network object as a col.
-networks.InteractionNetwork = build_network.(networks.adj_matrix)
+networks.InteractionNetwork = [
+    ismissing(A) ? missing : build_network(Int.(A))
+    for A in networks.alive_connected_A
+]
 
 # --- 5. Get topology ---
 
 # create df to store outputs
 
 topology = DataFrame(
+    fw_ID = String[],
     model = String[],
     richness = Int64[],
     connectance = Float64[],
@@ -54,14 +58,28 @@ topology = DataFrame(
 
 for i in 1:nrow(networks)
 
-    d = network_summary(networks.InteractionNetwork[i])
+    N = networks.InteractionNetwork[i]
 
-    d[:model] = networks.fw_ID[i]
+    if ismissing(N)
+        continue
+    end
 
-    push!(topology, d)
+    try
+        d = network_summary(N)
+
+        d[:fw_ID] = networks.fw_ID[i]
+        d[:model] = networks.model[i]
+
+        push!(topology, d)
+
+    catch e
+        @warn "network_summary failed; skipping row" i fw_ID=networks.fw_ID[i] model=networks.model[i] exception=e
+    end
 
 end
 
 # write summaries as .csv
-CSV.write("data/outputs/END_topology.csv", topology)
 
+outdir = joinpath(@__DIR__, "data", "outputs")
+outpath = joinpath(outdir, "END_topology_03_05_2026.csv")
+CSV.write(outpath, topology)
