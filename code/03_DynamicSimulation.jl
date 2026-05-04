@@ -36,7 +36,7 @@ networks = load_object(path)
 sort!(networks, :fw_ID) 
 
 # --- 4. Run Dynamic Simulations ---
-tmin, tmax, tspan = 3000, 6000, 1000
+tmin, tmax, tspan = 2000, 5000, 500
 
 simulation_summary = DataFrame(
     fw_ID = String[],
@@ -119,7 +119,7 @@ for i in 1:nrow(networks)
         filter(k -> k != :alive_connected_A, keys(out))
     }(out)
 
-    push!(simulation_summary, (; fw_ID = string(fwid), model = string(model_name), summary_out...); promote = true)
+    push!(simulation_summary, (; fw_ID=string(fwid), model=string(model_name), summary_out...); promote = true)
 
     push!(final_network, (fw_ID=string(fwid), model=string(model_name), alive_connected_A=out.alive_connected_A))
 
@@ -127,6 +127,6 @@ end
 
 # --- 5. Save Simulation Summary ---
 mkpath(joinpath(@__DIR__, "data", "outputs"))
-CSV.write(joinpath(@__DIR__, "data", "outputs", "END_simulation_summary.csv"), simulation_summary)
+CSV.write(joinpath(@__DIR__, "data", "outputs", "END_simulation_summary_03_05_2026.csv"), simulation_summary)
 
-JLD2.save_object(joinpath(@__DIR__, "data", "outputs", "END_final_adj.jld2"), final_network)
+JLD2.save_object(joinpath(@__DIR__, "data", "outputs", "END_final_adj_03_05_2026.jld2"), final_network)
