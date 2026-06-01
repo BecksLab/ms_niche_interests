@@ -29,9 +29,27 @@ df <- read_csv("data/outputs/topology.csv") %>%
   glow_up(model = factor(model)) %>%
   glow_up(model = relevel(model, ref = "Niche"))
 
+dynamic_topo <-  read_csv("data/outputs/END_topology_03_05_2026.csv",
+                          show_col_types = FALSE) %>%
+  vibe_check(-fw_ID) %>%
+  glow_up(model = factor(model),
+          model = relevel(model, ref = "Niche"))
+
 # Dependent variable matrix for multivariate tests
 # Assuming columns 2 onwards are your topological metrics
 dep_vars <- as.matrix(df[2:ncol(df)])
+
+# general boxplot
+ggplot(df %>%
+         pivot_longer(-model)) +
+  geom_boxplot(aes(x = model,
+                   y = value,
+                   colour = model),
+               outlier.alpha = 0.5, width = 0.6) +
+  facet_wrap(vars(name), scales = "free_y", ncol = 2) +
+  scale_colour_manual(values = model_colours) +
+  figure_theme
+
 
 # =========================
 # 1. MANOVA + Assumption Checks
@@ -127,8 +145,8 @@ ggplot(scores_centered, aes(x = Can1, y = Can2,
   stat_ellipse(level = 0.95, linetype = 4,
                show.legend = FALSE) +
   scale_colour_manual(values = model_colours) +
-  labs(x = "CV1 (distance from niche)",
-       y = "CV2 (distance from niche)",
+  labs(x = "CV1",
+       y = "CV2",
        colour = "Model") +
   figure_theme
 
@@ -157,20 +175,32 @@ lda_scores <- lda_scores %>%
   )
 
 lda_topo_build <-
-  ggplot(lda_scores, 
+  ggplot(lda_scores,
          aes(x = LD1, 
              y = LD2, 
-             colour = model)) +
-  geom_hline(yintercept = 0, 
-             colour = "#A5ACAF") +
-  geom_vline(xintercept = 0, 
-             colour = "#A5ACAF") + 
-  stat_ellipse(level = 0.95, linetype = 2) +
-  geom_point(alpha = 0.6, size = 2.5) +
+             colour = model, 
+             fill = model)) +
+  geom_hline(
+    yintercept = 0,
+    colour = "#A5ACAF") +
+  geom_vline(
+    xintercept = 0,
+    colour = "#A5ACAF") +
+  stat_ellipse(
+    level = 0.95,
+    linetype = 2,
+    show.legend = FALSE) +
+  geom_point(
+    alpha = 0.7,
+    size = 2.5,
+    shape = 21) +
+  scale_fill_manual(values = model_colours) +
   scale_colour_manual(values = model_colours) +
-  labs(x = "LD1 (distance from niche)", 
-       y = "LD2",
-       colour = "Model") +
+  labs(x = "LD1, centred on Niche", 
+       y = "LD2, centred on Niche",
+       colour = "Model",
+       fill = "Model") +
+  guides(colour = "none") +
   figure_theme
 
 ggsave("../figures/lda.png",
@@ -179,6 +209,65 @@ ggsave("../figures/lda.png",
        height = 4000,
        units = "px",
        dpi = 700)
+
+#------5. LDA on topology at equilibrium ---------------------------------------
+# Fit LDA using equilibrium topology metrics
+lda_topology_fit <- MASS::lda(model ~ ., data = dynamic_topo)
+
+# Extract LDA scores
+lda_topology_scores <- as.data.frame(predict(lda_topology_fit)$x)
+
+# Use original model labels, not predicted classes
+lda_topology_scores$model <- dynamic_topo$model
+
+# Compute Niche centroid in LDA space
+niche_centroid_topology_lda <- lda_topology_scores %>%
+  filter(model == "Niche") %>%
+  summarise(across(starts_with("LD"), mean))
+
+# Centre all LDA scores relative to the Niche centroid
+lda_topology_scores <- lda_topology_scores %>%
+  mutate(
+    LD1 = LD1 - niche_centroid_topology_lda$LD1,
+    LD2 = LD2 - niche_centroid_topology_lda$LD2)
+
+# Plot topology LDA
+lda_topology_plot <- ggplot(
+  lda_topology_scores,
+  aes(x = LD1, y = LD2, colour = model, fill = model)) +
+  geom_hline(
+    yintercept = 0,
+    colour = "#A5ACAF") +
+  geom_vline(
+    xintercept = 0,
+    colour = "#A5ACAF") +
+  stat_ellipse(
+    level = 0.95,
+    linetype = 2,
+    show.legend = FALSE) +
+  geom_point(
+    alpha = 0.7,
+    size = 2.5,
+    shape = 21 ) +
+  scale_fill_manual(values = model_colours) +
+  scale_colour_manual(values = model_colours) +
+  labs(
+    x = "LD1, centred on Niche",
+    y = "LD2, centred on Niche",
+    fill = "Model",
+    colour = "Model"
+  ) +
+  figure_theme +
+  guides(colour = "none") +
+  theme(
+    legend.position = "right")
+
+lda_topology_plot
+
+ggsave("../figures/lda_equilibrium_topology.png",
+       lda_topology_plot,
+       width = 8, height = 6, dpi = 600)
+
 
 # =========================
 # 4. Pairwise Comparisons (EMMeans)
@@ -309,7 +398,5 @@ ggplot(comparison %>%
        y = "Normalised Error (niche as reference)") +
   figure_theme +
   theme(panel.grid.major = element_blank(),
-        strip.text = ggtext::element_markdown()) 
-
-
+        strip.text = ggtext::element_markdown())
 
