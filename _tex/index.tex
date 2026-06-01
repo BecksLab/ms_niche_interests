@@ -462,11 +462,15 @@ interactions.
 Structural Signatures: Report how much variance is explained by the
 model choice.
 
+The Niche Model Template: Identify if the structural models occupy a
+central `mean space' or if the dynamic models diverge into
+non-overlapping regions.
+
 \begin{figure}
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{figures/lda.png}}
+\pandocbounded{\includegraphics[keepaspectratio]{figures/lda_compare.png}}
 
 }
 
@@ -474,17 +478,28 @@ model choice.
 ecological network metrics for the seven model types. Each point
 represents a replicate, and ellipses indicate 95\% confidence regions
 for each model. The second column represents the correlation of the
-various network metrics with the respective LDA axes.}
+various network metrics with the respective LDA axes. Left is before
+putting into END and right is post simulation structure (equilibrium
+topology)}
 
 \end{figure}%
 
-The Niche Model Template: Identify if the structural models occupy a
-central `mean space' or if the dynamic models diverge into
-non-overlapping regions.
-
-Divergent Stories in Dynamics: Show how models with similar global
+Divergent Stories in Dynamics: Show how/if models with similar global
 structures (like connectance) can lead to wildly different pathways of
 change/collapse/straight lines.
+
+\begin{figure}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{figures/boxplots_dynamic_metrics.png}}
+
+}
+
+\caption{\label{fig-stability}Boxplots showing stability
+metrics/information about dynamics of the system.}
+
+\end{figure}%
 
 \section{Discussion}\label{discussion}
 
