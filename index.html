@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.37">
+<meta name="generator" content="quarto-1.9.38">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -11,7 +11,7 @@
 <meta name="author" content="Laura Landon Blake">
 <meta name="author" content="Andrew P. Beckerman">
 <meta name="author" content="Dylan Z. Childs">
-<meta name="dcterms.date" content="2026-04-21">
+<meta name="dcterms.date" content="2026-06-01">
 <meta name="keywords" content="food webs">
 
 <title>Is everything a Niche model?</title>
@@ -59,10 +59,10 @@ div.csl-indent {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-3b1896eddc8589bc6244f4e1c31347fc.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-3b361995821cf61d77a5cf475430d514.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
@@ -83,10 +83,10 @@ div.csl-indent {
 <meta name="citation_author" content="Laura Landon Blake">
 <meta name="citation_author" content="Andrew P. Beckerman">
 <meta name="citation_author" content="Dylan Z. Childs">
-<meta name="citation_publication_date" content="2026-04-21">
-<meta name="citation_cover_date" content="2026-04-21">
+<meta name="citation_publication_date" content="2026-06-01">
+<meta name="citation_cover_date" content="2026-06-01">
 <meta name="citation_year" content="2026">
-<meta name="citation_online_date" content="2026-04-21">
+<meta name="citation_online_date" content="2026-06-01">
 <meta name="citation_language" content="en">
 <meta name="citation_reference" content="citation_title=Simple rules yield complex food webs;,citation_author=Richard J. Williams;,citation_author=Neo D. Martinez;,citation_publication_date=2000-03;,citation_cover_date=2000-03;,citation_year=2000;,citation_fulltext_html_url=https://www.nature.com/articles/35004572;,citation_issue=6774;,citation_doi=10.1038/35004572;,citation_volume=404;,citation_language=en;,citation_journal_title=Nature;">
 <meta name="citation_reference" content="citation_title=Community food webs: Data and theory;,citation_author=Joel E Cohen;,citation_author=Frederic Briand;,citation_author=Charles Newman;,citation_publication_date=1990;,citation_cover_date=1990;,citation_year=1990;,citation_fulltext_html_url=https://www.springer.com/gp/book/9783642837869;,citation_language=en;,citation_series_title=Biomathematics;">
@@ -159,7 +159,7 @@ div.csl-indent {
                 <div>
             <div class="quarto-title-meta-heading">Published</div>
             <div class="quarto-title-meta-contents">
-              <p class="date">April 21, 2026</p>
+              <p class="date">June 1, 2026</p>
             </div>
           </div>
           
@@ -197,7 +197,7 @@ div.csl-indent {
   <li><a href="#network-generation" id="toc-network-generation" class="nav-link" data-scroll-target="#network-generation"><span class="header-section-number">1.1</span> Network generation</a></li>
   <li><a href="#network-structure" id="toc-network-structure" class="nav-link" data-scroll-target="#network-structure"><span class="header-section-number">1.2</span> Network structure</a></li>
   <li><a href="#dynamic-simulations" id="toc-dynamic-simulations" class="nav-link" data-scroll-target="#dynamic-simulations"><span class="header-section-number">1.3</span> Dynamic simulations</a></li>
-  <li><a href="#post-simulation-structure" id="toc-post-simulation-structure" class="nav-link" data-scroll-target="#post-simulation-structure"><span class="header-section-number">1.4</span> Post-simulation structure</a></li>
+  <li><a href="#post-simulation-analyses" id="toc-post-simulation-analyses" class="nav-link" data-scroll-target="#post-simulation-analyses"><span class="header-section-number">1.4</span> Post-simulation analyses</a></li>
   <li><a href="#experimental-design" id="toc-experimental-design" class="nav-link" data-scroll-target="#experimental-design"><span class="header-section-number">1.5</span> Experimental design</a></li>
   </ul></li>
   <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results"><span class="header-section-number">2</span> Results</a></li>
@@ -296,14 +296,15 @@ Table&nbsp;1: Summary of food web models used in this study. Structural models (
 </section>
 <section id="dynamic-simulations" class="level2" data-number="1.3">
 <h2 data-number="1.3" class="anchored" data-anchor-id="dynamic-simulations"><span class="header-section-number">1.3</span> Dynamic simulations</h2>
-<p>To evaluate the dynamical consequences of different generative models, all networks were subjected to a common bioenergetic simulation framework. Dynamics were simulated using a Type II functional response and standard allometric scaling.</p>
-<p>Trait-based models were parameterised with their corresponding body masses (rescaled by metabolic class), whereas structural models were assigned a default trophic scaling to enable dynamic simulation. Initial biomasses were randomised.</p>
-<p>Simulations were run for 6000 time units, with summary statistics calculated after a burn-in period (3000–6000). Species were removed when biomass fell below 10^-6, and simulations terminated upon reaching steady state.</p>
-<p>We quantified persistence, equilibrium richness and connectance, total biomass and its variability, maximum trophic level, diversity (Shannon, evenness), and local stability metrics (resilience and reactivity). Final network structure was obtained by retaining only surviving species.</p>
+<p>To evaluate the dynamical consequences of different generative models, all networks were subjected to a common bioenergetic simulation framework using EcologicalNetworksDynamics.jl.</p>
+<p>For trait-based models (ATN, ADBM, LTN), species body masses were taken from the generative netwroks and rescaled relative to the producer with the lowest body mass. These models were then parameterised with their corresponding body masses and stardard allometric scaling. For structual models (Niche, Cascade, MaxEnt, Random), where explicit trait information was not available, we assigned body masses using trophic scaling with a predator–prey body-mass ratio of 100, a value commonly used for aquatic food webs. Initial species biomasses were randomly assigned. Dynamics were simulated using a Type III functional response, with a Hill exponent of 2.</p>
+<p>Each network was simulated until a steady state was reached, with a minimum simulation time of 2000 time units and a maximum of 5000 time units. Equilibrium properties were calculated over the final 500 time units of each simulation. Species were considered extinct and removed when their biomass fell below 10−6. At equilibrium, both extinct species and disconnected species were removed, yielding the realised post-simulation network.</p>
 </section>
-<section id="post-simulation-structure" class="level2" data-number="1.4">
-<h2 data-number="1.4" class="anchored" data-anchor-id="post-simulation-structure"><span class="header-section-number">1.4</span> Post-simulation structure</h2>
-<p>To assess how dynamics reshape network topology, we recalculated all structural metrics on the realised (post-extinction) networks, enabling direct comparison between initial and emergent structure across models.</p>
+<section id="post-simulation-analyses" class="level2" data-number="1.4">
+<h2 data-number="1.4" class="anchored" data-anchor-id="post-simulation-analyses"><span class="header-section-number">1.4</span> Post-simulation analyses</h2>
+<p>Post-simulation analyses quantified two complementary outcomes: community dynamics and realise network topology at equilibrium.</p>
+<p>For community dynamics, we focused on persistence (proportion of species surviving), total community biomass, maximum trophic level, diversity (Shannon, evenness), and local stability metrics (resilience and reactivity). Local stability metrics were calculated using EcoNetPostProcessing.jl.</p>
+<p>To assess how dynamics reshape network topology, we recalculated all structural metrics on the realised (post-extinction) network topology, enabling direct comparison between initial and emergent structure across models.</p>
 </section>
 <section id="experimental-design" class="level2" data-number="1.5">
 <h2 data-number="1.5" class="anchored" data-anchor-id="experimental-design"><span class="header-section-number">1.5</span> Experimental design</h2>
