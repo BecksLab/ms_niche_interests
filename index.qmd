@@ -92,17 +92,19 @@ All networks were converted to directed interaction networks and analysed using 
 
 ## Dynamic simulations
 
-To evaluate the dynamical consequences of different generative models, all networks were subjected to a common bioenergetic simulation framework. Dynamics were simulated using a Type II functional response and standard allometric scaling.
+To evaluate the dynamical consequences of different generative models, all networks were subjected to a common bioenergetic simulation framework using EcologicalNetworksDynamics.jl. 
 
-Trait-based models were parameterised with their corresponding body masses (rescaled by metabolic class), whereas structural models were assigned a default trophic scaling to enable dynamic simulation. Initial biomasses were randomised.
+For trait-based models (ATN, ADBM, LTN), species body masses were taken from the generative netwroks and rescaled relative to the producer with the lowest body mass. These models were then parameterised with their corresponding body masses and stardard allometric scaling. For structual models (Niche, Cascade, MaxEnt, Random), where explicit trait information was not available, we assigned body masses using trophic scaling with a predator–prey body-mass ratio of 100, a value commonly used for aquatic food webs. Initial species biomasses were randomly assigned. Dynamics were simulated using a Type III functional response, with a Hill exponent of 2.
 
-Simulations were run for 6000 time units, with summary statistics calculated after a burn-in period (3000–6000). Species were removed when biomass fell below 10^-6, and simulations terminated upon reaching steady state.
+Each network was simulated until a steady state was reached, with a minimum simulation time of 2000 time units and a maximum of 5000 time units. Equilibrium properties were calculated over the final 500 time units of each simulation. Species were considered extinct and removed when their biomass fell below 10−6. At equilibrium, both extinct species and disconnected species were removed, yielding the realised post-simulation network.
 
-We quantified persistence, equilibrium richness and connectance, total biomass and its variability, maximum trophic level, diversity (Shannon, evenness), and local stability metrics (resilience and reactivity). Final network structure was obtained by retaining only surviving species.
+## Post-simulation analyses
 
-## Post-simulation structure
+Post-simulation analyses quantified two complementary outcomes: community dynamics and realise network topology at equilibrium.
 
-To assess how dynamics reshape network topology, we recalculated all structural metrics on the realised (post-extinction) networks, enabling direct comparison between initial and emergent structure across models.
+For community dynamics, we focused on persistence (proportion of species surviving), total community biomass, maximum trophic level, diversity (Shannon, evenness), and local stability metrics (resilience and reactivity). Local stability metrics were calculated using EcoNetPostProcessing.jl.
+
+To assess how dynamics reshape network topology, we recalculated all structural metrics on the realised (post-extinction) network topology, enabling direct comparison between initial and emergent structure across models.
 
 ## Experimental design
 
