@@ -2,7 +2,7 @@
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{figures/lda.png}}
+\pandocbounded{\includegraphics[keepaspectratio]{figures/lda_compare.png}}
 
 }
 
@@ -10,6 +10,22 @@
 ecological network metrics for the seven model types. Each point
 represents a replicate, and ellipses indicate 95\% confidence regions
 for each model. The second column represents the correlation of the
-various network metrics with the respective LDA axes.}
+various network metrics with the respective LDA axes. Left is before
+putting into END and right is post simulation structure (equilibrium
+topology)}
+
+\end{figure}
+\efloatseparator
+ 
+\begin{figure}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{figures/boxplots_dynamic_metrics.png}}
+
+}
+
+\caption{\label{fig-stability}Boxplots showing stability
+metrics/information about dynamics of the system.}
 
 \end{figure}
