@@ -30,7 +30,7 @@ figure_theme =
 # 1. DISCRETE MODEL COLORS
 model_colours <- c(
   "ATN"      = "#FFB81C",
-  "LTM"      = "#FB8D6C",
+  "LTM"      = "#f7A48b",
   "ADBM"     = "#EA7200",
   "Random"   = "#002B36",
   "Niche"    = "#C085C2",

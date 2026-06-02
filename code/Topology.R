@@ -31,9 +31,10 @@ df <- read_csv("data/outputs/topology.csv") %>%
 
 dynamic_topo <-  read_csv("data/outputs/END_topology_03_05_2026.csv",
                           show_col_types = FALSE) %>%
-  vibe_check(-fw_ID) %>%
+  vibe_check(-fw_ID, -richness) %>%
   glow_up(model = factor(model),
-          model = relevel(model, ref = "Niche"))
+          model = relevel(model, ref = "Niche")) %>%
+  na.omit()
 
 # Dependent variable matrix for multivariate tests
 # Assuming columns 2 onwards are your topological metrics
@@ -399,4 +400,41 @@ ggplot(comparison %>%
   figure_theme +
   theme(panel.grid.major = element_blank(),
         strip.text = ggtext::element_markdown())
+
+# =========================
+# Combine LDAs
+# =========================
+
+lda_topo_build + labs(title = "Topology") + 
+  lda_topology_plot + labs(title = "Topology at equilibrium") + 
+  plot_layout(guides='collect')
+
+ggsave("../figures/lda_compare.png",
+       width = 10000,
+       height = 4000,
+       units = "px",
+       dpi = 700)
+
+
+# =========================
+# 'trend lines'?
+# =========================
+
+rbind(df %>% glow_up(type = "pre"), 
+      dynamic_topo %>% glow_up(type = "post")) %>%
+  pivot_longer(-c(model, type)) %>%
+  squad_up(model, type, name) %>%
+  no_cap(value = mean(value)) %>%
+  glow_up(type = factor(type,
+                        levels = c("pre",
+                                   "post"))) %>%
+  ggplot() +
+  geom_line(aes(x = type,
+                y = value,
+                colour = model,
+                group = model)) +
+  facet_wrap(vars(name),
+             scales = "free_y") +
+  scale_colour_manual(values = model_colours) +
+  figure_theme
 
