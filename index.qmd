@@ -57,7 +57,7 @@ bibliography: references.bib
 number-sections: true
 ---
 
-# Introduction
+# Introduction
 
 The Niche Model Hegemony: Establish how the Niche Model (and its topological derivatives like the Cascade model) has historically served as the structural prior or template for most network theory.
 
