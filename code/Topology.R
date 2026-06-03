@@ -670,6 +670,6 @@ ggplot(loadings, aes(x = CV1, y = CV2)) +
 
 ggsave("../figures/cda_loadings_compare.png",
        width = 10000,
-       height = 4000,
+       height = 5000,
        units = "px",
        dpi = 700)
