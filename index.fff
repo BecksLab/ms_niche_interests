@@ -2,15 +2,15 @@
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{figures/lda_compare.png}}
+\pandocbounded{\includegraphics[keepaspectratio]{figures/cda_compare.png}}
 
 }
 
-\caption{\label{fig-structure}Linear discriminant analysis (LDA) of
+\caption{\label{fig-structure}Canonical discriminant analysis (CDA) of
 ecological network metrics for the seven model types. Each point
 represents a replicate, and ellipses indicate 95\% confidence regions
 for each model. The second column represents the correlation of the
-various network metrics with the respective LDA axes. Left is before
+various network metrics with the respective CDA axes. Left is before
 putting into END and right is post simulation structure (equilibrium
 topology)}
 

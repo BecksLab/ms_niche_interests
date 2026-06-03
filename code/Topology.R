@@ -71,7 +71,7 @@ boxM(dep_vars, df$model)
 # =========================
 # 2. Canonical Discriminant Analysis (CDA)
 # =========================
-# This replaces the simple LDA with a more robust canonical variate approach
+
 cda <- candisc(fit)
 summary(cda)
 
@@ -118,151 +118,67 @@ ggplot(loadings_df, aes(x = CV1, y = CV2)) +
   scale_colour_manual(values = c("#006D75", "#2F2F2F", "#EA7200", "#B2B4B2", "#FFB81C")) +
   figure_theme
 
-ggsave("../figures/lda_corr.png",
+ggsave("../figures/cda_corr.png",
        width = 5000,
        height = 4000,
        units = "px",
        dpi = 700)
 
 # =========================
-# 3. LDA Visualization
+# 3. CDA Visualization
 # =========================
-# Using LDA for the group separation plot
-ggplot(scores_centered, aes(x = Can1, y = Can2, 
-                            colour = model)) +
-  geom_hline(yintercept = 0, 
-             colour = "#A5ACAF") +
-  geom_vline(xintercept = 0, 
-             colour = "#A5ACAF") +
+# Using the canonical variates (from candisc) for group separation plot
+topology_plot <- ggplot(scores_centered, aes(x = Can1, y = Can2, colour = model)) +
+  geom_hline(yintercept = 0, colour = "#A5ACAF") +
+  geom_vline(xintercept = 0, colour = "#A5ACAF") +
   geom_point(alpha = 0.7, size = 2.5) +
-  stat_ellipse(level = 0.95, linetype = 4,
-               show.legend = FALSE) +
+  stat_ellipse(level = 0.95, linetype = 4, show.legend = FALSE) +
   scale_colour_manual(values = model_colours) +
-  labs(x = "CV1",
-       y = "CV2",
+  labs(x = "CV1, centred on Niche",
+       y = "CV2, centred on Niche",
        colour = "Model") +
   figure_theme
 
-ggsave("../figures/cv.png",
-       width = 5000,
-       height = 4000,
-       units = "px",
-       dpi = 700)
+# =========================
+# 4. CDA on topology at equilibrium
+# =========================
+# Fit CDA using equilibrium topology metrics
+dep_vars <- as.matrix(dynamic_topo[2:ncol(dynamic_topo)])
+dynam_fit <- manova(dep_vars ~ model, data = dynamic_topo)
 
-# niche centred LDA
+dynam_cda <- candisc(dynam_fit)
+summary(dynam_cda)
 
-lda_fit <- lda(model ~ ., data = df)
-lda_scores <- as.data.frame(predict(lda_fit)$x)
-lda_scores$model <- df$model
+# shift everything relative to niche
+
+# Get canonical scores
+dynam_scores <- as.data.frame(dynam_cda$scores)
+dynam_scores$model <- dynamic_topo$model
 
 # Compute niche centroid
-niche_centroid_lda <- lda_scores %>%
+dynam_niche_centroid <- dynam_scores %>%
   yeet(model == "Niche") %>%
-  no_cap(across(starts_with("LD"), mean))
+  no_cap(across(starts_with("Can"), mean))
 
-# Centre
-lda_scores <- lda_scores %>%
+# Center all scores on niche
+dynam_scores_centered <- dynam_scores %>%
   glow_up(
-    LD1 = LD1 - niche_centroid_lda$LD1,
-    LD2 = LD2 - niche_centroid_lda$LD2
+    Can1 = Can1 - dynam_niche_centroid$Can1,
+    Can2 = Can2 - dynam_niche_centroid$Can2
   )
 
-lda_topo_build <-
-  ggplot(lda_scores,
-         aes(x = LD1, 
-             y = LD2, 
-             colour = model, 
-             fill = model)) +
-  geom_hline(
-    yintercept = 0,
-    colour = "#A5ACAF") +
-  geom_vline(
-    xintercept = 0,
-    colour = "#A5ACAF") +
-  stat_ellipse(
-    level = 0.95,
-    linetype = 2,
-    show.legend = FALSE) +
-  geom_point(
-    alpha = 0.7,
-    size = 2.5,
-    shape = 21) +
-  scale_fill_manual(values = model_colours) +
-  scale_colour_manual(values = model_colours) +
-  labs(x = "LD1, centred on Niche", 
-       y = "LD2, centred on Niche",
-       colour = "Model",
-       fill = "Model") +
-  guides(colour = "none") +
-  figure_theme
-
-ggsave("../figures/lda.png",
-       lda_topo_build,
-       width = 5000,
-       height = 4000,
-       units = "px",
-       dpi = 700)
-
-# =========================
-# 4. LDA on topology at equilibrium
-# =========================
-# Fit LDA using equilibrium topology metrics
-lda_topology_fit <- MASS::lda(model ~ ., data = dynamic_topo)
-
-# Extract LDA scores
-lda_topology_scores <- as.data.frame(predict(lda_topology_fit)$x)
-
-# Use original model labels, not predicted classes
-lda_topology_scores$model <- dynamic_topo$model
-
-# Compute Niche centroid in LDA space
-niche_centroid_topology_lda <- lda_topology_scores %>%
-  filter(model == "Niche") %>%
-  summarise(across(starts_with("LD"), mean))
-
-# Centre all LDA scores relative to the Niche centroid
-lda_topology_scores <- lda_topology_scores %>%
-  mutate(
-    LD1 = LD1 - niche_centroid_topology_lda$LD1,
-    LD2 = LD2 - niche_centroid_topology_lda$LD2)
-
 # Plot topology LDA
-lda_topology_plot <- ggplot(
-  lda_topology_scores,
-  aes(x = LD1, y = LD2, colour = model, fill = model)) +
-  geom_hline(
-    yintercept = 0,
-    colour = "#A5ACAF") +
-  geom_vline(
-    xintercept = 0,
-    colour = "#A5ACAF") +
-  stat_ellipse(
-    level = 0.95,
-    linetype = 2,
-    show.legend = FALSE) +
-  geom_point(
-    alpha = 0.7,
-    size = 2.5,
-    shape = 21 ) +
-  scale_fill_manual(values = model_colours) +
+dynam_topology_plot <- ggplot(
+  dynam_scores_centered, aes(x = Can1, y = Can2, colour = model)) +
+  geom_hline(yintercept = 0, colour = "#A5ACAF") +
+  geom_vline(xintercept = 0, colour = "#A5ACAF") +
+  geom_point(alpha = 0.7, size = 2.5) +
+  stat_ellipse(level = 0.95, linetype = 4, show.legend = FALSE) +
   scale_colour_manual(values = model_colours) +
-  labs(
-    x = "LD1, centred on Niche",
-    y = "LD2, centred on Niche",
-    fill = "Model",
-    colour = "Model"
-  ) +
-  figure_theme +
-  guides(colour = "none") +
-  theme(
-    legend.position = "right")
-
-lda_topology_plot
-
-ggsave("../figures/lda_equilibrium_topology.png",
-       lda_topology_plot,
-       width = 8, height = 6, dpi = 600)
-
+  labs(x = "CV1, centred on Niche",
+       y = "CV2, centred on Niche",
+       colour = "Model") +
+  figure_theme
 
 # =========================
 # 5. Pairwise Comparisons (EMMeans)
@@ -399,11 +315,11 @@ ggplot(comparison %>%
 # 7. Combine LDAs
 # =========================
 
-lda_topo_build + labs(title = "Topology") + 
-  lda_topology_plot + labs(title = "Topology at equilibrium") + 
+topology_plot + labs(title = "Topology") + 
+  dynam_topology_plot + labs(title = "Topology at equilibrium") + 
   plot_layout(guides='collect')
 
-ggsave("../figures/lda_compare.png",
+ggsave("../figures/cda_compare.png",
        width = 10000,
        height = 4000,
        units = "px",
@@ -411,24 +327,29 @@ ggsave("../figures/lda_compare.png",
 
 
 # =========================
-# 8. Trend lines
+# 8. Mahalanobis distance
 # =========================
 
-rbind(df %>% glow_up(type = "pre"), 
-      dynamic_topo %>% glow_up(type = "post")) %>%
-  pivot_longer(-c(model, type)) %>%
-  squad_up(model, type, name) %>%
-  no_cap(value = mean(value)) %>%
-  glow_up(type = factor(type,
-                        levels = c("pre",
-                                   "post"))) %>%
-  ggplot() +
-  geom_line(aes(x = type,
-                y = value,
-                colour = model,
-                group = model)) +
-  facet_wrap(vars(name),
-             scales = "free_y") +
-  scale_colour_manual(values = model_colours) +
-  figure_theme
+dynam_scores_centered %>%
+  group_by(model) %>%
+  summarise(
+    Can1 = mean(Can1),
+    Can2 = mean(Can2)
+  )
+
+centroids <- scores_centered %>%
+  group_by(model) %>%
+  summarise(
+    Can1 = mean(Can1),
+    Can2 = mean(Can2)
+  )
+
+niche <- centroids %>%
+  filter(model == "Niche") %>%
+  select(Can1, Can2)
+
+distances <- centroids %>%
+  glow_up(euclidean = sqrt((Can1 - niche$Can1)^2 +
+                             (Can2 - niche$Can2)^2)
+  )
 
