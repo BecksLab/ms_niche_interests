@@ -128,14 +128,6 @@ ggsave("../figures/lda_corr.png",
 # 3. LDA Visualization
 # =========================
 # Using LDA for the group separation plot
-lda_fit <- lda(model ~ ., data = df)
-lda_scores <- predict(lda_fit)$x
-
-plot_lda <- data.frame(
-  model = df$model,
-  lda = lda_scores
-)
-
 ggplot(scores_centered, aes(x = Can1, y = Can2, 
                             colour = model)) +
   geom_hline(yintercept = 0, 
@@ -211,7 +203,9 @@ ggsave("../figures/lda.png",
        units = "px",
        dpi = 700)
 
-#------5. LDA on topology at equilibrium ---------------------------------------
+# =========================
+# 4. LDA on topology at equilibrium
+# =========================
 # Fit LDA using equilibrium topology metrics
 lda_topology_fit <- MASS::lda(model ~ ., data = dynamic_topo)
 
@@ -271,7 +265,7 @@ ggsave("../figures/lda_equilibrium_topology.png",
 
 
 # =========================
-# 4. Pairwise Comparisons (EMMeans)
+# 5. Pairwise Comparisons (EMMeans)
 # =========================
 # This performs univariate comparisons between models for specific metrics
 metrics_to_test <- df %>% select(!model) %>% names()
@@ -318,7 +312,7 @@ emm_df <- emm_df %>%
 
 # --- 2. Create Categorized Plot List ---
 levs <- c("Macro", "Role", "Heterogeneity", "Path", "Scaling")
-plot_list_emm <- vector("list", length = 3)
+plot_list_emm <- vector("list", length = length(levs))
 
 for (i in seq_along(levs)) {
   
@@ -359,7 +353,7 @@ for (i in seq_along(levs)) {
 ggsave("../figures/emm_summary.png", width = 9, height = 12, dpi = 400)
 
 # =========================
-# 5. Standard Errors
+# 6. Standard Errors
 # =========================
 
 sims <- 
@@ -402,7 +396,7 @@ ggplot(comparison %>%
         strip.text = ggtext::element_markdown())
 
 # =========================
-# Combine LDAs
+# 7. Combine LDAs
 # =========================
 
 lda_topo_build + labs(title = "Topology") + 
@@ -417,7 +411,7 @@ ggsave("../figures/lda_compare.png",
 
 
 # =========================
-# 'trend lines'?
+# 8. Trend lines
 # =========================
 
 rbind(df %>% glow_up(type = "pre"), 
