@@ -11,7 +11,7 @@
 <meta name="author" content="Laura Landon Blake">
 <meta name="author" content="Andrew P. Beckerman">
 <meta name="author" content="Dylan Z. Childs">
-<meta name="dcterms.date" content="2026-06-02">
+<meta name="dcterms.date" content="2026-06-03">
 <meta name="keywords" content="food webs">
 
 <title>Is everything a Niche model?</title>
@@ -83,10 +83,10 @@ div.csl-indent {
 <meta name="citation_author" content="Laura Landon Blake">
 <meta name="citation_author" content="Andrew P. Beckerman">
 <meta name="citation_author" content="Dylan Z. Childs">
-<meta name="citation_publication_date" content="2026-06-02">
-<meta name="citation_cover_date" content="2026-06-02">
+<meta name="citation_publication_date" content="2026-06-03">
+<meta name="citation_cover_date" content="2026-06-03">
 <meta name="citation_year" content="2026">
-<meta name="citation_online_date" content="2026-06-02">
+<meta name="citation_online_date" content="2026-06-03">
 <meta name="citation_language" content="en">
 <meta name="citation_reference" content="citation_title=Simple rules yield complex food webs;,citation_author=Richard J. Williams;,citation_author=Neo D. Martinez;,citation_publication_date=2000-03;,citation_cover_date=2000-03;,citation_year=2000;,citation_fulltext_html_url=https://www.nature.com/articles/35004572;,citation_issue=6774;,citation_doi=10.1038/35004572;,citation_volume=404;,citation_language=en;,citation_journal_title=Nature;">
 <meta name="citation_reference" content="citation_title=Community food webs: Data and theory;,citation_author=Joel E Cohen;,citation_author=Frederic Briand;,citation_author=Charles Newman;,citation_publication_date=1990;,citation_cover_date=1990;,citation_year=1990;,citation_fulltext_html_url=https://www.springer.com/gp/book/9783642837869;,citation_language=en;,citation_series_title=Biomathematics;">
@@ -159,7 +159,7 @@ div.csl-indent {
                 <div>
             <div class="quarto-title-meta-heading">Published</div>
             <div class="quarto-title-meta-contents">
-              <p class="date">June 2, 2026</p>
+              <p class="date">June 3, 2026</p>
             </div>
           </div>
           
@@ -217,15 +217,15 @@ div.csl-indent {
 
 <p>#&nbsp;Introduction</p>
 <p>The Niche Model Hegemony: Establish how the Niche Model (and its topological derivatives like the Cascade model) has historically served as the structural prior or template for most network theory.</p>
-<p>The Philosophy Gap: Contrast structural/topological models (which prioritise species-agnostic link distributions) with realised/dynamic models like ATN and ADBM (which prioritise biological mechanisms like bioenergetics and optimal foraging).</p>
+<p>The Philosophy Gap: Contrast structural/topological models (which prioritise species-agnostic link distributions) with realised/dynamic models like ATN and ADBM (which prioritise biological mechanisms like bioenergetics and optimal foraging). Additionally also including the MaxEnt model which is a structural model but is based on statistical mechanics rather than the niche template.</p>
 <p>The Research Question: Do these different philosophical starting points (mechanical vs.&nbsp;statistical) lead to the same conclusions about community stability, or does the choice of template fundamentally bias our understanding of network dynamics?.</p>
 <section id="methods" class="level1" data-number="1">
 <h1 data-number="1"><span class="header-section-number">1</span> Methods</h1>
 <section id="network-generation" class="level2" data-number="1.1">
 <h2 data-number="1.1" class="anchored" data-anchor-id="network-generation"><span class="header-section-number">1.1</span> Network generation</h2>
-<p>We generated food webs using six established generative models and a maximum entropy (MaxEnt) null model, spanning structural (Niche, Cascade, Random, MaxEnt) and trait-based approaches (Latent Trait Model, Allometric Trophic Network, Allometric Diet Breadth Model). All simulations were implemented in Julia using FoodWebTools and custom extensions.</p>
-<p>To isolate model effects from input variation, all trait-based models were parameterised using an identical species pool at each replicate. Species richness was fixed (S=15), and for each iteration we sampled (i) a target basal fraction (U(0.1,0.3)), (ii) metabolic classes consistent with this fraction, and (iii) body masses from class-specific log-uniform distributions. These inputs were shared across the Latent Trait, ATN, and ADBM models. Structural models were instead parameterised by a target connectance drawn from U(0.05, 0.3).</p>
-<p>Networks were generated using a rejection-sampling procedure to enforce comparable emergent properties. A network was retained only if its realised basal fraction and connectance fell within the target ranges (0.1–0.3 and 0.05–0.3, respectively). For trait-based models, networks were accepted only when all three models successfully generated valid networks from the same species pool. We obtained 100 valid replicates per model, with an upper bound on sampling attempts to prevent non-termination. MaxEnt networks were constructed by sampling joint in- and out-degree distributions consistent with a target number of links, followed by entropy-maximising rewiring under degree constraints. These networks were subjected to the same acceptance criteria as other models. For each network, we recorded the adjacency matrix, model identity, input parameters, emergent structural properties, and (where applicable) species traits.</p>
+<p>We generated food webs using six established generative models, spanning structural (Niche, Cascade, Random, MaxEnt) and trait-based approaches (Latent Trait Model, Allometric Trophic Network, Allometric Diet Breadth Model). All simulations were implemented in Julia using FoodWebTools and custom extensions.</p>
+<p>To isolate model effects from input variation, all trait-based models were parameterised using an identical species pool at each replicate. Species richness was set to range between <strong>XXX</strong>, and for each iteration we sampled (i) a target basal fraction (U(0.1,0.3)), (ii) metabolic classes consistent with this fraction, and (iii) body masses from class-specific log-uniform distributions. These inputs were shared across the Latent Trait, ATN, and ADBM models. Structural models were instead parameterised by a target connectance drawn from U(0.05, 0.3) where relevant.</p>
+<p>Networks were generated using a rejection-sampling procedure to enforce comparable emergent properties. A network was retained only if its realised basal fraction and connectance fell within the target ranges (0.1–0.3 and 0.05–0.3, respectively). For trait-based models, networks were accepted only when all three models successfully generated valid networks from the same species pool. We obtained <strong>100</strong> valid replicates per model, with an upper bound on sampling attempts to prevent non-termination. MaxEnt networks were constructed by sampling joint in- and out-degree distributions consistent with a target number of links, followed by entropy-maximising rewiring under degree constraints. For each network, we recorded the adjacency matrix, model identity, input parameters, emergent structural properties, and (where applicable) species traits.</p>
 <div id="tbl-models" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-models-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -293,18 +293,21 @@ Table&nbsp;1: Summary of food web models used in this study. Structural models (
 <section id="network-structure" class="level2" data-number="1.2">
 <h2 data-number="1.2" class="anchored" data-anchor-id="network-structure"><span class="header-section-number">1.2</span> Network structure</h2>
 <p>All networks were converted to directed interaction networks and analysed using a standardised pipeline. We quantified structural properties across multiple scales, including connectance, trophic level, generality, vulnerability, clustering, centrality, trophic coherence, and path length. These metrics were used to characterise the structural signature of each model.</p>
+<blockquote class="blockquote">
+<p>This could include a table that describes what the metrics ‘mean’ but maybe we can just lean on the ‘usual template’, maybe some of the feature selection stuff.</p>
+</blockquote>
 </section>
 <section id="dynamic-simulations" class="level2" data-number="1.3">
 <h2 data-number="1.3" class="anchored" data-anchor-id="dynamic-simulations"><span class="header-section-number">1.3</span> Dynamic simulations</h2>
 <p>To evaluate the dynamical consequences of different generative models, all networks were subjected to a common bioenergetic simulation framework using EcologicalNetworksDynamics.jl.</p>
-<p>For trait-based models (ATN, ADBM, LTN), species body masses were taken from the generative netwroks and rescaled relative to the producer with the lowest body mass. These models were then parameterised with their corresponding body masses and stardard allometric scaling. For structual models (Niche, Cascade, MaxEnt, Random), where explicit trait information was not available, we assigned body masses using trophic scaling with a predator–prey body-mass ratio of 100, a value commonly used for aquatic food webs. Initial species biomasses were randomly assigned. Dynamics were simulated using a Type III functional response, with a Hill exponent of 2.</p>
+<p>For trait-based models (ATN, ADBM, LTN), species body masses were taken from the generative networks and rescaled relative to the producer with the lowest body mass. These models were then parameterised with their corresponding body masses and standard allometric scaling. For structural models (Niche, Cascade, MaxEnt, Random), where explicit trait information was not available, we assigned body masses using trophic scaling with a predator–prey body-mass ratio of 100, a value commonly used for aquatic food webs. Initial species biomasses were randomly assigned. Dynamics were simulated using a Type III functional response, with a Hill exponent of 2.</p>
 <p>Each network was simulated until a steady state was reached, with a minimum simulation time of 2000 time units and a maximum of 5000 time units. Equilibrium properties were calculated over the final 500 time units of each simulation. Species were considered extinct and removed when their biomass fell below 10−6. At equilibrium, both extinct species and disconnected species were removed, yielding the realised post-simulation network.</p>
 </section>
 <section id="post-simulation-analyses" class="level2" data-number="1.4">
 <h2 data-number="1.4" class="anchored" data-anchor-id="post-simulation-analyses"><span class="header-section-number">1.4</span> Post-simulation analyses</h2>
 <p>Post-simulation analyses quantified two complementary outcomes: community dynamics and realise network topology at equilibrium.</p>
 <p>For community dynamics, we focused on persistence (proportion of species surviving), total community biomass, maximum trophic level, diversity (Shannon, evenness), and local stability metrics (resilience and reactivity). Local stability metrics were calculated using EcoNetPostProcessing.jl.</p>
-<p>To assess how dynamics reshape network topology, we recalculated all structural metrics on the realised (post-extinction) network topology, enabling direct comparison between initial and emergent structure across models.</p>
+<p>To assess how dynamics reshape network topology, we recalculated all structural metrics for the realised (post-extinction) network topology, enabling direct comparison between initial and emergent structure across models.</p>
 </section>
 <section id="experimental-design" class="level2" data-number="1.5">
 <h2 data-number="1.5" class="anchored" data-anchor-id="experimental-design"><span class="header-section-number">1.5</span> Experimental design</h2>
@@ -318,10 +321,10 @@ Table&nbsp;1: Summary of food web models used in this study. Structural models (
 <div id="fig-structure" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-structure-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="figures/lda_compare.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Figure&nbsp;1: Linear discriminant analysis (LDA) of ecological network metrics for the seven model types. Each point represents a replicate, and ellipses indicate 95% confidence regions for each model. The second column represents the correlation of the various network metrics with the respective LDA axes. Left is before putting into END and right is post simulation structure (equilibrium topology)"><img src="figures/lda_compare.png" class="img-fluid figure-img"></a>
+<a href="figures/cda_compare.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Figure&nbsp;1: Canonical discriminant analysis (CDA) of ecological network metrics for the seven model types. Each point represents a replicate, and ellipses indicate 95% confidence regions for each model. The second column represents the correlation of the various network metrics with the respective CDA axes. Left is before putting into END and right is post simulation structure (equilibrium topology)"><img src="figures/cda_compare.png" class="img-fluid figure-img"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-structure-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;1: Linear discriminant analysis (LDA) of ecological network metrics for the seven model types. Each point represents a replicate, and ellipses indicate 95% confidence regions for each model. The second column represents the correlation of the various network metrics with the respective LDA axes. Left is before putting into END and right is post simulation structure (equilibrium topology)
+Figure&nbsp;1: Canonical discriminant analysis (CDA) of ecological network metrics for the seven model types. Each point represents a replicate, and ellipses indicate 95% confidence regions for each model. The second column represents the correlation of the various network metrics with the respective CDA axes. Left is before putting into END and right is post simulation structure (equilibrium topology)
 </figcaption>
 </figure>
 </div>
@@ -339,7 +342,7 @@ Figure&nbsp;2: Boxplots showing stability metrics/information about dynamics of 
 </section>
 <section id="discussion" class="level1" data-number="3">
 <h1 data-number="3"><span class="header-section-number">3</span> Discussion</h1>
-<p>Reconstruction is Not Neutral: Discuss how models act as structural priors that condition ecological inference. Well maybe - paleo webs seems to suggest this</p>
+<p>Reconstruction is Not Neutral (or maybe it is): Discuss how models act as structural priors that condition ecological inference.</p>
 <p>Template Dependence: Address the core question: Is everything a derivative of the niche model? If dynamic models show unique cascade patterns not captured by the niche model, argue that the niche template may be insufficient for dynamic questions.</p>
 <p>Scale-Dependent Robustness: Reflect on why species-level patterns might look similar across models while the fine-grained story of dynamic change is highly model-contingent.</p>
 <p>Implications for Theory: Suggest that researchers must align their reconstruction framework with their inferential goals rather than defaulting to a one-size-fits-all niche template.</p>
