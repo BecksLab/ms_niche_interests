@@ -330,26 +330,307 @@ ggsave("../figures/cda_compare.png",
 # 8. Mahalanobis distance
 # =========================
 
-dynam_scores_centered %>%
-  group_by(model) %>%
-  summarise(
-    Can1 = mean(Can1),
-    Can2 = mean(Can2)
-  )
-
-centroids <- scores_centered %>%
-  group_by(model) %>%
-  summarise(
-    Can1 = mean(Can1),
-    Can2 = mean(Can2)
-  )
-
-niche <- centroids %>%
+pre_cov <- scores_centered %>%
   filter(model == "Niche") %>%
-  select(Can1, Can2)
+  select(Can1, Can2) %>%
+  cov()
 
-distances <- centroids %>%
-  glow_up(euclidean = sqrt((Can1 - niche$Can1)^2 +
-                             (Can2 - niche$Can2)^2)
+eq_cov <- dynam_scores_centered %>%
+  filter(model == "Niche") %>%
+  select(Can1, Can2) %>%
+  cov()
+
+centroids_maha <-
+  centroids %>%
+  left_join(niche_ref, by = "type") %>%
+  rowwise() %>%
+  glow_up(
+    maha = sqrt(
+      mahalanobis(
+        x = matrix(c(Can1, Can2), nrow = 1),
+        center = c(niche_Can1, niche_Can2),
+        cov = if (type == "Pre") pre_cov else eq_cov
+      )
+    )
+  ) %>%
+  disband() %>%
+  glow_up(type = factor(type, levels = c("Pre", "Equilibrium")))
+
+centroids_maha %>%
+  filter(model != "Niche") %>%
+  ggplot() +
+  geom_segment(
+    aes(
+      x = 0,
+      xend = maha,
+      y = model,
+      yend = model,
+      colour = model
+    )
+  ) +
+  geom_point(
+    aes(
+      x = maha,
+      y = model,
+      colour = model
+    ),
+    size = 3
+  ) +
+  facet_wrap(vars(type), ncol = 1) +
+  scale_colour_manual(values = model_colours) +
+  labs(
+    x = "Mahalanobis distance from Niche centroid",
+    y = NULL
+  ) +
+  figure_theme +
+  theme(legend.position = "none")
+
+# Which models are significantly further from Niche than Niche itself
+
+pre_mu <- scores_centered %>%
+  filter(model == "Niche") %>%
+  select(Can1, Can2) %>%
+  colMeans()
+
+pre_cov <- scores_centered %>%
+  filter(model == "Niche") %>%
+  select(Can1, Can2) %>%
+  cov()
+
+pre_dist <- scores_centered %>%
+  mutate(
+    dist_niche =
+      sqrt(
+        mahalanobis(
+          select(., Can1, Can2),
+          center = pre_mu,
+          cov = pre_cov
+        )
+      ),
+    type = "Pre"
   )
 
+eq_mu <- dynam_scores_centered %>%
+  filter(model == "Niche") %>%
+  select(Can1, Can2) %>%
+  colMeans()
+
+eq_cov <- dynam_scores_centered %>%
+  filter(model == "Niche") %>%
+  select(Can1, Can2) %>%
+  cov()
+
+eq_dist <- dynam_scores_centered %>%
+  mutate(
+    dist_niche =
+      sqrt(
+        mahalanobis(
+          select(., Can1, Can2),
+          center = eq_mu,
+          cov = eq_cov
+        )
+      ),
+    type = "Equilibrium"
+  )
+
+dist_df <- bind_rows(
+  pre_dist,
+  eq_dist
+) %>%
+  mutate(
+    type = factor(
+      type,
+      levels = c("Pre", "Equilibrium")
+    )
+  )
+
+ggplot(
+  dist_df,
+  aes(
+    x = model,
+    y = dist_niche,
+    colour = model
+  )
+) +
+  geom_boxplot(
+    outlier.alpha = 0.4
+  ) +
+  facet_wrap(
+    vars(type)
+  ) +
+  scale_colour_manual(
+    values = model_colours
+  ) +
+  labs(
+    x = NULL,
+    y = "Distance from Niche centroid"
+  ) +
+  figure_theme
+
+# =========================
+# PRE
+# =========================
+
+pre_mod <- lm(
+  dist_niche ~ model,
+  data = filter(dist_df, type == "Pre")
+)
+
+pre_emm <- emmeans(
+  pre_mod,
+  ~ model
+)
+
+pre_contrasts <- contrast(
+  pre_emm,
+  method = "trt.vs.ctrl",
+  ref = "Niche",
+  adjust = "holm"
+)
+
+pre_results <- summary(pre_contrasts) %>%
+  as_tibble() %>%
+  mutate(type = "Pre")
+
+pre_cld <- multcomp::cld(
+  pre_emm,
+  Letters = letters
+) %>%
+  as.data.frame() %>%
+  mutate(type = "Pre")
+
+# =========================
+# EQUILIBRIUM
+# =========================
+
+eq_mod <- lm(
+  dist_niche ~ model,
+  data = filter(dist_df, type == "Equilibrium")
+)
+
+eq_emm <- emmeans(
+  eq_mod,
+  ~ model
+)
+
+eq_contrasts <- contrast(
+  eq_emm,
+  method = "trt.vs.ctrl",
+  ref = "Niche",
+  adjust = "holm"
+)
+
+eq_results <- summary(eq_contrasts) %>%
+  as_tibble() %>%
+  mutate(type = "Equilibrium")
+
+eq_cld <- multcomp::cld(
+  eq_emm,
+  Letters = letters
+) %>%
+  as.data.frame() %>%
+  mutate(type = "Equilibrium")
+
+dist_results <- bind_rows(
+  pre_results,
+  eq_results
+)
+
+cld_df <- bind_rows(
+  pre_cld,
+  eq_cld
+) %>%
+  glow_up(type = factor(type, levels = c("Pre", "Equilibrium")))
+
+ggplot(
+  cld_df,
+  aes(
+    model,
+    emmean,
+    colour = model
+  )
+) +
+  geom_point(size = 3) +
+  geom_errorbar(
+    aes(
+      ymin = lower.CL,
+      ymax = upper.CL
+    ),
+    width = 0.2
+  ) +
+  geom_text(
+    aes(
+      label = .group,
+      y = upper.CL
+    ),
+    vjust = -0.6
+  ) +
+  facet_wrap(vars(type)) +
+  scale_colour_manual(values = model_colours) +
+  labs(
+    y = "Mahalanobis distance from Niche",
+    x = NULL
+  ) +
+  figure_theme +
+  theme(legend.position = 'none')
+
+ggsave("../figures/cda_emm_distance.png",
+       width = 7000,
+       height = 3000,
+       units = "px",
+       dpi = 700)
+
+pre_results <- confint(pre_contrasts) %>%
+  as_tibble() %>%
+  mutate(type = "Pre")
+
+eq_results <- confint(eq_contrasts) %>%
+  as_tibble() %>%
+  mutate(type = "Equilibrium")
+
+bind_rows(
+  pre_results,
+  eq_results
+) %>%
+  separate(
+    contrast,
+    into = c("model", "ref"),
+    sep = " - "
+  ) %>%
+  squad_up(type) %>%
+  glow_up(model = forcats::fct_reorder(model, estimate)) %>%
+  disband() %>%
+  glow_up(type = factor(type, levels = c("Pre", "Equilibrium"))) %>%
+  ggplot(
+    aes(
+      x = estimate,
+      y = model,
+      colour = model
+    )
+  ) +
+  geom_vline(
+    xintercept = 0,
+    linetype = 2,
+    colour = model_colours["Niche"]
+  ) +
+  geom_point(size = 3) +
+  geom_errorbar(
+    aes(
+      xmin = lower.CL,
+      xmax = upper.CL
+    ),
+    width = 0.15
+  ) +
+  facet_wrap(
+    vars(type),
+    ncol = 1
+  ) +
+  scale_colour_manual(values = model_colours) +
+  labs(
+    x = "Additional Mahalanobis distance relative to Niche",
+    y = NULL
+  ) +
+  figure_theme +
+  theme(
+    legend.position = "none"
+  )

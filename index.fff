@@ -21,6 +21,20 @@ topology)}
 
 \centering{
 
+\pandocbounded{\includegraphics[keepaspectratio]{figures/cda_emm_distance.png}}
+
+}
+
+\caption{\label{fig-emm}Something something Mahalanobis distance
+something something}
+
+\end{figure}
+\efloatseparator
+ 
+\begin{figure}
+
+\centering{
+
 \pandocbounded{\includegraphics[keepaspectratio]{figures/boxplots_dynamic_metrics.png}}
 
 }
