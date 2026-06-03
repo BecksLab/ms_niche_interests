@@ -21,6 +21,19 @@ topology)}
 
 \centering{
 
+\pandocbounded{\includegraphics[keepaspectratio]{figures/cda_loadings_compare.png}}
+
+}
+
+\caption{\label{fig-loadings}Because Andrew will inevitably ask\ldots{}}
+
+\end{figure}
+\efloatseparator
+ 
+\begin{figure}
+
+\centering{
+
 \pandocbounded{\includegraphics[keepaspectratio]{figures/cda_emm_distance.png}}
 
 }

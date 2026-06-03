@@ -108,9 +108,9 @@ loadings_df <- as.data.frame(cda$structure[, 1:2]) %>%
 # CDA Loadings Plot
 ggplot(loadings_df, aes(x = CV1, y = CV2)) +
   geom_hline(yintercept = 0, 
-             colour = "#A5ACAF") +
+             colour = shark_silver) +
   geom_vline(xintercept = 0, 
-             colour = "#A5ACAF") +
+             colour = shark_silver) +
   geom_segment(aes(x = 0, y = 0, xend = CV1, yend = CV2, color = Level),
                arrow = arrow(length = unit(0.2, "cm")), linewidth = 1) +
   geom_text_repel(aes(label = Metric)) +
@@ -129,8 +129,8 @@ ggsave("../figures/cda_corr.png",
 # =========================
 # Using the canonical variates (from candisc) for group separation plot
 topology_plot <- ggplot(scores_centered, aes(x = Can1, y = Can2, colour = model)) +
-  geom_hline(yintercept = 0, colour = "#A5ACAF") +
-  geom_vline(xintercept = 0, colour = "#A5ACAF") +
+  geom_hline(yintercept = 0, colour = shark_silver) +
+  geom_vline(xintercept = 0, colour = shark_silver) +
   geom_point(alpha = 0.7, size = 2.5) +
   stat_ellipse(level = 0.95, linetype = 4, show.legend = FALSE) +
   scale_colour_manual(values = model_colours) +
@@ -634,3 +634,42 @@ bind_rows(
   theme(
     legend.position = "none"
   )
+
+# 9. LOADINGS
+
+# Extract canonical loadings for plotting
+loadings <- as.data.frame(dynam_cda$structure[, 1:2]) %>%
+  glow_up(type = "Equilibrium") %>%
+  rownames_to_column("Metric") %>%
+  rbind(as.data.frame(cda$structure[, 1:2]) %>%
+          glow_up(type = "Pre") %>%
+          rownames_to_column("Metric")) %>%
+  rename(CV1 = Can1, CV2 = Can2) %>%
+  glow_up(Level = case_when(Metric %in% c("complexity", "connectance", "trophic_level", "ChLen") ~ "Macro",
+                            Metric %in% c("generality") ~ "Role",
+                            Metric %in% c("vulnerability", "top") ~ "Heterogeneity",
+                            Metric %in% c("distance") ~ "Path",
+                            TRUE ~ "Scaling"),
+          type = factor(type, levels = c("Pre", "Equilibrium")))
+
+# CDA Loadings Plot
+ggplot(loadings, aes(x = CV1, y = CV2)) +
+  geom_hline(yintercept = 0, 
+             colour = shark_silver) +
+  geom_vline(xintercept = 0, 
+             colour = shark_silver) +
+  geom_segment(aes(x = 0, y = 0, xend = CV1, yend = CV2, color = Level),
+               arrow = arrow(length = unit(0.2, "cm")), linewidth = 1) +
+  geom_text_repel(aes(label = Metric)) +
+  facet_wrap(vars(type),
+             ncol = 2) +
+  coord_equal(xlim = c(-1, 1), ylim = c(-1, 1)) +
+  scale_colour_manual(values = c("#006D75", "#2F2F2F", "#EA7200", "#B2B4B2", "#FFB81C")) +
+  figure_theme
+
+
+ggsave("../figures/cda_loadings_compare.png",
+       width = 10000,
+       height = 4000,
+       units = "px",
+       dpi = 700)

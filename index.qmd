@@ -120,6 +120,8 @@ The Niche Model Template: Identify if the structural models occupy a central 'me
 
 ![Canonical discriminant analysis (CDA) of ecological network metrics for the seven model types. Each point represents a replicate, and ellipses indicate 95% confidence regions for each model. The second column represents the correlation of the various network metrics with the respective CDA axes. Left is before putting into END and right is post simulation structure (equilibrium topology)](figures/cda_compare.png){#fig-structure}
 
+![Because Andrew will inevitably ask...](figures/cda_loadings_compare.png){#fig-loadings} 
+
 Which models are significantly further from Niche than Niche itself: What is the distance of other networks from the niche and does that distance decrease when at the equilibrium state?
 
 ![Something something Mahalanobis distance something something](figures/cda_emm_distance.png){#fig-emm}
