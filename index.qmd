@@ -21,8 +21,9 @@ author:
     - methodology: supporting
     affiliations:
       - ref: sheffield
-  - name: Laura Landon Blake
+  - name: Laura Sophia Landon Blake
     id: llb
+    orcid: 0009-0009-7269-0817
     corresponding: false
     role: 
     - conceptualization: lead
