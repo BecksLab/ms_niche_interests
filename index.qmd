@@ -124,7 +124,7 @@ The Niche Model Template: Identify if the structural models occupy a central 'me
 
 Which models are significantly further from Niche than Niche itself: What is the distance of other networks from the niche and does that distance decrease when at the equilibrium state?
 
-![Something something Mahalanobis distance something something](figures/cda_emm_distance.png){#fig-emm}
+![Something something Mahalanobis distance something something. Note this also includes niche from niche centroid.](figures/cda_emm_distance.png){#fig-emm}
 
 Divergent Stories in Dynamics: Show how/if models with similar global structures (like connectance) can lead to wildly different pathways of change/collapse/straight lines.
 
