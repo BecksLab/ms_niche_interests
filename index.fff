@@ -56,3 +56,17 @@ something something}
 metrics/information about dynamics of the system.}
 
 \end{figure}
+\efloatseparator
+ 
+\begin{figure}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{figures/lda_dynamic_metrics.png}}
+
+}
+
+\caption{\label{fig-dynam_multivariate}Blah blah blah. Multivariate.
+Blah blah blah.}
+
+\end{figure}

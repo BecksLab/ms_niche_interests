@@ -130,6 +130,10 @@ Divergent Stories in Dynamics: Show how/if models with similar global structures
 
 ![Boxplots showing stability metrics/information about dynamics of the system.](figures/boxplots_dynamic_metrics.png){#fig-stability}
 
+We can also look at this in the multivariate space
+
+![Blah blah blah. Multivariate. Blah blah blah.](figures/lda_dynamic_metrics.png){#fig-dynam_multivariate}
+
 # Discussion
 
 Reconstruction is Not Neutral (or maybe it is): Discuss how models act as structural priors that condition ecological inference.
