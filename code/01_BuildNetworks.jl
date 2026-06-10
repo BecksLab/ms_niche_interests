@@ -51,14 +51,11 @@ using FoodWebTools    # For network generating models
 
 # --- 2. Load All Code ---
 
-# Apply absolute path mapping strictly as required.
-BASE_DIR = "/Users/lauralandonblake/Desktop/Network_buddies/ms_niche_interests/code"
-
 # Load helper functions using the absolute path directory
-include(joinpath(BASE_DIR, "lib", "verifying_networks.jl"))
+include(joinpath("lib", "verifying_networks.jl"))
 
 # Load MaxEnt model logic using the absolute path directory
-include(joinpath(BASE_DIR, "lib", "maxentmodel.jl"))
+include(joinpath("lib", "maxentmodel.jl"))
 
 # --- 3. Define Global Parameters ---
 
@@ -70,7 +67,7 @@ S = 15               # Initial species richness
 N_REPLICATES = 100   # Target number of replicates per model
 
 # Absolute Output path
-OUTPUT_DIR = joinpath(BASE_DIR, "data", "outputs")
+OUTPUT_DIR = joinpath("data", "outputs")
 
 # --- Verification Toggle ---
 # Set to false to entirely bypass the filtering logic in `lib/verifying_networks.jl`

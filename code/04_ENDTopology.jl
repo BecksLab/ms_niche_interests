@@ -20,13 +20,12 @@ using SpeciesInteractionNetworks
 using Graphs 
 
 # --- 2. Load All Code ---
-BASE_DIR = "/Users/lauralandonblake/Desktop/Network_buddies/ms_niche_interests/code"
 
-include(joinpath(BASE_DIR, "lib", "internals.jl"));
+include(joinpath("lib", "internals.jl"));
 
 # --- 3. Import networks .jld2 object ---
 date_str = "04-06-2026"
-path = joinpath(BASE_DIR, "data", "outputs", "END_final_adj_$(date_str).jld2")
+path = joinpath("data", "outputs", "END_final_adj_$(date_str).jld2")
 networks = load_object(path)
 
 # --- 4. Convert networks to `SpeciesInteractionNetworks` ---
@@ -106,5 +105,5 @@ for i in 1:nrow(networks)
     ))
 end
 
-outpath = joinpath(BASE_DIR, "data", "outputs", "END_topology_equ_$(date_str).csv")
+outpath = joinpath("data", "outputs", "END_topology_equ_$(date_str).csv")
 CSV.write(outpath, topology)

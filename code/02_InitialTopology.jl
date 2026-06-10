@@ -22,10 +22,8 @@ using SpeciesInteractionNetworks
 using Graphs # Required to calculate closed loops (simplecycles)
 
 # --- 2. Load All Code ---
-# Enforce absolute path usage
-BASE_DIR = "/Users/lauralandonblake/Desktop/Network_buddies/ms_niche_interests/code"
 
-include(joinpath(BASE_DIR, "lib", "internals.jl"));
+include(joinpath("lib", "internals.jl"));
 
 # --- 3. Import networks .jld2 object ---
 # Read the unfiltered output from script 1
@@ -109,4 +107,4 @@ for i in 1:nrow(networks)
 end
 
 # write summaries as .csv securely using absolute paths
-CSV.write(joinpath(BASE_DIR, "data", "outputs", "topology_initial_$(date_str).csv"), topology)
+CSV.write(joinpath("data", "outputs", "topology_initial_$(date_str).csv"), topology)

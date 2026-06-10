@@ -22,13 +22,11 @@ using DifferentialEquations
 using Statistics
 
 # --- 2. Load All Code ---
-BASE_DIR = "/Users/lauralandonblake/Desktop/Network_buddies/ms_niche_interests/code"
-
-include(joinpath(BASE_DIR, "lib", "sim.jl"));
+include(joinpath("lib", "sim.jl"));
 
 # --- 3. Import networks .jld2 object ---
-date_str = "04-06-2026"
-path = joinpath(BASE_DIR, "data", "outputs", "network_test_unfiltered_seed_42_$(date_str).jld2")
+date_str = "05-06-2026"
+path = joinpath("data", "outputs", "network_test_unfiltered_seed_42_$(date_str).jld2")
 networks = load_object(path)
 sort!(networks, :fw_ID) 
 
@@ -125,6 +123,6 @@ for i in 1:nrow(networks)
 end
 
 # --- 5. Save Simulation Summary ---
-mkpath(joinpath(BASE_DIR, "data", "outputs"))
-CSV.write(joinpath(BASE_DIR, "data", "outputs", "END_simulation_summary_$(date_str).csv"), simulation_summary)
-JLD2.save_object(joinpath(BASE_DIR, "data", "outputs", "END_final_adj_$(date_str).jld2"), final_network)
+mkpath(joinpath("data", "outputs"))
+CSV.write(joinpath("data", "outputs", "END_simulation_summary_$(date_str).csv"), simulation_summary)
+JLD2.save_object(joinpath("data", "outputs", "END_final_adj_$(date_str).jld2"), final_network)
