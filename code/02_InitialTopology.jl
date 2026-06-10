@@ -29,7 +29,7 @@ include(joinpath(BASE_DIR, "lib", "internals.jl"));
 
 # --- 3. Import networks .jld2 object ---
 # Read the unfiltered output from script 1
-date_str = "04-06-2026"
+date_str = "05-06-2026"
 networks = load_object(joinpath(BASE_DIR, "data", "outputs", "network_test_unfiltered_seed_42_$(date_str).jld2"))
 
 # --- 4. Convert networks to `SpeciesInteractionNetworks` ---

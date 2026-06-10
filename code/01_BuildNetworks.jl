@@ -67,7 +67,7 @@ MASTER_SEED = 42
 Random.seed!(MASTER_SEED)
 
 S = 15               # Initial species richness
-N_REPLICATES = 10   # Target number of replicates per model
+N_REPLICATES = 100   # Target number of replicates per model
 
 # Absolute Output path
 OUTPUT_DIR = joinpath(BASE_DIR, "data", "outputs")
@@ -147,6 +147,25 @@ for i = 1:N_REPLICATES
     result_ltm.percent_basal, 
     result_ltm.connectance, 
     result_ltm.adj, 
+    inputs.bodymasses, 
+    inputs.metabolic_classes))
+
+    # Added ltm_laura
+    result_ltm_laura = run_and_filter_ltm_laura(spp_list_int, 
+    inputs.bodymasses, 
+    inputs.metabolic_classes, 
+    verify_web, 
+    BASAL_RANGE, 
+    CONNECTANCE_RANGE)
+    push!(master_df, (run_ID, 
+    "ltm_laura_$i", 
+    "LTM_Laura", 
+    S, 
+    target_basal_fraction, 
+    missing, 
+    result_ltm_laura.percent_basal, 
+    result_ltm_laura.connectance, 
+    result_ltm_laura.adj, 
     inputs.bodymasses, 
     inputs.metabolic_classes))
     

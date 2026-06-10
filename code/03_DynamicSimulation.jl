@@ -57,6 +57,7 @@ final_network = DataFrame(
     MetabolicClasses = Union{Vector{Symbol},Missing}[] 
 )
 
+# --- Execution Loop ---
 for i in 1:nrow(networks)
     @info "Simulating food web $(i) / $(nrow(networks))"
     fwid         = networks.fw_ID[i]
@@ -67,7 +68,8 @@ for i in 1:nrow(networks)
 
     fw = Foodweb(adj)  
 
-    if model_name in ("ADBM", "ATN", "LTM")
+    # Added "LTM_Laura" 
+    if model_name in ("ADBM", "ATN", "LTM", "LTM_Laura")
         bodymasses_rescaled = rescale_bodymass(bodymasses, met_class)
         params = default_model(
             fw,
@@ -75,6 +77,7 @@ for i in 1:nrow(networks)
             ClassicResponse(; h = 2),
         )
     else
+        # Topology-only models revert to standard uniform mass assumptions
         params = default_model(
             fw,
             BodyMass(; Z = 100),
@@ -82,8 +85,10 @@ for i in 1:nrow(networks)
         )
     end
 
+    # Set initial uniform random biomasses
     B0 = rand(params.S)
 
+    # Execute simulation with performance callbacks active
     sol = simulate(
         params, B0, tmax;
         callback = CallbackSet(
@@ -93,6 +98,7 @@ for i in 1:nrow(networks)
         show_degenerated = false,
     )
 
+    # Process and safely trap potential numerical errors
     out = try
         get_sim_summary(params, sol, tspan)
     catch err
@@ -112,6 +118,7 @@ for i in 1:nrow(networks)
         )
     end
 
+    # Package output objects for storage
     summary_out = NamedTuple{filter(k -> k != :alive_connected_A, keys(out))}(out)
     push!(simulation_summary, (; fw_ID=string(fwid), model=string(model_name), summary_out...); promote = true)
     push!(final_network, (fw_ID=string(fwid), model=string(model_name), alive_connected_A=out.alive_connected_A, MetabolicClasses=met_class))
