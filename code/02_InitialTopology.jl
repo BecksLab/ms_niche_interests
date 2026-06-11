@@ -86,7 +86,7 @@ for i in 1:nrow(networks)
     d_fcl = NaN
     try
         d = network_summary(networks.InteractionNetwork[i])
-        d_tl = d[:trophic_level]
+        d_tl = d[:max_trophic_level]
         d_fcl = d[:ChLen]
     catch
         @warn "Standard network_summary failed for $(networks.fw_ID[i]). Assigning NaN to TL and FCL."

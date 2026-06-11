@@ -59,7 +59,7 @@ function network_summary(N::SpeciesInteractionNetwork{<:Partiteness,<:Binary})
     S = SpeciesInteractionNetworks.richness(N)
     l_s = L / S
 
-    tl = trophic_level(N)
+    tls = trophic_level(N)
 
     A = Matrix(N.edges.edges)
 
@@ -75,7 +75,7 @@ function network_summary(N::SpeciesInteractionNetwork{<:Partiteness,<:Binary})
         :richness => S,
         :connectance => SpeciesInteractionNetworks.connectance(N),
         :complexity => complexity(N),
-        :trophic_level => mean(collect(values(tl))),
+        :max_trophic_level => findmax(collect(values(tls)))[1],
         :distance => distancetobase(N, collect(keys(_gen))[ind_maxgen]),
         :generality => std(gen / l_s),
         :vulnerability => std(vul / l_s),
