@@ -25,7 +25,7 @@ BASE_DIR = "/Users/lauralandonblake/Desktop/Network_buddies/ms_niche_interests/c
 include(joinpath(BASE_DIR, "lib", "internals.jl"));
 
 # --- 3. Import networks .jld2 object ---
-date_str = "04-06-2026"
+date_str = "11-06-2026"
 path = joinpath(BASE_DIR, "data", "outputs", "END_final_adj_$(date_str).jld2")
 networks = load_object(path)
 

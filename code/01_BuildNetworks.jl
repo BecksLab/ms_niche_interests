@@ -16,7 +16,10 @@ using Pkg
 Pkg.activate(".")
 
 # Explicitly pull un-registered generative models package directly from GitHub
-Pkg.add(url="https://github.com/BecksLab/FoodWebTools.jl.git")
+#Pkg.add(url="https://github.com/BecksLab/FoodWebTools.jl.git")
+
+# ❗ LOCAL FIX 1: Point directly to the local folder on your desktop for testing
+Pkg.develop(path="/Users/lauralandonblake/Desktop/Network_buddies/FoodWebTools.jl")
 
 # Add all standard registered packages required across your four scripts
 Pkg.add([
@@ -44,7 +47,8 @@ using Statistics      # Required by helpers
 using LinearAlgebra   # Required by helpers
 using Graphs          # Required by helpers/models
 using Ipopt           # Required by MaxEnt model optimisation
-using JuMP            # Required by MaxEnt model optimisation
+# ❗ FIX: Explicitly resolve namespace ambiguity for the 'Model' function
+import JuMP: Model            # Required by MaxEnt model optimisation
 using StatsBase       # For sampling functions
 using ProgressMeter   # For tracking MaxEnt optimisation
 using FoodWebTools    # For network generating models
@@ -56,6 +60,10 @@ BASE_DIR = "/Users/lauralandonblake/Desktop/Network_buddies/ms_niche_interests/c
 
 # Load helper functions using the absolute path directory
 include(joinpath(BASE_DIR, "lib", "verifying_networks.jl"))
+
+# ❗ LOCAL FIX 2: Forcibly include the file containing your new function directly. 
+# (Update "ltm_laura.jl" if you named the file differently).
+include("/Users/lauralandonblake/Desktop/Network_buddies/FoodWebTools.jl/src/generative_models/ltm_laura.jl")
 
 # Load MaxEnt model logic using the absolute path directory
 include(joinpath(BASE_DIR, "lib", "maxentmodel.jl"))
