@@ -59,7 +59,7 @@ function network_summary(N::SpeciesInteractionNetwork{<:Partiteness,<:Binary})
     S = SpeciesInteractionNetworks.richness(N)
     l_s = L / S
 
-    tl = trophic_level(N)
+    tls = trophic_level(N)
 
     A = Matrix(N.edges.edges)
 
@@ -75,7 +75,7 @@ function network_summary(N::SpeciesInteractionNetwork{<:Partiteness,<:Binary})
         :richness => S,
         :connectance => SpeciesInteractionNetworks.connectance(N),
         :complexity => complexity(N),
-        :trophic_level => mean(collect(values(tl))),
+        :max_trophic_level => findmax(collect(values(tls)))[1],
         :distance => distancetobase(N, collect(keys(_gen))[ind_maxgen]),
         :generality => std(gen / l_s),
         :vulnerability => std(vul / l_s),
@@ -139,7 +139,7 @@ function _diameter(N::SpeciesInteractionNetwork{<:Partiteness,<:Binary})
 end
 
 """
-_trophic_level(N::SpeciesInteractionNetwork)
+trophic_level(N::SpeciesInteractionNetwork)
 
     Calculates the trophic level of all species in a network using the average 
     shortest path from the prey of species 𝑖 to a basal species
@@ -150,33 +150,19 @@ _trophic_level(N::SpeciesInteractionNetwork)
 """
 function trophic_level(N::SpeciesInteractionNetwork)
 
-    sp = species(N)
+    A = _get_matrix(N) # Ensure A is dense for inversion.
+    S = size(A, 1) # Species richness.
+    in_degree = sum(A; dims = 2)
+    D = -(A ./ in_degree) # Diet matrix.
+    D[isnan.(D)] .= 0.0
+    D[diagind(D)] .= 1.0 .- D[diagind(D)]
+    # Solve with the inverse matrix.
+    inverse = iszero(det(D)) ? pinv : inv
+    tls = inverse(D) * ones(S)
 
-    # dictionary for path lengths
-    pls = Dict{Any,Any}()
+    # create dictionary
+    Dict(zip(species(N),tls))
 
-    for i in eachindex(sp)
-
-        # prey of spp i
-        preys = collect(successors(N, sp[i]))
-
-        # only continue if species has preys...
-        if length(preys) > 0
-            # for summing each path length
-            pl_temp = 0
-            for j in eachindex(preys)
-
-                pl_temp += distancetobase(N, preys[j])
-
-                pls[sp[i]] = 1 + (1/length(sp)) * pl_temp
-
-            end
-        else
-            pls[sp[i]] = 1
-        end
-    end
-    # return trophic level Dict
-    return pls
 end
 
 function compute_reachable_to_top(N, top_set)

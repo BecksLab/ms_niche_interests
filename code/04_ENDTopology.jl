@@ -20,9 +20,8 @@ using SpeciesInteractionNetworks
 using Graphs 
 
 # --- 2. Load All Code ---
-BASE_DIR = "/Users/lauralandonblake/Desktop/Network_buddies/ms_niche_interests/code"
 
-include(joinpath(BASE_DIR, "lib", "internals.jl"));
+include(joinpath("lib", "internals.jl"));
 
 # --- 3. Import networks .jld2 object ---
 date_str = "11-06-2026"
@@ -106,5 +105,5 @@ for i in 1:nrow(networks)
     ))
 end
 
-outpath = joinpath(BASE_DIR, "data", "outputs", "END_topology_equ_$(date_str).csv")
+outpath = joinpath("data", "outputs", "END_topology_equ_$(date_str).csv")
 CSV.write(outpath, topology)
