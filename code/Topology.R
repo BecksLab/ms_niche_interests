@@ -22,16 +22,24 @@ setwd(here())
 source("lib/plotting_theme.R")
 
 # import data
-df <- read_csv("data/outputs/topology.csv") %>%
-  vibe_check(-c(richness)) %>%
+df <- read_csv("data/outputs/topology_initial_05-06-2026.csv") %>%
+  vibe_check(-c(richness, S_initial, connectance_initial, prop_basal_initial,
+                mx_tl_initial, mean_FCL_initial, closed_loops_initial, isolated_initial,
+                illogical_initial, fw_ID)) %>%
+  yeet(model != "LTM_Laura") %>%
+  yeet(max_trophic_level < 16) %>%
   na.omit() %>%
   # set niche model as reference model
   glow_up(model = factor(model)) %>%
   glow_up(model = relevel(model, ref = "Niche"))
 
-dynamic_topo <-  read_csv("data/outputs/END_topology_03_05_2026.csv",
+df %>%
+  squad_up(model) %>%
+  tally()
+
+dynamic_topo <- read_csv("data/outputs/END_topology_03_05_2026.csv",
                           show_col_types = FALSE) %>%
-  vibe_check(-fw_ID, -richness) %>%
+  vibe_check(-richness) %>%
   glow_up(model = factor(model),
           model = relevel(model, ref = "Niche")) %>%
   na.omit()
@@ -98,7 +106,7 @@ loadings_df <- as.data.frame(cda$structure[, 1:2]) %>%
   rownames_to_column("Metric") %>%
   rename(CV1 = Can1, CV2 = Can2) %>%
   glow_up(Level = case_when(
-    Metric %in% c("complexity", "connectance", "trophic_level", "ChLen") ~ "Macro",
+    Metric %in% c("complexity", "connectance", "max_trophic_level", "ChLen") ~ "Macro",
     Metric %in% c("generality") ~ "Role",
     Metric %in% c("vulnerability", "top") ~ "Heterogeneity",
     Metric %in% c("distance") ~ "Path",
@@ -218,7 +226,7 @@ emm_df <- emm_df %>%
     TRUE ~ as.character(metric)
   )) %>%
   mutate(level = case_when(
-    metric %in% c("complexity", "connectance", "trophic_level", "S2", "S1", "ChLen") ~ "Macro",
+    metric %in% c("complexity", "connectance", "max_trophic_level", "S2", "S1", "ChLen") ~ "Macro",
     metric %in% c("generality") ~ "Role",
     metric %in% c("vulnerability", "top") ~ "Heterogeneity",
     metric %in% c("distance") ~ "Path",
@@ -645,7 +653,7 @@ loadings <- as.data.frame(dynam_cda$structure[, 1:2]) %>%
           glow_up(type = "Pre") %>%
           rownames_to_column("Metric")) %>%
   rename(CV1 = Can1, CV2 = Can2) %>%
-  glow_up(Level = case_when(Metric %in% c("complexity", "connectance", "trophic_level", "ChLen") ~ "Macro",
+  glow_up(Level = case_when(Metric %in% c("complexity", "connectance", "max_trophic_level", "ChLen") ~ "Macro",
                             Metric %in% c("generality") ~ "Role",
                             Metric %in% c("vulnerability", "top") ~ "Heterogeneity",
                             Metric %in% c("distance") ~ "Path",
