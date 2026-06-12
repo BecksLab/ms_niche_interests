@@ -5,13 +5,6 @@ Calculating initial structure/topology for generated networks.
 -------------------------------------------------
 =#
 
-# Load the Pkg package manager.
-using Pkg
-Pkg.activate(".")
-
-# Explicitly pull SpeciesInteractionNetworks from its GitHub repository
-Pkg.add(url="https://github.com/PoisotLab/SpeciesInteractionNetworks.jl.git")
-
 # --- 1. Load Dependencies ---
 using CSV
 using DataFrames
@@ -27,8 +20,8 @@ include(joinpath("lib", "internals.jl"));
 
 # --- 3. Import networks .jld2 object ---
 # Read the unfiltered output from script 1
-date_str = "11-06-2026"
-networks = load_object(joinpath(BASE_DIR, "data", "outputs", "network_test_unfiltered_seed_42_$(date_str).jld2"))
+date_str = "05-06-2026"
+networks = load_object("data/outputs/network_test_unfiltered_seed_42_11-06-2026.jld2")
 
 # --- 4. Convert networks to `SpeciesInteractionNetworks` ---
 networks.InteractionNetwork = build_network.(networks.AdjacencyMatrix)
@@ -66,6 +59,18 @@ end
 topology = DataFrame(
     fw_ID = String[],
     model = String[],
+    richness = Int64[],
+    connectance = Float64[],
+    complexity = Float64[],
+    max_trophic_level = Float64[],
+    generality = Float64[],
+    vulnerability = Float64[],
+    top = Float64[],
+    ChLen = Float64[],
+    distance = Float64[],
+    centrality = Float64[],
+    clustering = Float64[],
+    trophicCoherence = Float64[],
     S_initial = Int[],
     connectance_initial = Float64[],
     prop_basal_initial = Float64[],
@@ -84,26 +89,27 @@ for i in 1:nrow(networks)
     # Some completely disjointed networks may fail default summary metrics
     d_tl = NaN
     d_fcl = NaN
+    d = network_summary(networks.InteractionNetwork[i])
     try
-        d = network_summary(networks.InteractionNetwork[i])
         d_tl = d[:max_trophic_level]
         d_fcl = d[:ChLen]
     catch
         @warn "Standard network_summary failed for $(networks.fw_ID[i]). Assigning NaN to TL and FCL."
     end
-    
-    push!(topology, (
-        fw_ID = networks.fw_ID[i],
-        model = networks.Model[i],
-        S_initial = S_init,
-        connectance_initial = conn_init,
-        prop_basal_initial = p_basal_init,
-        mx_tl_initial = d_tl, 
-        mean_FCL_initial = d_fcl,
-        closed_loops_initial = loops_init,
-        isolated_initial = iso_init,
-        illogical_initial = illog_init
-    ))
+
+    d[:model] = networks.Model[i]
+    d[:fw_ID] = networks.fw_ID[i]
+    d[:S_initial] = S_init
+    d[:connectance_initial] = conn_init
+    d[:prop_basal_initial] = p_basal_init
+    d[:mx_tl_initial] = d_tl
+    d[:mean_FCL_initial] = d_fcl
+    d[:closed_loops_initial] = loops_init
+    d[:isolated_initial] = iso_init
+    d[:illogical_initial] = illog_init
+
+    push!(topology, d)
+
 end
 
 # write summaries as .csv securely using absolute paths
