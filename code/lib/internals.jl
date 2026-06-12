@@ -150,7 +150,7 @@ trophic_level(N::SpeciesInteractionNetwork)
 """
 function trophic_level(N::SpeciesInteractionNetwork)
 
-    A = _get_matrix(N) # Ensure A is dense for inversion.
+    A = Matrix(N.edges.edges) # Ensure A is dense for inversion.
     S = size(A, 1) # Species richness.
     in_degree = sum(A; dims = 2)
     D = -(A ./ in_degree) # Diet matrix.
