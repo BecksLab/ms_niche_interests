@@ -5,11 +5,10 @@ Calculating structure/topology for post-simulation networks.
 Input: post_networks.jld2
 Output: post_topology.csv
 -------------------------------------------------
-
 =#
+
 # Load the Pkg package manager.
 using Pkg
-# Activate the current project environment to ensure consistent package versions.
 Pkg.activate(".")
 
 # --- 1. Load Dependencies ---
@@ -31,7 +30,7 @@ post_networks = load_object(path)
 
 # we will also append this to the network object as a col.
 post_networks.InteractionNetwork = [
-    ismissing(A) ? missing : build_network(Int.(A))
+    ismissing(A) ? missing : build_network(Matrix(Int.(A)))
     for A in post_networks.post_adj
 ]
 
