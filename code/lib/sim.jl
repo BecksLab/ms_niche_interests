@@ -17,125 +17,315 @@ function rescale_bodymass(bodymasses::AbstractVector, met_class::AbstractVector)
 end
 
 
+## -- Function to get alive and connected species --
+"""
+    get_alive_connected_species(Beq, params)
+1. use get_alive_species(Beq) to identify alive species;
+2. subset the adjacency matrix to alive species;
+3. keep species that have at least one prey or at least one consumer
+   among the alive species.
+"""
+function get_alive_connected_species(Beq, params)
+    # Get alive species
+    alive_idx = get_alive_species(Beq)
+
+    if isempty(alive_idx)
+        return Int[]
+    end
+
+    # Original trophic adjacency matrix
+    A = params.A
+
+    # Subset to alive species
+    A_alive = A[alive_idx, alive_idx]
+
+    # Consumers: rows with at least one prey
+    has_prey = vec(sum(A_alive; dims = 2)) .> 0
+
+    # Resources: columns with at least one consumer
+    has_consumer = vec(sum(A_alive; dims = 1)) .> 0
+
+    # Keep species that are connected as either consumer or resource
+    keep_mask = has_prey .| has_consumer
+
+    alive_connected_idx = alive_idx[keep_mask]
+
+    return alive_connected_idx
+end
+
+
+## -- Function to get the energy flux from prey to predator at equilibrium ----
+"""
+    energy_flux_classic_formula(B, params; assimilated = false)
+
+Calculate realised trophic fluxes under ClassicResponse using an explicit formula.
+
+For ClassicResponse:
+
+    F[i, j] =
+        ω[i, j] * aᵣ[i, j] * B[j]^h /
+        (M[i] * (1 + c[i] * B[i] +
+         sum_k ω[i, k] * aᵣ[i, k] * hₜ[i, k] * B[k]^h))
+
+Then realised prey-loss flux is:
+
+    flux[i, j] = B[i] * F[i, j]
+
+If assimilated = true, returns:
+
+    flux[i, j] = B[i] * e[i, j] * F[i, j]
+"""
+function energy_flux_classic_formula(
+    B::AbstractVector,
+    params;
+    assimilated::Bool = false)
+    
+    fr = params._value.functional_response
+
+    Bsafe = max.(Float64.(B), 0.0)
+
+    ω  = fr.ω
+    aᵣ = fr.aᵣ
+    hₜ = fr.hₜ
+    c  = fr.c
+    h  = fr.h
+    M  = params.body_mass
+    e  = params.e
+
+    S = length(Bsafe)
+
+    I = Int[]
+    J = Int[]
+    V = Float64[]
+
+    consumers, resources, ωvals = findnz(ω)
+
+    for (i, j, ωij) in zip(consumers, resources, ωvals)
+
+        # Denominator for consumer i
+        denom_sum = 0.0
+        prey_i = findnz(ω[i, :])[1]
+
+        for k in prey_i
+            denom_sum += ω[i, k] * aᵣ[i, k] * hₜ[i, k] * abs(Bsafe[k])^h
+        end
+
+        denom = M[i] * (1.0 + c[i] * Bsafe[i] + denom_sum)
+
+        Fij = ωij * aᵣ[i, j] * abs(Bsafe[j])^h / denom
+
+        # prey-loss flux
+        flux_ij = Bsafe[i] * Fij
+
+        # predator-gain flux after assimilation
+        if assimilated
+            flux_ij *= e[i, j]
+        end
+
+        push!(I, i)
+        push!(J, j)
+        push!(V, flux_ij)
+    end
+
+    return sparse(I, J, V, S, S)
+end
+
+function gini_coefficient(x::AbstractVector)
+    x = collect(skipmissing(x))
+    x = x[.!isnan.(x)]
+    x = x[x .> 0]
+
+    isempty(x) && return NaN
+    sum(x) == 0 && return NaN
+
+    x = sort(x)
+    n = length(x)
+
+    return 2 * sum((1:n) .* x) / (n * sum(x)) - (n + 1) / n
+end
+
+
+## -- Function to get pairwise interaction strengths at equilibrium --
+"""
+    get_alive_connected_jacobian(params, Beq, alive_connected_idx)
+
+Return the Jacobian submatrix for alive and connected species.
+"""
+function get_alive_connected_jacobian(params, Beq, alive_connected_idx)
+    isempty(alive_connected_idx) && return Matrix{Float64}(undef, 0, 0)
+    J = jacobian(params, Beq)
+    return Matrix(J[alive_connected_idx, alive_connected_idx])
+end
+
+
+"""
+    get_pairwise_interaction_strengths(params, Beq, alive_connected_idx; absolute = true)
+
+Return off-diagonal Jacobian elements as pairwise interaction strengths.
+"""
+function get_pairwise_interaction_strengths(
+    J::AbstractMatrix;
+    absolute::Bool = true
+    )
+    
+    S = size(J, 1)
+
+    S <= 1 && return Float64[]
+
+    offdiag = trues(S, S)
+    for i in 1:S
+        offdiag[i, i] = false
+    end
+
+    vals = J[offdiag]
+    vals = vals[.!iszero.(vals)]
+
+    if absolute
+        vals = abs.(vals)
+    end
+
+    return vals
+end
+
+function get_skewness(x::AbstractVector)
+    x = collect(skipmissing(x))
+    x = x[.!isnan.(x)]
+
+    length(x) < 3 && return NaN
+
+    μ = mean(x)
+    σ = std(x)
+
+    σ == 0 && return NaN
+
+    return mean(((x .- μ) ./ σ).^3)
+end
+
 ## --- Function to calculate resilience -----------------
 """
-    get_fw_resilience(params::ModelParameters, Beq::AbstractVector, alive_connected_idx::AbstractVector)
-    params = model parameters
-    Beq = equilibrium biomasses
-    alive_connected_idx = indices of alive and connected species
-    Calculate the resilience of the food web at equilibrium.
+    get_fw_resilience(params, Beq, alive_connected_idx)
+
+Calculate resilience from the alive-connected Jacobian.
 """
-function get_fw_resilience(params, Beq, alive_connected_idx)
-    j = jacobian(params, Beq)
-    j_alive_connected = j[alive_connected_idx, alive_connected_idx]
-    lumbda_eq = resilience(j_alive_connected)
-    return lumbda_eq
+function get_fw_resilience(J::AbstractMatrix)
+    size(J, 1) == 0 && return NaN
+    return resilience(J)
 end
 
 ## --- Function to calculate reactivity -----------------
 """
-    get_fw_reactivity(params::ModelParameters, Beq::AbstractVector, alive_connected_idx::AbstractVector)
-    params = model parameters
-    Beq = equilibrium biomasses
-    alive_connected_idx = indices of alive and connected species
-    Calculate the reactivity of the food web at equilibrium.
-""" 
-function get_fw_reactivity(params, Beq, alive_connected_idx)
-    j = jacobian(params, Beq)
-    j_alive_connected = j[alive_connected_idx, alive_connected_idx]
-    reactivity_eq = reactivity(j_alive_connected)
-    return reactivity_eq
+    get_fw_reactivity(params, Beq, alive_connected_idx)
+
+Calculate reactivity from the alive-connected Jacobian.
+"""
+function get_fw_reactivity(J::AbstractMatrix)
+    size(J, 1) == 0 && return NaN
+    return reactivity(J)
 end
 
 
 ## --- Function to get all output of a simulation -----------------
+
 """
-    get_sim_summary(params::ModelParameters, sol::ODESolution, tspan::Int64)
-    params = model parameters
-    sol = solution of the ODE simulation
-    tspan = number of timesteps to consider at the end of the simulation for time series metrics
-    Return a named tuple with various summary statistics of the simulation at equilibrium.
+    get_sim_summary(params, sol)
+
+Return simulation summary metrics at equilibrium.
+
+Returned metrics:
+- S_post: number of species in the post-simulation network (for NAN checking)
+- L_post: number of links in the post-simulation network (for NAN checking)
+- persistence
+- biomass_shannon
+- gini_fluxes_ENDI
+- gini_fluxes_formula
+- skewness_IS
+- resilience
+- reactivity
+- post_adj
 """
-function get_sim_summary(params, sol, tspan)
-  # Get bomass dynamics equally distributed at last tspan timesteps using interpolation
-   last_t = sol.t[end]
-   vals = sol(last_t - tspan + 1:1:last_t).u
-   biomass_mat = transpose(hcat(vals...)) # tspan x species
+function get_sim_summary(params, sol)
 
-   # final state biomasses
-   Beq = sol.u[end]
+    # Final state biomasses
+    Beq = sol.u[end]
 
-   # --- Get alive and connected species ---
-   alive_idx = get_alive_species(Beq)
-   A = params.A
-   # find alive producers (rows all zeros = no prey) and consumers (cols all zeros = no consumers)
-   has_prey = vec(sum(A[alive_idx, alive_idx]; dims=2)) .> 0
-   has_consumer = vec(sum(A[alive_idx, alive_idx]; dims=1)) .> 0
-   # keep species that are alive and have at least one prey or one consumer
-   keep_mask = has_prey .| has_consumer
-   alive_connected_idx = alive_idx[keep_mask]
-   
-   # reduced vectors/matrices
-   Beq_alive_connected = Beq[alive_connected_idx]
-   alive_connected_A   = A[alive_connected_idx, alive_connected_idx]
+    # Original adjacency matrix
+    A = params.A
 
-   # --- for cases where all species go extinct or become disconnected ---
+    # Alive and connected species
+    alive_connected_idx = get_alive_connected_species(Beq, params)
+
+    # Empty case
     if isempty(alive_connected_idx)
         return (
-            richness_equilibrium = 0,
-            connectance_equilibrium = 0.0,
+            S_post = 0,
+            L_post = 0,
             persistence = 0.0,
-            max_trophic_level = 0.0,
-            total_biomass = 0.0,
-            cv_total_biomass = 0.0,
-            shannon = 0.0,
-            evenness = 0.0,
+            biomass_shannon = NaN,
+            gini_fluxes_formula = NaN,
+            skewness_IS = NaN,
             resilience = NaN,
             reactivity = NaN,
-            alive_connected_A = alive_connected_A
+            post_adj = spzeros(0, 0)
         )
     end
 
-   # species richness and connectance at equilibrium
-   S_eq = length(alive_connected_idx)
-   C_eq = round(count(!iszero, alive_connected_A) / (S_eq * S_eq), digits=3)
+    # Reduced biomass and adjacency matrix
+    Beq_alive_connected = Beq[alive_connected_idx]
+    post_adj = A[alive_connected_idx, alive_connected_idx]
+    S_post = length(alive_connected_idx)
+    L_post = sum(post_adj)
 
-   # maximum trophic level at pre-perturbation equilibrium
-   tls = ENDI.trophic_levels(alive_connected_A)
-   maxTL_eq = maximum(tls)  
+    # Species richness
+    S_initial = ENDI.richness(params.A)
+    S_eq = length(alive_connected_idx)
 
-   # total biomass at equilibrium
-   total_biomass_eq = sum(Beq_alive_connected)
-   
-   # CV of total biomass
-   B_mean_eq = mean(sum(biomass_mat[:, alive_connected_idx]; dims=2))
-   B_sd_eq   = std(sum(biomass_mat[:, alive_connected_idx]; dims=2))
-   CV_eq    = B_sd_eq / B_mean_eq
-   
-   # shannon diversity of biomass distribution
-   biomass_shannon_eq = ENDI.shannon_diversity(Beq_alive_connected)
+    # 1. Persistence
+    persistence_eq = S_eq / S_initial
 
-   # evenness of biomass distribution
-   biomass_evenness_eq = ENDI.evenness(Beq_alive_connected)
+    # 2. Biomass Shannon diversity
+    biomass_shannon_eq = ENDI.shannon_diversity(Beq_alive_connected)
 
-   # resilience
-   lumbda_eq = get_fw_resilience(params, Beq, alive_connected_idx)
+    # 3. Fluxes using explicit ClassicResponse formula
+    flux_formula = energy_flux_classic_formula(Beq, params; assimilated = false)
+    flux_formula_ac = flux_formula[alive_connected_idx, alive_connected_idx]
 
-   # reactivity
-    reactivity_eq = get_fw_reactivity(params, Beq, alive_connected_idx)
+    flux_formula_vals = nonzeros(sparse(flux_formula_ac))
+    flux_formula_vals = flux_formula_vals[flux_formula_vals .> 0]
 
-  return(
-    richness_equilibrium = Int(S_eq),
-    connectance_equilibrium = C_eq,
-    persistence = S_eq / params.S,
-    max_trophic_level = maxTL_eq,
-    total_biomass = total_biomass_eq,
-    cv_total_biomass = CV_eq,
-    shannon = biomass_shannon_eq,
-    evenness = biomass_evenness_eq,
-    resilience = lumbda_eq,
-    reactivity = reactivity_eq,
-    alive_connected_A = alive_connected_A
+    gini_fluxes_formula_eq = gini_coefficient(flux_formula_vals)
+
+    # 4. get Jacobian matrix for alive and connected species
+    J_alive_connected = get_alive_connected_jacobian(
+        params,
+        Beq,
+        alive_connected_idx
+    )
+
+    # 5. get species interaction strengths (off-diagonal Jacobian elements)
+    IS_vals = get_pairwise_interaction_strengths(
+        J_alive_connected;
+        absolute = true
+    )
+
+    # 6. Skewness of Jacobian interaction strengths
+    skewness_IS_eq = get_skewness(IS_vals)
+
+    # 7. Resilience
+    resilience_eq = get_fw_resilience(J_alive_connected)
+
+    # 8. Reactivity
+    reactivity_eq = get_fw_reactivity(J_alive_connected)
+
+    return (
+        S_post = S_post,
+        L_post = L_post,
+        persistence = persistence_eq,
+        biomass_shannon = biomass_shannon_eq,
+        gini_fluxes_formula = gini_fluxes_formula_eq,
+        skewness_IS = skewness_IS_eq,
+        resilience = resilience_eq,
+        reactivity = reactivity_eq,
+        post_adj = post_adj
     )
 end
 
