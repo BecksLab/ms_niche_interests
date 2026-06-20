@@ -10,10 +10,12 @@ First, a jld2 file (post_networks.jld2) containing the post-simulation food web 
        represented as adjacency matrices of feeding links among species that remain alive and connected at equilibrium.
 
 Second, a CSV file (dynamic_metrics.csv) containing dynamic stability-related metrics for each food web:
+        - S_post: number of species in the post-simulation network (save for NAN checking)
+        - L_post: number of links in the post-simulation network (save for NAN checking)
         - Persistence; 
-        - Mean realised trophic transfer efficiency; 
+        - Shannon diversity of biomass distribution; 
         - Gini coefficient of energy fluxes;
-        - Skewness of absolute interaction strengths;
+        - Skewness of absolute Jacobian interaction strengths;
         - Resilience;
         - Reactivity; 
 
@@ -31,6 +33,7 @@ using EcoNetPostProcessing
 using DifferentialEquations
 using DiffEqCallbacks
 using Statistics
+using SparseArrays
 
 # --- 2. Load All Code ---
 include("lib/sim.jl");
@@ -41,14 +44,16 @@ pre_networks = load_object(path)
 sort!(pre_networks, :fw_ID) 
 
 # --- 4. Run Dynamic Simulations ---
-tmin, tmax, tspan = 2000, 5000, 500
+tmin, tmax = 2000, 5000
 
 dynamic_metrics = DataFrame(
     fw_ID = String[],
     model = String[],
+    S_post = Int64[], # Number of species in the post-simulation network
+    L_post = Int64[], # Number of links in the post-simulation network
     persistence = Float64[], # Persistence
-    mean_TTE = Float64[],    # Mean realised trophic transfer efficiency
-    gini_fluxes = Float64[], # Gini coefficient of energy fluxes
+    biomass_shannon = Float64[], # Shannon diversity of biomass distribution
+    gini_fluxes_formula = Float64[], # Gini coefficient of energy fluxes (formula)
     skewness_IS = Float64[], # Skewness of absolute interaction strengths
     resilience = Float64[],  # Resilience
     reactivity = Float64[]  # Reactivity
@@ -97,13 +102,15 @@ for i in 1:nrow(pre_networks)
     )
 
     out = try
-        get_sim_summary(params, sol, tspan)
+        get_sim_summary(params, sol)
     catch err
         @warn "Simulation failed for fw_ID=$fwid" err
         (
             persistence = NaN,
-            mean_TTE = NaN,
-            gini_fluxes = NaN,
+            S_post = NaN,
+            L_post = NaN,
+            biomass_shannon = NaN,
+            gini_fluxes_formula = NaN,
             skewness_IS = NaN,
             resilience = NaN,
             reactivity = NaN,
