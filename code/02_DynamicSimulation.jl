@@ -1,22 +1,9 @@
 #=
-Dynamic simulation output include:
-
-CSV summary output:
-- Persistence; 
-- Maximum trophic level; 
-- Total Biomass; 
-- CV of total biomass;  
-- Shannon; 
-- Evenness; 
-- Resilience; (using EcoNetPostProcessing.jl) 
-- Reactivity; (using EcoNetPostProcessing.jl) 
-
-JLD2 network output:
-- Alive and connected adjacency matrix at equilibrium
+-------------------------------------------------
+02_DynamicSimulation.jl
+Runs END to equilibrium on unfiltered networks.
+-------------------------------------------------
 =#
-
-using Pkg
-Pkg.activate(".")
 
 # --- 1. Load Dependencies ---
 using CSV
@@ -28,11 +15,10 @@ using DifferentialEquations
 using Statistics
 
 # --- 2. Load All Code ---
-include("lib/sim.jl");
+include(joinpath("lib", "sim.jl"));
 
 # --- 3. Import networks .jld2 object ---
-path = joinpath(@__DIR__, "data", "outputs", "network_test_verified_seed_42_29-03-2026.jld2")
-networks = load_object(path)
+networks = load_object("networks/networks.jld2")
 sort!(networks, :fw_ID) 
 
 # --- 4. Run Dynamic Simulations ---
@@ -41,8 +27,8 @@ tmin, tmax, tspan = 2000, 5000, 500
 simulation_summary = DataFrame(
     fw_ID = String[],
     model = String[],
-    richness_equilibrium = Int[],
-    connectance_equilibrium = Float64[],
+    richness_equilibrium = Float64[],    
+    connectance_equilibrium = Float64[], 
     persistence = Float64[],
     max_trophic_level = Float64[],
     total_biomass = Float64[],
@@ -55,10 +41,12 @@ simulation_summary = DataFrame(
 
 final_network = DataFrame(
     fw_ID = String[],
-    model = String[],
-    alive_connected_A = Any[]
+    Model = String[],
+    AdjacencyMatrix = Union{Matrix{Int},Missing}[],
+    MetabolicClasses = Union{Vector{Symbol},Missing}[] 
 )
 
+# --- Execution Loop ---
 for i in 1:nrow(networks)
     @info "Simulating food web $(i) / $(nrow(networks))"
     fwid         = networks.fw_ID[i]
@@ -77,6 +65,7 @@ for i in 1:nrow(networks)
             ClassicResponse(; h = 2),
         )
     else
+        # Topology-only models revert to standard uniform mass assumptions
         params = default_model(
             fw,
             BodyMass(; Z = 100),
@@ -84,17 +73,20 @@ for i in 1:nrow(networks)
         )
     end
 
+    # Set initial uniform random biomasses
     B0 = rand(params.S)
 
+    # Execute simulation with performance callbacks active
     sol = simulate(
         params, B0, tmax;
         callback = CallbackSet(
-            extinction_callback(params, 1e-6; verbose = false),  # extinction threshold
+            extinction_callback(params, 1e-6; verbose = false),  
             TerminateSteadyState(1e-8, 1e-6, DiffEqCallbacks.allDerivPass; min_t = tmin),
         ),
         show_degenerated = false,
     )
 
+    # Process and safely trap potential numerical errors
     out = try
         get_sim_summary(params, sol, tspan)
     catch err
@@ -114,19 +106,12 @@ for i in 1:nrow(networks)
         )
     end
 
-    # Remove matrix object before saving summary to CSV
-    summary_out = NamedTuple{
-        filter(k -> k != :alive_connected_A, keys(out))
-    }(out)
-
+    # Package output objects for storage
+    summary_out = NamedTuple{filter(k -> k != :alive_connected_A, keys(out))}(out)
     push!(simulation_summary, (; fw_ID=string(fwid), model=string(model_name), summary_out...); promote = true)
-
-    push!(final_network, (fw_ID=string(fwid), model=string(model_name), alive_connected_A=out.alive_connected_A))
-
+    push!(final_network, (fw_ID=string(fwid), Model=string(model_name), AdjacencyMatrix=Int.(out.alive_connected_A), MetabolicClasses=met_class))
 end
 
 # --- 5. Save Simulation Summary ---
-mkpath(joinpath(@__DIR__, "data", "outputs"))
-CSV.write(joinpath(@__DIR__, "data", "outputs", "END_simulation_summary_03_05_2026.csv"), simulation_summary)
-
-JLD2.save_object(joinpath(@__DIR__, "data", "outputs", "END_final_adj_03_05_2026.jld2"), final_network)
+CSV.write("outputs/summary_stability.csv", simulation_summary)
+JLD2.save_object("networks/networks_END.jld2", final_network)
