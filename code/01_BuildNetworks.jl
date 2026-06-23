@@ -10,32 +10,6 @@ the true structural distribution (including illogical/isolated species)
 produced by each generative algorithm.
 =#
 
-# Load the Pkg package manager.
-using Pkg
-# Activate the current project environment to ensure consistent package versions.
-Pkg.activate(".")
-
-# Explicitly pull un-registered generative models package directly from GitHub
-#Pkg.add(url="https://github.com/BecksLab/FoodWebTools.jl.git")
-
-# ❗ LOCAL FIX 1: Point directly to the local folder on your desktop for testing
-Pkg.develop(path="/Users/lauralandonblake/Desktop/Network_buddies/FoodWebTools.jl")
-
-# Add all standard registered packages required across your four scripts
-Pkg.add([
-    "DataFrames", 
-    "CSV", 
-    "JLD2", 
-    "Distributions", 
-    "Graphs",
-    "Ipopt", 
-    "JuMP",
-    "ProgressMeter", 
-    "Plots", 
-    "StatsBase",
-    "DifferentialEquations"
-])
-
 # --- 1. Load Dependencies ---
 using DataFrames      # For managing results in a table
 using CSV             # For saving the summary CSV file
@@ -47,8 +21,7 @@ using Statistics      # Required by helpers
 using LinearAlgebra   # Required by helpers
 using Graphs          # Required by helpers/models
 using Ipopt           # Required by MaxEnt model optimisation
-# ❗ FIX: Explicitly resolve namespace ambiguity for the 'Model' function
-import JuMP: Model            # Required by MaxEnt model optimisation
+import JuMP: Model    # Required by MaxEnt model optimisation
 using StatsBase       # For sampling functions
 using ProgressMeter   # For tracking MaxEnt optimisation
 using FoodWebTools    # For network generating models
@@ -57,10 +30,6 @@ using FoodWebTools    # For network generating models
 
 # Load helper functions using the absolute path directory
 include(joinpath("lib", "verifying_networks.jl"))
-
-# ❗ LOCAL FIX 2: Forcibly include the file containing your new function directly. 
-# (Update "ltm_laura.jl" if you named the file differently).
-include("/Users/lauralandonblake/Desktop/Network_buddies/FoodWebTools.jl/src/generative_models/ltm_laura.jl")
 
 # Load MaxEnt model logic using the absolute path directory
 include(joinpath("lib", "maxentmodel.jl"))
@@ -73,9 +42,6 @@ Random.seed!(MASTER_SEED)
 
 S = 15               # Initial species richness
 N_REPLICATES = 100   # Target number of replicates per model
-
-# Absolute Output path
-OUTPUT_DIR = joinpath("data", "outputs")
 
 # --- Verification Toggle ---
 # Set to false to entirely bypass the filtering logic in `lib/verifying_networks.jl`
@@ -152,25 +118,6 @@ for i = 1:N_REPLICATES
     result_ltm.percent_basal, 
     result_ltm.connectance, 
     result_ltm.adj, 
-    inputs.bodymasses, 
-    inputs.metabolic_classes))
-
-    # Added ltm_laura
-    result_ltm_laura = run_and_filter_ltm_laura(spp_list_int, 
-    inputs.bodymasses, 
-    inputs.metabolic_classes, 
-    verify_web, 
-    BASAL_RANGE, 
-    CONNECTANCE_RANGE)
-    push!(master_df, (run_ID, 
-    "ltm_laura_$i", 
-    "LTM_Laura", 
-    S, 
-    target_basal_fraction, 
-    missing, 
-    result_ltm_laura.percent_basal, 
-    result_ltm_laura.connectance, 
-    result_ltm_laura.adj, 
     inputs.bodymasses, 
     inputs.metabolic_classes))
     
@@ -299,12 +246,8 @@ end
 
 @info "All replicates generated. Saving un-filtered results..."
 
-date_str = Dates.format(now(), "dd-mm-yyyy")
-filename_base = "network_test_unfiltered_seed_$(MASTER_SEED)_$(date_str)"
-
-mkpath(OUTPUT_DIR)
-csv_path = joinpath(OUTPUT_DIR, "$(filename_base).csv")
-jld2_path = joinpath(OUTPUT_DIR, "$(filename_base).jld2")
+csv_path = joinpath("networks", "networks.csv")
+jld2_path = joinpath("networks", "networks.jld2")
 
 @info "Saving full data to CSV..."
 try

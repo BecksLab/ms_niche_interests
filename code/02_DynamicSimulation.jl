@@ -1,16 +1,9 @@
 #=
 -------------------------------------------------
-03_DynamicSimulation.jl
+02_DynamicSimulation.jl
 Runs END to equilibrium on unfiltered networks.
 -------------------------------------------------
 =#
-
-using Pkg
-Pkg.activate(".")
-
-# Explicitly pull ecological dynamics packages from GitHub
-Pkg.add(url="https://github.com/econetoolbox/EcologicalNetworksDynamics.jl.git")
-Pkg.add(url="https://github.com/econetoolbox/EcoNetPostProcessing.jl.git")
 
 # --- 1. Load Dependencies ---
 using CSV
@@ -25,9 +18,7 @@ using Statistics
 include(joinpath("lib", "sim.jl"));
 
 # --- 3. Import networks .jld2 object ---
-date_str = "11-06-2026"
-path = joinpath(BASE_DIR, "data", "outputs", "network_test_unfiltered_seed_42_$(date_str).jld2")
-networks = load_object(path)
+networks = load_object("networks/networks.jld2")
 sort!(networks, :fw_ID) 
 
 # --- 4. Run Dynamic Simulations ---
@@ -50,8 +41,8 @@ simulation_summary = DataFrame(
 
 final_network = DataFrame(
     fw_ID = String[],
-    model = String[],
-    alive_connected_A = Any[],
+    Model = String[],
+    AdjacencyMatrix = Union{Matrix{Int},Missing}[],
     MetabolicClasses = Union{Vector{Symbol},Missing}[] 
 )
 
@@ -66,8 +57,7 @@ for i in 1:nrow(networks)
 
     fw = Foodweb(adj)  
 
-    # Added "LTM_Laura" 
-    if model_name in ("ADBM", "ATN", "LTM", "LTM_Laura")
+    if model_name in ("ADBM", "ATN", "LTM")
         bodymasses_rescaled = rescale_bodymass(bodymasses, met_class)
         params = default_model(
             fw,
@@ -119,10 +109,9 @@ for i in 1:nrow(networks)
     # Package output objects for storage
     summary_out = NamedTuple{filter(k -> k != :alive_connected_A, keys(out))}(out)
     push!(simulation_summary, (; fw_ID=string(fwid), model=string(model_name), summary_out...); promote = true)
-    push!(final_network, (fw_ID=string(fwid), model=string(model_name), alive_connected_A=out.alive_connected_A, MetabolicClasses=met_class))
+    push!(final_network, (fw_ID=string(fwid), Model=string(model_name), AdjacencyMatrix=Int.(out.alive_connected_A), MetabolicClasses=met_class))
 end
 
 # --- 5. Save Simulation Summary ---
-mkpath(joinpath("data", "outputs"))
-CSV.write(joinpath("data", "outputs", "END_simulation_summary_$(date_str).csv"), simulation_summary)
-JLD2.save_object(joinpath("data", "outputs", "END_final_adj_$(date_str).jld2"), final_network)
+CSV.write("outputs/summary_stability.csv", simulation_summary)
+JLD2.save_object("networks/networks_END.jld2", final_network)
