@@ -360,3 +360,36 @@ function run_and_filter_random(
     return _process_web(adj, verify_web, basal_range, connectance_range)
 end
 
+"""
+    run_and_filter_ltm_laura(...)
+
+Wrapper for Laura's Latent Trait Model. Passes the strict 
+mass ratio envelope constraint down to the core generator.
+"""
+function run_and_filter_ltm_laura(
+    species_indices::AbstractVector{Int},
+    bodymasses::Vector{Float64},
+    metabolic_classes::AbstractVector{Symbol},
+    verify_web::Bool,
+    basal_range::Tuple{Float64,Float64},
+    connectance_range::Tuple{Float64,Float64};
+    mass_ratio_envelope::Tuple{Float64,Float64} = (1e-1, 1e4) # Pass down strict Borse et al. bounds
+)
+    # 1. Call your custom core model function with the physical envelope constraints
+    ltm_laura_result = ltm_laura(
+        species_indices, 
+        bodymasses, 
+        metabolic_classes;
+        mass_ratio_envelope = mass_ratio_envelope,
+        trait_correlation = 1.0, # Keeps standard perfect correlation for standard LTM matching
+        stochastic = true        # Allow probabilistic link realization matching script defaults
+    )
+    
+    # 2. Process and extract emergent metrics via the unified project pipeline
+    return _process_web(
+        ltm_laura_result.binary_matrix,
+        verify_web,
+        basal_range,
+        connectance_range,
+    )
+end

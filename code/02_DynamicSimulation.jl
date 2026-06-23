@@ -1,8 +1,4 @@
 #=
--------------------------------------------------
-03_Dynamicsimulation.jl
--------------------------------------------------
-
 This script performs dynamic simulations of generated food webs 
 and generates two output files.
 
@@ -18,11 +14,7 @@ Second, a CSV file (dynamic_metrics.csv) containing dynamic stability-related me
         - Skewness of absolute Jacobian interaction strengths;
         - Resilience;
         - Reactivity; 
-
 =#
-
-using Pkg
-Pkg.activate(".")
 
 # --- 1. Load Dependencies ---
 using CSV
@@ -36,11 +28,10 @@ using Statistics
 using SparseArrays
 
 # --- 2. Load All Code ---
-include("lib/sim.jl");
+include(joinpath("lib", "sim.jl"));
 
 # --- 3. Import networks .jld2 object ---
-path = joinpath(@__DIR__, "data", "outputs", "network_test_verified_seed_42_29-03-2026.jld2")
-pre_networks = load_object(path)
+pre_networks = load_object("networks/networks.jld2")
 sort!(pre_networks, :fw_ID) 
 
 # --- 4. Run Dynamic Simulations ---
@@ -73,6 +64,7 @@ for i in 1:nrow(pre_networks)
     met_class    = pre_networks.MetabolicClasses[i]
     pre_adj      = pre_networks.AdjacencyMatrix[i]
 
+
     fw = Foodweb(pre_adj)  
 
     if model_name in ("ADBM", "ATN", "LTM")
@@ -83,6 +75,7 @@ for i in 1:nrow(pre_networks)
             ClassicResponse(; h = 2),
         )
     else
+        # Topology-only models revert to standard uniform mass assumptions
         params = default_model(
             fw,
             BodyMass(; Z = 100),
@@ -90,8 +83,10 @@ for i in 1:nrow(pre_networks)
         )
     end
 
+    # Set initial uniform random biomasses
     B0 = rand(params.S)
 
+    # Execute simulation with performance callbacks active
     sol = simulate(
         params, B0, tmax;
         callback = CallbackSet(
@@ -101,6 +96,7 @@ for i in 1:nrow(pre_networks)
         show_degenerated = false,
     )
 
+    # Process and safely trap potential numerical errors
     out = try
         get_sim_summary(params, sol)
     catch err
@@ -128,15 +124,11 @@ for i in 1:nrow(pre_networks)
                             promote = true)
 
     # Save the post-simulation adjacency matrix.
-    push!(post_networks, (; fw_ID = string(fwid), model = string(model_name), post_adj = out.post_adj);
+    push!(post_networks, (; fw_ID = string(fwid), Model = string(model_name), AdjacencyMatrix = out.post_adj);
                           promote = true)
-
 end
 
 
 # --- 5. Save Simulation Summary ---
-mkpath(joinpath(@__DIR__, "data", "outputs"))
-
-CSV.write(joinpath(@__DIR__, "data", "outputs", "dynamic_metrics.csv"), dynamic_metrics)
-
-JLD2.save_object(joinpath(@__DIR__, "data", "outputs", "post_networks.jld2"), post_networks)
+CSV.write("outputs/dynamic_metrics.csv", dynamic_metrics)
+JLD2.save_object("networks/networks_END.jld2", post_networks)
