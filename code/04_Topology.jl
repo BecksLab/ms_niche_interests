@@ -44,7 +44,6 @@ function calculate_topology(networks::DataFrame)
         model = networks.Model[i]
         id = networks.fw_ID[i]
 
-        # deal with missing networks
         if ismissing(A)
 
             push!(topology, (
@@ -64,59 +63,37 @@ function calculate_topology(networks::DataFrame)
                 trophicCoherence = missing
             ))
 
-            continue
-        end
+        else
+            net = build_network(A)
 
-        # build network
-        net = try
-            build_network(A)
-        catch
-            @warn "build_network failed for model=$model"
-            push!(topology, (
-                fw_ID = id,
-                model = model,
-                richness = missing,
-                connectance = missing,
-                complexity = missing,
-                max_trophic_level = missing,
-                generality = missing,
-                vulnerability = missing,
-                top = missing,
-                ChLen = missing,
-                distance = missing,
-                centrality = missing,
-                clustering = missing,
-                trophicCoherence = missing
-            ))
-            continue
-        end
+            # ---------------- FIX ADDED HERE ----------------
+            # guard against empty / degenerate networks
+            if isempty(A) || count(!iszero, A) == 0
+                push!(topology, (
+                    fw_ID = id,
+                    model = model,
+                    richness = 0,
+                    connectance = missing,
+                    complexity = missing,
+                    max_trophic_level = missing,
+                    generality = missing,
+                    vulnerability = missing,
+                    top = missing,
+                    ChLen = missing,
+                    distance = missing,
+                    centrality = missing,
+                    clustering = missing,
+                    trophicCoherence = missing
+                ))
+                continue
+            end
+            # ------------------------------------------------
 
-        # summary
-        try
             d = network_summary(net)
 
             d[:model] = model
+            d[:fw_ID] = id
             push!(topology, d)
-
-        catch
-            @warn "network_summary failed for model=$model"
-
-            push!(topology, (
-                fw_ID = id,
-                model = model,
-                richness = missing,
-                connectance = missing,
-                complexity = missing,
-                max_trophic_level = missing,
-                generality = missing,
-                vulnerability = missing,
-                top = missing,
-                ChLen = missing,
-                distance = missing,
-                centrality = missing,
-                clustering = missing,
-                trophicCoherence = missing
-            ))
         end
     end
 
