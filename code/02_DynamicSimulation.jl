@@ -52,8 +52,8 @@ dynamic_metrics = DataFrame(
 
 post_networks = DataFrame(
     fw_ID = String[],
-    model = String[],
-    post_adj = Any[]
+    Model = String[],
+    AdjacencyMatrix = Any[]
 )
 
 for i in 1:nrow(pre_networks)
