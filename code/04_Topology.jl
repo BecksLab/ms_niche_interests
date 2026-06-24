@@ -101,7 +101,25 @@ function calculate_topology(networks::DataFrame)
 end
 
 networks = load_object("networks/networks.jld2")
+networks.AdjacencyMatrix = map(networks.AdjacencyMatrix) do x
+    if ismissing(x)
+        missing
+    elseif isa(x, AbstractMatrix) && isempty(x)
+        missing
+    else
+        Int.(x)
+    end
+end
 networks_end = load_object("networks/networks_END.jld2")
+networks_end.AdjacencyMatrix = map(networks_end.AdjacencyMatrix) do x
+    if ismissing(x)
+        missing
+    elseif isa(x, AbstractMatrix) && isempty(x)
+        missing
+    else
+        Int.(x)
+    end
+end
 
 top_initial = calculate_topology(networks)
 top_end = calculate_topology(networks_end)
