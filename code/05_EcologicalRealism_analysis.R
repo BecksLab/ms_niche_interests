@@ -231,17 +231,22 @@ summary_wide <-
   left_join(pre_summary, post_summary) %>%
   left_join(stab_summ) %>%
   squad_up(model, post_state, pre_state, stab_state) %>%
-  tally()
+  tally() %>%
+  glow_up(alpha = if_else(post_state == "pass" &&
+                            #pre_state == "pass" &&
+                            stab_state == "stable",
+                          0.8,
+                          0.3))
 
 ggplot(data = summary_wide,
        aes(axis1 = pre_state, axis2 = stab_state, axis3 = post_state,
            y = n)) +
   scale_x_discrete(limits = c("Pre Struct", "Stability", "Post Struct"), 
                    expand = c(.2, .05)) +
-  geom_alluvium(aes(fill = model)) +
+  geom_alluvium(aes(fill = model, alpha = alpha)) +
   geom_stratum() +
   geom_text(stat = "stratum", aes(label = after_stat(stratum))) +
   facet_wrap(vars(model)) +
   scale_fill_manual(values = model_colours) +
+  scale_alpha_identity() +
   figure_theme 
-
