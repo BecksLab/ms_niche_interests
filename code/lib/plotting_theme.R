@@ -50,3 +50,4 @@ col_div <- c("#006D75", "#F4F1DE", "#EA7200")
 
 # for grey accent
 shark_silver <- "#A2AAAD"
+shark_black <- "#00181F"
