@@ -3,22 +3,26 @@ library(ggrepel)
 library(ggtext)
 library(patchwork)
 
+# for accents
+shark_silver <- "#A2AAAD"
+shark_black <- "#00181F"
+
 ## 2. General Figure Theme ----
 
 figure_theme = 
   theme_classic() +
-  theme(panel.border = element_rect(colour = '#00181F',
+  theme(panel.border = element_rect(colour = shark_black,
                                     fill = "white"),
         panel.grid.minor = element_blank(),
         panel.grid.major.x = element_blank(),
         axis.line = element_blank(),
-        axis.ticks = element_line(colour = colorspace::lighten("#00181F", 0.7),
+        axis.ticks = element_line(colour = colorspace::lighten(shark_black, 0.7),
                                   linewidth = 0.3),
         plot.background = element_rect(fill = "white", colour = NA),
         panel.background = element_rect(fill = "white", colour = NA),
         legend.background = element_rect(fill = "white", colour = NA),
         legend.key = element_blank(),
-        text = element_text(color = "#00181F"),
+        text = element_text(color = shark_black),
         plot.margin = margin(10, 5, 5, 10),
         legend.margin = margin(1, 2, 1, 2)
   )
@@ -47,7 +51,3 @@ col_cont <- c("#CCF5FF", "#83C5BE", "#002B36")
 # 3. DIVERGING RAMP
 
 col_div <- c("#006D75", "#F4F1DE", "#EA7200")
-
-# for grey accent
-shark_silver <- "#A2AAAD"
-shark_black <- "#00181F"
