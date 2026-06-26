@@ -67,7 +67,7 @@ classify_foodwebs <- function(dat) {
 # ============================================================
 
 realism_post <-
-  post_df %>%
+  read.csv("outputs/realism_initial.csv") %>%
   yeet(!is.na(S)) %>%
   classify_foodwebs() %>%
   mutate(
@@ -78,7 +78,7 @@ realism_post <-
   )
 
 realism_pre <-
-  pre_df %>%
+  read.csv("outputs/realism_END.csv") %>%
   classify_foodwebs() %>%
   mutate(
     prop_isolated = isolated / S,
@@ -86,10 +86,12 @@ realism_pre <-
     prop_illogical = illogical / S,
     state = "pre")
 
-realism_df <- rbind(realism_post, realism_pre) %>%
+realism_df <- 
+  rbind(realism_post, realism_pre) %>%
   glow_up(mx_tl_pct = if_else(closed_loops > 0,
                               NA,
-                              mx_tl_pct))
+                              mx_tl_pct),
+          state = factor(state, levels = c("pre", "post")))
 
 # ============================================================
 # Structural realism plots
@@ -106,8 +108,10 @@ p_struct_1 <-
              colour = shark_silver) +
   geom_violin(position = "dodge", 
               alpha = 0.5) +
+  labs(x = NULL) +
   scale_colour_manual(values = model_colours) +
-  figure_theme
+  figure_theme +
+  theme(legend.position = 'none')
 
 
 p_struct_2 <-
@@ -121,8 +125,10 @@ p_struct_2 <-
               alpha = 0.5) +
   scale_colour_manual(values = model_colours) +
   labs(y = "TL as % of expected max",
+       x = NULL,
        caption = "Note for networks with loops TL was not reported, expected max = 2 + 0.8 * log2(S)") +
-  figure_theme
+  figure_theme +
+  theme(legend.position = 'none')
 
 p_struct_3 <-
   ggplot(realism_df,
@@ -136,8 +142,10 @@ p_struct_3 <-
   geom_violin(position = "dodge", 
               alpha = 0.5) +
   scale_colour_manual(values = model_colours) +
-  labs(y = "Proportion basal") +
-  figure_theme
+  labs(y = "Proportion basal",
+       x = NULL) +
+  figure_theme +
+  theme(legend.position = 'none')
 
 # ============================================================
 # Species realism plots
@@ -157,7 +165,8 @@ p_species_1 <-
              fill = model)) +
   geom_col(position = position_dodge()) +
   scale_fill_manual(values = model_colours) +
-  labs(y = "Proportion isolated species") +
+  labs(y = "Proportion isolated species",
+       x = NULL) +
   figure_theme
 
 p_species_2 <-
@@ -167,7 +176,8 @@ p_species_2 <-
              fill = model)) +
   geom_col(position = position_dodge()) +
   scale_fill_manual(values = model_colours) +
-  labs(y = "Proportion illogical species") +
+  labs(y = "Proportion illogical species",
+       x = NULL) +
   figure_theme
 
 p_species_3 <-
@@ -178,7 +188,8 @@ p_species_3 <-
   geom_col(position = position_dodge()) +
   scale_fill_manual(values = model_colours) +
   labs(y = "Proportion of loops",
-       caption = "calculated as n loops/S^1") +
+       caption = "calculated as n loops/S^1",
+       x = NULL) +
   figure_theme
 
 # ============================================================
@@ -197,8 +208,7 @@ p_species_3 <-
   ) +
   plot_layout(guides='collect') +
   plot_annotation(
-    title = "Food-web realism space",
-    subtitle = "Shaded regions denote empirically realistic structural bounds"
+    title = "Food-web realism space"
   )
 
 library(scatterplot3d)
@@ -212,16 +222,22 @@ scatterplot3d(
 )
 
 
-pre_summary  <- classify_foodwebs(pre_df) %>%
+pre_summary  <-  
+  read.csv("outputs/realism_initial.csv") %>%
+  classify_foodwebs() %>%
   vibe_check(model, category, fw_ID) %>%
   lowkey(pre_state = category)
-post_summary <- classify_foodwebs(post_df) %>%
+post_summary <- 
+  read.csv("outputs/realism_END.csv") %>%
+  classify_foodwebs() %>%
   lowkey(post_state = category) %>%
   glow_up(post_state = if_else(is.na(S),
                                "non_stable",
                                post_state)) %>%
   vibe_check(model, post_state, fw_ID)
-stab_summ <- post_df %>%
+stab_summ <-  
+  read.csv("outputs/realism_END.csv") %>%
+  classify_foodwebs() %>%
   glow_up(stab_state = if_else(is.na(S),
                                "non_stability",
                                "stable"))  %>%
@@ -243,7 +259,10 @@ ggplot(data = summary_wide,
            y = n)) +
   scale_x_discrete(limits = c("Pre Struct", "Stability", "Post Struct"), 
                    expand = c(.2, .05)) +
-  geom_alluvium(aes(fill = model, alpha = alpha)) +
+  geom_alluvium(aes(fill = model, 
+                    alpha = alpha),
+                knot.pos = 0.5,
+                colour = "white") +
   geom_stratum() +
   geom_text(stat = "stratum", aes(label = after_stat(stratum))) +
   facet_wrap(vars(model)) +
