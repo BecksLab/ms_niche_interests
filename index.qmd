@@ -103,11 +103,19 @@ Each network was simulated until a steady state was reached, with a minimum simu
 
 ## Post-simulation analyses
 
-Post-simulation analyses quantified two complementary outcomes: community dynamics and realise network topology at equilibrium.
+### Realistic Networks
 
-For community dynamics, we focused on persistence (proportion of species surviving), total community biomass, maximum trophic level, diversity (Shannon, evenness), and local stability metrics (resilience and reactivity). Local stability metrics were calculated using EcoNetPostProcessing.jl.
+Something about assessing which networks we generate actually 'look' like we expect a network to look *i.e.,* there is a degree of ecological plausibility. Things to think about - at the network level things like Co, max trophic level and percent basal and st the node level - loops (although maybe not?), isolated species, illogical species.
 
-To assess how dynamics reshape network topology, we recalculated all structural metrics for the realised (post-extinction) network topology, enabling direct comparison between initial and emergent structure across models.
+### Phenotypic trajectory analysis
+
+To quantify how ecological dynamics reshaped network topology, all structural metrics were recalculated following the dynamic simulations using the realised (post-extinction) network. These post-dynamics metrics were compared with those of the initial network using a phenotypic trajectory analysis (PTA) framework [REF], where each network was represented as a point in a multivariate topology space defined by the suite of structural network metrics [TABLE]. Prior to analysis, all metrics were standardised (mean = 0, SD = 1) to remove differences in scale before constructing a common topology space using principal component analysis (PCA). Both pre- and post-dynamics networks were projected into this shared ordination, allowing each network to be represented by a trajectory from its initial to realised topology.
+
+Trajectory vectors were calculated as the displacement between pre- and post-dynamics positions in the five-dimensional PCA space. Trajectory length was calculated as the Euclidean distance between the two states, providing a measure of the magnitude of topological change. Mean trajectories (centroids) were calculated for each network reconstruction model to summarise their overall direction of change. Pairwise angular differences between trajectory vectors were then calculated using cosine similarity to quantify whether different reconstruction models exhibited similar directions of topological change, independent of the magnitude of displacement. Finally, convergence among network topologies was assessed by calculating each network's Euclidean distance to the global post-dynamics centroid before and after simulation, with positive reductions in distance indicating convergence towards a common realised network topology.
+
+### Community dynamics
+
+For community dynamics, we focused on persistence (proportion of species surviving), total community biomass, maximum trophic level, diversity (Shannon, evenness), and local stability metrics (resilience and reactivity). Local stability metrics were calculated using EcoNetPostProcessing.jl. Note this allows us to see if we draw the same inferences in network behaviour between models.
 
 ## Experimental design
 
@@ -115,25 +123,29 @@ The analysis was designed to isolate the effect of network-generating assumption
 
 # Results
 
-Structural Signatures: Report how much variance is explained by the model choice.
+## Realistic Networks
 
-The Niche Model Template: Identify if the structural models occupy a central 'mean space' or if the dynamic models diverge into non-overlapping regions.
+Need to report the number of networks that fail and 'how' they fail...
 
-![Canonical discriminant analysis (CDA) of ecological network metrics for the seven model types. Each point represents a replicate, and ellipses indicate 95% confidence regions for each model. The second column represents the correlation of the various network metrics with the respective CDA axes. Left is before putting into END and right is post simulation structure (equilibrium topology)](figures/cda_compare.png){#fig-structure}
+![TODO](figures/realism_space.png){#fig-checks}
 
-![Because Andrew will inevitably ask...](figures/cda_loadings_compare.png){#fig-loadings} 
+![TODO](figures/realism_space_sankey.png){#fig-sankey}
 
-Which models are significantly further from Niche than Niche itself: What is the distance of other networks from the niche and does that distance decrease when at the equilibrium state?
+## Networks Converge in Structure
 
-![Something something Mahalanobis distance something something. Note this also includes niche from niche centroid.](figures/cda_emm_distance.png){#fig-emm}
+Projection of all networks into a common topology space revealed that initial and realised food-web topologies occupied distinct regions of multivariate space (@figures/PTA.png). The XX principal components explained **X%** of the total variation in network structure, with variation primarily associated with [mention the highest loading metrics, e.g. connectance, modularity, trophic coherence, etc.] (@figures/PTA.png A). While considerable separation among reconstruction models was evident in the initial topology space, post-dynamics networks exhibited greater overlap, suggesting that ecological dynamics altered structural differences among models.
 
-Divergent Stories in Dynamics: Show how/if models with similar global structures (like connectance) can lead to wildly different pathways of change/collapse/straight lines.
+All reconstruction models underwent measurable shifts in topology following dynamic simulations, although both the magnitude and direction of change differed among models (@figures/PTA.png B). Centroid trajectories showed that all models moved broadly in the same direction, indicating that ecological dynamics consistently reshaped network topology.
 
-![Boxplots showing stability metrics/information about dynamics of the system.](figures/boxplots_dynamic_metrics.png){#fig-stability}
+The principal dimensions underlying these changes differed among reconstruction models (@figures/PTA.png C). For example, **[Models...]** exhibited its largest displacement along PC1, whereas **[Models ...]** changed primarily along PC3, suggesting that different aspects of network structure were modified depending on the initial reconstruction framework. However given that the models converged to a similar point in multivariate space it suggests that there is a selection for a specific network 'shape' in once a network reaches stability.
 
-We can also look at this in the multivariate space
+Comparison of trajectory vectors demonstrated that most models exhibited small angular differences, indicating that ecological dynamics produced similar directions of topological change across reconstruction methods. Trajectory lengths ranged from **X–Y**, with **[Model]** exhibiting the greatest overall restructuring and **[Model]** the least.
 
-![Blah blah blah. Multivariate. Blah blah blah.](figures/lda_dynamic_metrics.png){#fig-dynam_multivariate}
+Finally, realised networks showed evidence of convergence within topology space (@figures/PTA.png D). The mean Euclidean distance to the global realised-network centroid decreased following dynamic simulations for all models, suggesting that ecological dynamics drove networks towards a common structural endpoint despite differences in initial topology.
+
+![Ecological dynamics reshape food-web topology within a shared multivariate topology space. Network structural metrics were standardised and summarised using principal component analysis, with each network represented by its position before and after dynamic simulations. (A) Principal component loadings showing the contribution of individual network metrics to topology space. (B) Centroid trajectories for each reconstruction model, illustrating the direction and magnitude of topological change between initial and realised networks. (C) Component-wise displacement of model centroids along the first five principal component axes, highlighting the principal dimensions responsible for topological change. (D) Mean Euclidean distance of networks to the overall realised-network centroid before and after simulations, providing a measure of convergence in network topology.](figures/PTA.png){#fig-PTA}
+
+## Inferred network dynamics
 
 # Discussion
 

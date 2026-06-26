@@ -2,17 +2,11 @@
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{figures/cda_compare.png}}
+\pandocbounded{\includegraphics[keepaspectratio]{figures/realism_space.png}}
 
 }
 
-\caption{\label{fig-structure}Canonical discriminant analysis (CDA) of
-ecological network metrics for the seven model types. Each point
-represents a replicate, and ellipses indicate 95\% confidence regions
-for each model. The second column represents the correlation of the
-various network metrics with the respective CDA axes. Left is before
-putting into END and right is post simulation structure (equilibrium
-topology)}
+\caption{\label{fig-checks}TODO}
 
 \end{figure}
 \efloatseparator
@@ -21,11 +15,11 @@ topology)}
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{figures/cda_loadings_compare.png}}
+\pandocbounded{\includegraphics[keepaspectratio]{figures/realism_space_sankey.png}}
 
 }
 
-\caption{\label{fig-loadings}Because Andrew will inevitably ask\ldots{}}
+\caption{\label{fig-sankey}TODO}
 
 \end{figure}
 \efloatseparator
@@ -34,39 +28,23 @@ topology)}
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{figures/cda_emm_distance.png}}
+\pandocbounded{\includegraphics[keepaspectratio]{figures/PTA.png}}
 
 }
 
-\caption{\label{fig-emm}Something something Mahalanobis distance
-something something. Note this also includes niche from niche centroid.}
-
-\end{figure}
-\efloatseparator
- 
-\begin{figure}
-
-\centering{
-
-\pandocbounded{\includegraphics[keepaspectratio]{figures/boxplots_dynamic_metrics.png}}
-
-}
-
-\caption{\label{fig-stability}Boxplots showing stability
-metrics/information about dynamics of the system.}
-
-\end{figure}
-\efloatseparator
- 
-\begin{figure}
-
-\centering{
-
-\pandocbounded{\includegraphics[keepaspectratio]{figures/lda_dynamic_metrics.png}}
-
-}
-
-\caption{\label{fig-dynam_multivariate}Blah blah blah. Multivariate.
-Blah blah blah.}
+\caption{\label{fig-PTA}Ecological dynamics reshape food-web topology
+within a shared multivariate topology space. Network structural metrics
+were standardised and summarised using principal component analysis,
+with each network represented by its position before and after dynamic
+simulations. (A) Principal component loadings showing the contribution
+of individual network metrics to topology space. (B) Centroid
+trajectories for each reconstruction model, illustrating the direction
+and magnitude of topological change between initial and realised
+networks. (C) Component-wise displacement of model centroids along the
+first five principal component axes, highlighting the principal
+dimensions responsible for topological change. (D) Mean Euclidean
+distance of networks to the overall realised-network centroid before and
+after simulations, providing a measure of convergence in network
+topology.}
 
 \end{figure}
