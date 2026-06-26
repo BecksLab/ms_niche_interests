@@ -282,3 +282,12 @@ ggsave("../figures/realism_space_sankey.png",
        width = 8000,
        height = 6000,
        units = "px")
+
+# also export list of 'perfect' network ids
+left_join(pre_summary, post_summary) %>%
+  left_join(stab_summ) %>%
+  yeet(post_state == "pass" &
+         #pre_state == "pass" &
+         stab_state == "stable") %>%
+  vibe_check(fw_ID) %>%
+  write_csv("outputs/perfect_net_ids.csv")
