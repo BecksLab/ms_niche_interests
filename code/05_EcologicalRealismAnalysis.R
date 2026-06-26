@@ -188,7 +188,7 @@ p_species_3 <-
   geom_col(position = position_dodge()) +
   scale_fill_manual(values = model_colours) +
   labs(y = "Proportion of loops",
-       caption = "calculated as n loops/S^1",
+       caption = "calculated as n loops/S^2",
        x = NULL) +
   figure_theme
 
@@ -210,6 +210,12 @@ p_species_3 <-
   plot_annotation(
     title = "Food-web realism space"
   )
+
+ggsave("../figures/realism_space.png",
+       dpi = 600,
+       width = 8000,
+       height = 6000,
+       units = "px")
 
 library(scatterplot3d)
 
@@ -268,4 +274,11 @@ ggplot(data = summary_wide,
   facet_wrap(vars(model)) +
   scale_fill_manual(values = model_colours) +
   scale_alpha_identity() +
-  figure_theme 
+  figure_theme +
+  theme(legend.position = 'none')
+
+ggsave("../figures/realism_space_sankey.png",
+       dpi = 600,
+       width = 8000,
+       height = 6000,
+       units = "px")
