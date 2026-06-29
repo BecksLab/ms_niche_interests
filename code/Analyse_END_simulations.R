@@ -1,5 +1,3 @@
-rm(list = ls())
-
 library(tidyverse)
 library(here)
 library(MASS)
@@ -10,64 +8,30 @@ source("lib/plotting_theme.R")
 
 #------1. Load data ------------------------------------------------------------
 dynamic_metric <- read_csv(
-  "data/outputs/END_simulation_summary_03_05_2026.csv",
+  "outputs/dynamic_metrics.csv",
   show_col_types = FALSE)
 
 dynamic_metric <- dynamic_metric %>%
-  mutate(
+  glow_up(
     # use log10(x + 1) because some food webs collapse at equilibrium
-    log_maxTL = log10(max_trophic_level + 1),
-    log_total_biomass = log10(total_biomass + 1),
-    model = factor(model),
-    model = relevel(model, ref = "Niche")) # set niche model as reference
-
-eq_topology <- read_csv(
-  "data/outputs/END_topology_03_05_2026.csv",
-  show_col_types = FALSE) %>%
-  dplyr::select(-fw_ID) %>%
-  mutate(
-    model = factor(model),
-    model = relevel(model, ref = "Niche"))
+    log_total_biomass = log10(biomass_shannon + 1))
 
 #------2. Difference checks across models --------------------------------------
 # MANOVA for dynamic outputs
-dyn_metrics <- c(
-  "persistence",
-  "log_maxTL",
-  "log_total_biomass",
-  "shannon",
-  "evenness",
-  "resilience",
-  "reactivity"
-)
+dyn_metrics <- dynamic_metric %>%
+  vibe_check(-fw_ID, -model, -S_post, -L_post) %>%
+  names()
 
 dynamic_df <- dynamic_metric %>%
-  select(model, all_of(dyn_metrics)) %>%
+  vibe_check(model, all_of(dyn_metrics)) %>%
   na.omit()
 
 dynamic_dep <- dynamic_df %>%
-  select(all_of(dyn_metrics)) %>%
+  vibe_check(all_of(dyn_metrics)) %>%
   as.matrix()
 
 dynamic_manova <- manova(dynamic_dep ~ model, data = dynamic_df)
 summary(dynamic_manova, test = "Pillai")
-
-
-# MANOVA for equilibrium topology outputs
-topology_metrics <- eq_topology %>%
-  select(-model) %>%
-  names()
-
-topology_df <- eq_topology %>%
-  select(model, all_of(topology_metrics)) %>%
-  na.omit()
-
-topology_dep <- topology_df %>%
-  select(all_of(topology_metrics)) %>%
-  as.matrix()
-
-fit_topology <- manova(topology_dep ~ model, data = topology_df)
-summary(fit_topology, test = "Pillai")
 
 #------3. Boxplot of all simulation outputs across models ---------------------
 dyn_metric_labels <- c(
@@ -81,24 +45,23 @@ dyn_metric_labels <- c(
 )
 
 dynamic_out_long <- dynamic_df %>%
-  mutate(across(any_of(dyn_metrics), ~ ifelse(is.nan(.x), NA_real_, .x))) %>%
   pivot_longer(
     cols = all_of(dyn_metrics), names_to = "metric", values_to = "value") %>%
   filter(!is.na(value)) %>%
   mutate(
     # Keep facet order following dyn_metrics
-    metric = factor(metric, levels = dyn_metrics),
+    metric = factor(metric, levels = dyn_metrics)#,
     
     # Rename metrics using the same vector
-    metric_label = recode(as.character(metric), !!!dyn_metric_labels),
+    #metric_label = recode(as.character(metric), !!!dyn_metric_labels),
     
     # Keep renamed facet labels in the same order
-    metric_label = factor(metric_label, levels = dyn_metric_labels[dyn_metrics])
-  )
+    #metric_label = factor(metric_label, levels = dyn_metric_labels[dyn_metrics])
+  ) 
 
 boxplot_sim <- ggplot(dynamic_out_long, aes(x = model, y = value, colour = model)) +
   geom_boxplot(outlier.alpha = 0.5, width = 0.6) +
-  facet_wrap(~ metric_label, scales = "free_y") +  
+  facet_wrap(~ metric, scales = "free_y") +  
   labs(x = "", y = "") +
   scale_colour_manual(values = model_colours)  +
   figure_theme +
