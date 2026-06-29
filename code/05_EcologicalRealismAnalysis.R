@@ -67,8 +67,8 @@ classify_foodwebs <- function(dat) {
 # ============================================================
 
 realism_post <-
-  read.csv("outputs/realism_initial.csv") %>%
-  yeet(!is.na(S)) %>%
+  read.csv("outputs/realism_END.csv") %>%
+  yeet(S != 0) %>%
   classify_foodwebs() %>%
   mutate(
     prop_isolated = isolated / S,
@@ -78,7 +78,7 @@ realism_post <-
   )
 
 realism_pre <-
-  read.csv("outputs/realism_END.csv") %>%
+  read.csv("outputs/realism_initial.csv") %>%
   classify_foodwebs() %>%
   mutate(
     prop_isolated = isolated / S,
@@ -88,7 +88,7 @@ realism_pre <-
 
 realism_df <- 
   rbind(realism_post, realism_pre) %>%
-  glow_up(mx_tl_pct = if_else(closed_loops > 0,
+  glow_up(mx_tl_pct = if_else(mx_tl < 0,
                               NA,
                               mx_tl_pct),
           state = factor(state, levels = c("pre", "post")))
@@ -115,7 +115,8 @@ p_struct_1 <-
 
 
 p_struct_2 <-
-  ggplot(realism_df,
+  ggplot(realism_df %>%
+           yeet(mx_tl_pct < 2),
          aes(y = mx_tl_pct,
              x = state,
              colour = model)) +
@@ -126,7 +127,7 @@ p_struct_2 <-
   scale_colour_manual(values = model_colours) +
   labs(y = "TL as % of expected max",
        x = NULL,
-       caption = "Note for networks with loops TL was not reported, expected max = 2 + 0.8 * log2(S)") +
+       caption = "Note networks with negative TL were not reported, expected max = 2 + 0.8 * log2(S)") +
   figure_theme +
   theme(legend.position = 'none')
 
