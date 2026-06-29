@@ -73,7 +73,7 @@ boxplot_sim <- ggplot(dynamic_out_long, aes(x = model, y = value, colour = model
 
 boxplot_sim
 
-ggsave("../figures/boxplots_dynamic_metrics.png", boxplot_sim, 
+ggsave("../figures/dynamics_boxplot.png", boxplot_sim, 
        width = 12, height = 7, dpi = 600)
 
 #------4. Difference in group means --------------------------------------------
@@ -117,8 +117,10 @@ ggplot(emm_df,
   scale_colour_manual(values = model_colours) +
   figure_theme
 
-ggsave("../figures/emmeans_dynamic_metrics.png", 
-       width = 12, height = 7, dpi = 600)
+ggsave("../figures/dynamics_emmeans.png", 
+       width = 12, 
+       height = 7, 
+       dpi = 600)
 
 #------5. LDA on dynamic metrics -----------------------------------------------
 # Fit LDA using dynamic metrics
@@ -174,7 +176,7 @@ lda_dynamic_plot <- ggplot(
 
 lda_dynamic_plot
 
-ggsave("../figures/lda_dynamic_metrics.png",
+ggsave("../figures/dynamics_lda.png",
        lda_dynamic_plot,
        width = 8, height = 6, dpi = 600)
 
