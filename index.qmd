@@ -133,19 +133,23 @@ Need to report the number of networks that fail and 'how' they fail...
 
 ## Networks Converge in Structure
 
-Projection of all networks into a common topology space revealed that initial and realised food-web topologies occupied distinct regions of multivariate space (@figures/PTA.png). The XX principal components explained **X%** of the total variation in network structure, with variation primarily associated with [mention the highest loading metrics, e.g. connectance, modularity, trophic coherence, etc.] (@figures/PTA.png A). While considerable separation among reconstruction models was evident in the initial topology space, post-dynamics networks exhibited greater overlap, suggesting that ecological dynamics altered structural differences among models.
+Projection of all networks into a common topology space revealed that initial and realised food-web topologies occupied distinct regions of multivariate space (@fig-PTA). The XX principal components explained **X%** of the total variation in network structure, with variation primarily associated with [mention the highest loading metrics, e.g. connectance, modularity, trophic coherence, etc.] (@fig-PTA A). While considerable separation among reconstruction models was evident in the initial topology space, post-dynamics networks exhibited greater overlap, suggesting that ecological dynamics altered structural differences among models.
 
-All reconstruction models underwent measurable shifts in topology following dynamic simulations, although both the magnitude and direction of change differed among models (@figures/PTA.png B). Centroid trajectories showed that all models moved broadly in the same direction, indicating that ecological dynamics consistently reshaped network topology.
+All reconstruction models underwent measurable shifts in topology following dynamic simulations, although both the magnitude and direction of change differed among models (@fig-PTA B). Centroid trajectories showed that all models moved broadly in the same direction, indicating that ecological dynamics consistently reshaped network topology.
 
-The principal dimensions underlying these changes differed among reconstruction models (@figures/PTA.png C). For example, **[Models...]** exhibited its largest displacement along PC1, whereas **[Models ...]** changed primarily along PC3, suggesting that different aspects of network structure were modified depending on the initial reconstruction framework. However given that the models converged to a similar point in multivariate space it suggests that there is a selection for a specific network 'shape' in once a network reaches stability.
+The principal dimensions underlying these changes differed among reconstruction models (@fig-PTA C). For example, **[Models...]** exhibited its largest displacement along PC1, whereas **[Models ...]** changed primarily along PC3, suggesting that different aspects of network structure were modified depending on the initial reconstruction framework. However given that the models converged to a similar point in multivariate space it suggests that there is a selection for a specific network 'shape' in once a network reaches stability.
 
 Comparison of trajectory vectors demonstrated that most models exhibited small angular differences, indicating that ecological dynamics produced similar directions of topological change across reconstruction methods. Trajectory lengths ranged from **X–Y**, with **[Model]** exhibiting the greatest overall restructuring and **[Model]** the least.
 
-Finally, realised networks showed evidence of convergence within topology space (@figures/PTA.png D). The mean Euclidean distance to the global realised-network centroid decreased following dynamic simulations for all models, suggesting that ecological dynamics drove networks towards a common structural endpoint despite differences in initial topology.
+Finally, realised networks showed evidence of convergence within topology space (@fig-PTA D). The mean Euclidean distance to the global realised-network centroid decreased following dynamic simulations for all models, suggesting that ecological dynamics drove networks towards a common structural endpoint despite differences in initial topology.
 
 ![Ecological dynamics reshape food-web topology within a shared multivariate topology space. Network structural metrics were standardised and summarised using principal component analysis, with each network represented by its position before and after dynamic simulations. (A) Principal component loadings showing the contribution of individual network metrics to topology space. (B) Centroid trajectories for each reconstruction model, illustrating the direction and magnitude of topological change between initial and realised networks. (C) Component-wise displacement of model centroids along the first five principal component axes, highlighting the principal dimensions responsible for topological change. (D) Mean Euclidean distance of networks to the overall realised-network centroid before and after simulations, providing a measure of convergence in network topology.](figures/PTA.png){#fig-PTA}
 
-## Inferred network dynamics
+## Models confer similar stability inferences
+
+LTM is outlier but arguably not properly initialised/parameterised (cf Laura). Random also occasional 'outlier' but that makes sense - it's also the model that delivers the weird netowkrs (ecologically speaking)
+
+![TODO.](figures/dynamics_emmeans.png){#fig-emmeans}
 
 # Discussion
 

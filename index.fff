@@ -48,3 +48,16 @@ after simulations, providing a measure of convergence in network
 topology.}
 
 \end{figure}
+\efloatseparator
+ 
+\begin{figure}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{figures/dynamics_emmeans.png}}
+
+}
+
+\caption{\label{fig-emmeans}TODO.}
+
+\end{figure}
