@@ -1,5 +1,6 @@
 library(tidyverse)
 library(patchwork)
+library(ggforce)
 
 # ============================================================
 # Realism classification
@@ -106,7 +107,7 @@ p_struct_1 <-
              colour = shark_silver) +
   geom_hline(yintercept = 0.01, 
              colour = shark_silver) +
-  geom_violin(position = "dodge", 
+  geom_sina(position = "dodge", 
               alpha = 0.5) +
   labs(x = NULL) +
   scale_colour_manual(values = model_colours) +
@@ -122,7 +123,7 @@ p_struct_2 <-
              colour = model)) +
   geom_hline(yintercept = 1, 
              colour = shark_silver) +
-  geom_violin(position = "dodge", 
+  geom_sina(position = "dodge", 
               alpha = 0.5) +
   scale_colour_manual(values = model_colours) +
   labs(y = "TL as % of expected max",
@@ -140,7 +141,7 @@ p_struct_3 <-
              colour = shark_silver) +
   geom_hline(yintercept = 0.05, 
              colour = shark_silver) +
-  geom_violin(position = "dodge", 
+  geom_sina(position = "dodge", 
               alpha = 0.5) +
   scale_colour_manual(values = model_colours) +
   labs(y = "Proportion basal",
