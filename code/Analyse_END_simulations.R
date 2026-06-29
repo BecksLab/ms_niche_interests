@@ -1,3 +1,4 @@
+library(emmeans)
 library(tidyverse)
 library(here)
 library(MASS)
@@ -17,6 +18,7 @@ dynamic_metric <- dynamic_metric %>%
     log_total_biomass = log10(biomass_shannon + 1))
 
 #------2. Difference checks across models --------------------------------------
+
 # MANOVA for dynamic outputs
 dyn_metrics <- dynamic_metric %>%
   vibe_check(-fw_ID, -model, -S_post, -L_post) %>%
@@ -34,6 +36,7 @@ dynamic_manova <- manova(dynamic_dep ~ model, data = dynamic_df)
 summary(dynamic_manova, test = "Pillai")
 
 #------3. Boxplot of all simulation outputs across models ---------------------
+
 dyn_metric_labels <- c(
   persistence       = "Species persistence",
   log_maxTL         = "Log10(max trophic level + 1)",
@@ -73,7 +76,51 @@ boxplot_sim
 ggsave("../figures/boxplots_dynamic_metrics.png", boxplot_sim, 
        width = 12, height = 7, dpi = 600)
 
-#------4. LDA on dynamic metrics -----------------------------------------------
+#------4. Difference in group means --------------------------------------------
+
+# Fit model and calculate EMMs for each metric
+emm_list <- list()
+
+for (m in dyn_metrics) {
+  
+  formula <- as.formula(paste(m, "~ model"))
+  mod <- lm(formula, data = dynamic_df)
+  
+  # Calculate Estimated Marginal Means and compact letter display
+  emm <- emmeans(mod, specs = "model")
+  cld_res <- multcomp::cld(emm, Letters = letters)
+  
+  emm_list[[m]] <- as.data.frame(cld_res) %>% mutate(metric = m)
+}
+
+# Convert the EMMs list to a df
+emm_df <- bind_rows(emm_list)
+
+# plot
+ggplot(emm_df, 
+       aes(x = model, 
+           y = emmean, 
+           color = model)) +
+  geom_point(size = 3) +
+  geom_errorbar(aes(ymin = lower.CL, 
+                    ymax = upper.CL), 
+                width = 0.2, 
+                linewidth = 0.8) +
+  geom_text(aes(label = .group, 
+                y = upper.CL),
+            vjust = -0.6, size = 3.5, 
+            colour = shark_black) +
+  facet_wrap(~ metric,
+             scales = "free_y") +
+  labs(x = NULL,
+       y = "Predicted value")  +
+  scale_colour_manual(values = model_colours) +
+  figure_theme
+
+ggsave("../figures/emmeans_dynamic_metrics.png", 
+       width = 12, height = 7, dpi = 600)
+
+#------5. LDA on dynamic metrics -----------------------------------------------
 # Fit LDA using dynamic metrics
 lda_dynamic_fit <- MASS::lda(model ~ ., data = dynamic_df)
 
@@ -128,7 +175,7 @@ lda_dynamic_plot <- ggplot(
 lda_dynamic_plot
 
 ggsave("../figures/lda_dynamic_metrics.png",
-  lda_dynamic_plot,
-  width = 8, height = 6, dpi = 600)
+       lda_dynamic_plot,
+       width = 8, height = 6, dpi = 600)
 
 
