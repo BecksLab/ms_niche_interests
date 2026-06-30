@@ -2,7 +2,7 @@
 This script performs dynamic simulations of generated food webs 
 and generates two output files.
 
-First, a jld2 file (post_networks.jld2) containing the post-simulation food web networks, 
+First, a jld2 file (networks_END.jld2) containing the post-simulation food web networks, 
        represented as adjacency matrices of feeding links among species that remain alive and connected at equilibrium.
 
 Second, a CSV file (dynamic_metrics.csv) containing dynamic stability-related metrics for each food web:
@@ -44,7 +44,7 @@ dynamic_metrics = DataFrame(
     L_post = Int64[], # Number of links in the post-simulation network
     persistence = Float64[], # Persistence
     biomass_shannon = Float64[], # Shannon diversity of biomass distribution
-    gini_fluxes_formula = Float64[], # Gini coefficient of energy fluxes (formula)
+    gini_fluxes_formula = Float64[], # Gini coefficient of energy fluxes
     skewness_IS = Float64[], # Skewness of absolute interaction strengths
     resilience = Float64[],  # Resilience
     reactivity = Float64[]  # Reactivity
