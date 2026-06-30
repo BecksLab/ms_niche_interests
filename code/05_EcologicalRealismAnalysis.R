@@ -1,5 +1,6 @@
 library(tidyverse)
 library(patchwork)
+library(ggforce)
 
 # ============================================================
 # Realism classification
@@ -20,21 +21,17 @@ classify_foodwebs <- function(dat) {
       # Structural violations
       viol_mx_tl       = mx_tl > expected_mx_tl,
       viol_connectance = connectance < 0.01 | connectance > 0.40,
-      viol_prop_basal  = prop_basal > 0.50,
-      
+
       # Species violations
       viol_isolated     = isolated >= 1,
-      viol_closed_loops = closed_loops >= 1,
       viol_illogical    = illogical >= 1,
       
       structure_fail =
         viol_mx_tl |
-        viol_connectance |
-        viol_prop_basal,
+        viol_connectance,
       
       species_fail =
         viol_isolated |
-        viol_closed_loops |
         viol_illogical,
       
       category = case_when(
@@ -48,14 +45,11 @@ classify_foodwebs <- function(dat) {
       inside_structure =
         connectance >= 0.01 &
         connectance <= 0.40 &
-        prop_basal <= 0.50 &   
-        prop_basal >= 0.05 &
         mx_tl_pct <= 1,
       
       # Inside species realism region
       inside_species =
         isolated == 0 &
-        closed_loops == 0 &
         illogical == 0
     )
 }
@@ -72,7 +66,6 @@ realism_post <-
   classify_foodwebs() %>%
   mutate(
     prop_isolated = isolated / S,
-    prop_loops    = closed_loops / S^2,
     prop_illogical = illogical / S,
     state = "post"
   )
@@ -82,7 +75,6 @@ realism_pre <-
   classify_foodwebs() %>%
   mutate(
     prop_isolated = isolated / S,
-    prop_loops    = closed_loops / S^2,
     prop_illogical = illogical / S,
     state = "pre")
 
@@ -106,7 +98,7 @@ p_struct_1 <-
              colour = shark_silver) +
   geom_hline(yintercept = 0.01, 
              colour = shark_silver) +
-  geom_violin(position = "dodge", 
+  geom_sina(position = "dodge", 
               alpha = 0.5) +
   labs(x = NULL) +
   scale_colour_manual(values = model_colours) +
@@ -122,29 +114,12 @@ p_struct_2 <-
              colour = model)) +
   geom_hline(yintercept = 1, 
              colour = shark_silver) +
-  geom_violin(position = "dodge", 
+  geom_sina(position = "dodge", 
               alpha = 0.5) +
   scale_colour_manual(values = model_colours) +
   labs(y = "TL as % of expected max",
        x = NULL,
        caption = "Note networks with negative TL were not reported, expected max = 2 + 0.8 * log2(S)") +
-  figure_theme +
-  theme(legend.position = 'none')
-
-p_struct_3 <-
-  ggplot(realism_df,
-         aes(y = prop_basal,
-             x = state,
-             colour = model)) +
-  geom_hline(yintercept = 0.5, 
-             colour = shark_silver) +
-  geom_hline(yintercept = 0.05, 
-             colour = shark_silver) +
-  geom_violin(position = "dodge", 
-              alpha = 0.5) +
-  scale_colour_manual(values = model_colours) +
-  labs(y = "Proportion basal",
-       x = NULL) +
   figure_theme +
   theme(legend.position = 'none')
 
@@ -156,8 +131,7 @@ realism_df_freq <-
   realism_df %>%
   squad_up(model, state) %>%
   no_cap(prop_isolated = sum(viol_isolated, na.omit = TRUE)/n(),
-         prop_illogical = sum(viol_illogical, na.omit = TRUE)/n(),
-         prop_loops = sum(viol_closed_loops, na.omit = TRUE)/n())
+         prop_illogical = sum(viol_illogical, na.omit = TRUE)/n())
 
 p_species_1 <-
   ggplot(realism_df_freq,
@@ -181,31 +155,17 @@ p_species_2 <-
        x = NULL) +
   figure_theme
 
-p_species_3 <-
-  ggplot(realism_df_freq,
-         aes(y = prop_loops,
-             x = state,
-             fill = model)) +
-  geom_col(position = position_dodge()) +
-  scale_fill_manual(values = model_colours) +
-  labs(y = "Proportion of loops",
-       caption = "calculated as n loops/S^2",
-       x = NULL) +
-  figure_theme
-
 # ============================================================
 # Assemble figure
 # ============================================================
 
 (
   p_struct_1 +
-    p_struct_2 +
-    p_struct_3
+    p_struct_2
 ) /
   (
     p_species_1 +
-      p_species_2 +
-      p_species_3
+      p_species_2
   ) +
   plot_layout(guides='collect') +
   plot_annotation(
@@ -217,16 +177,6 @@ ggsave("../figures/realism_space.png",
        width = 8000,
        height = 6000,
        units = "px")
-
-library(scatterplot3d)
-
-scatterplot3d(
-  x = realism_df$connectance,
-  y = realism_df$prop_basal,
-  z = realism_df$mx_tl_pct,
-  color = model_colours[realism_df$model],
-  pch = if_else(realism_df$state == "pre", 16, 1)
-)
 
 
 pre_summary  <-  
@@ -292,3 +242,4 @@ left_join(pre_summary, post_summary) %>%
          stab_state == "stable") %>%
   vibe_check(fw_ID) %>%
   write_csv("outputs/perfect_net_ids.csv")
+
