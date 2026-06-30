@@ -39,7 +39,7 @@ tmin, tmax = 2000, 5000
 
 dynamic_metrics = DataFrame(
     fw_ID = String[],
-    model = String[],
+    Model = String[],
     S_post = Int64[], # Number of species in the post-simulation network
     L_post = Int64[], # Number of links in the post-simulation network
     persistence = Float64[], # Persistence
