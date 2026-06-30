@@ -244,6 +244,9 @@ Returned metrics:
 """
 function get_sim_summary(params, sol)
 
+    # Original species metabolic classes
+    met_class = params.metabolic_class
+
     # Final state biomasses
     Beq = sol.u[end]
 
@@ -252,6 +255,9 @@ function get_sim_summary(params, sol)
 
     # Alive and connected species
     alive_connected_idx = get_alive_connected_species(Beq, params)
+
+    # Alive and connected species metabolic classes
+    met_class_alive_connected = met_class[alive_connected_idx]
 
     # Empty case
     if isempty(alive_connected_idx)
@@ -264,7 +270,8 @@ function get_sim_summary(params, sol)
             skewness_IS = NaN,
             resilience = NaN,
             reactivity = NaN,
-            post_adj = spzeros(0, 0)
+            post_adj = spzeros(0, 0),
+            met_class_alive_connected = String[]
         )
     end
 
@@ -278,13 +285,13 @@ function get_sim_summary(params, sol)
     S_initial = ENDI.richness(params.A)
     S_eq = length(alive_connected_idx)
 
-    # 1. Persistence
+    # Persistence
     persistence_eq = S_eq / S_initial
 
-    # 2. Biomass Shannon diversity
+    # Biomass Shannon diversity
     biomass_shannon_eq = ENDI.shannon_diversity(Beq_alive_connected)
 
-    # 3. Fluxes using explicit ClassicResponse formula
+    # Fluxes using explicit ClassicResponse formula
     flux_formula = energy_flux_classic_formula(Beq, params; assimilated = false)
     flux_formula_ac = flux_formula[alive_connected_idx, alive_connected_idx]
 
@@ -293,26 +300,26 @@ function get_sim_summary(params, sol)
 
     gini_fluxes_eq = gini_coefficient(flux_formula_vals)
 
-    # 4. get Jacobian matrix for alive and connected species
+    # get Jacobian matrix for alive and connected species
     J_alive_connected = get_alive_connected_jacobian(
         params,
         Beq,
         alive_connected_idx
     )
 
-    # 5. get species interaction strengths (off-diagonal Jacobian elements)
+    # get species interaction strengths (off-diagonal Jacobian elements)
     IS_vals = get_pairwise_interaction_strengths(
         J_alive_connected;
         absolute = true
     )
 
-    # 6. Skewness of Jacobian interaction strengths
+    # Skewness of Jacobian interaction strengths
     skewness_IS_eq = get_skewness(IS_vals)
 
-    # 7. Resilience
+    # Resilience
     resilience_eq = get_fw_resilience(J_alive_connected)
 
-    # 8. Reactivity
+    # Reactivity
     reactivity_eq = get_fw_reactivity(J_alive_connected)
 
     return (
@@ -324,7 +331,8 @@ function get_sim_summary(params, sol)
         skewness_IS = skewness_IS_eq,
         resilience = resilience_eq,
         reactivity = reactivity_eq,
-        post_adj = post_adj
+        post_adj = post_adj,
+        met_class_alive_connected = met_class_alive_connected
     )
 end
 
