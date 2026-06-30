@@ -236,8 +236,7 @@ Returned metrics:
 - L_post: number of links in the post-simulation network (for NAN checking)
 - persistence
 - biomass_shannon
-- gini_fluxes_ENDI
-- gini_fluxes_formula
+- gini_fluxes
 - skewness_IS
 - resilience
 - reactivity
@@ -261,7 +260,7 @@ function get_sim_summary(params, sol)
             L_post = 0,
             persistence = 0.0,
             biomass_shannon = NaN,
-            gini_fluxes_formula = NaN,
+            gini_fluxes = NaN,
             skewness_IS = NaN,
             resilience = NaN,
             reactivity = NaN,
@@ -292,7 +291,7 @@ function get_sim_summary(params, sol)
     flux_formula_vals = nonzeros(sparse(flux_formula_ac))
     flux_formula_vals = flux_formula_vals[flux_formula_vals .> 0]
 
-    gini_fluxes_formula_eq = gini_coefficient(flux_formula_vals)
+    gini_fluxes_eq = gini_coefficient(flux_formula_vals)
 
     # 4. get Jacobian matrix for alive and connected species
     J_alive_connected = get_alive_connected_jacobian(
@@ -321,7 +320,7 @@ function get_sim_summary(params, sol)
         L_post = L_post,
         persistence = persistence_eq,
         biomass_shannon = biomass_shannon_eq,
-        gini_fluxes_formula = gini_fluxes_formula_eq,
+        gini_fluxes = gini_fluxes_eq,
         skewness_IS = skewness_IS_eq,
         resilience = resilience_eq,
         reactivity = reactivity_eq,
