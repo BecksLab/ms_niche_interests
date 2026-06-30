@@ -44,7 +44,7 @@ dynamic_metrics = DataFrame(
     L_post = Int64[], # Number of links in the post-simulation network
     persistence = Float64[], # Persistence
     biomass_shannon = Float64[], # Shannon diversity of biomass distribution
-    gini_fluxes_formula = Float64[], # Gini coefficient of energy fluxes
+    gini_fluxes = Float64[], # Gini coefficient of energy fluxes
     skewness_IS = Float64[], # Skewness of absolute interaction strengths
     resilience = Float64[],  # Resilience
     reactivity = Float64[]  # Reactivity
@@ -106,7 +106,7 @@ for i in 1:nrow(pre_networks)
             S_post = NaN,
             L_post = NaN,
             biomass_shannon = NaN,
-            gini_fluxes_formula = NaN,
+            gini_fluxes = NaN,
             skewness_IS = NaN,
             resilience = NaN,
             reactivity = NaN,
@@ -120,7 +120,7 @@ for i in 1:nrow(pre_networks)
     }(out)
 
     # Save scalar dynamic metrics.
-    push!(dynamic_metrics, (; fw_ID=string(fwid), model = string(model_name), summary_out...); 
+    push!(dynamic_metrics, (; fw_ID=string(fwid), Model = string(model_name), summary_out...); 
                             promote = true)
 
     # Save the post-simulation adjacency matrix.
