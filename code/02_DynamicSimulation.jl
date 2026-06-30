@@ -124,7 +124,7 @@ for i in 1:nrow(pre_networks)
                             promote = true)
 
     # Save the post-simulation adjacency matrix.
-    push!(post_networks, (; fw_ID = string(fwid), Model = string(model_name), AdjacencyMatrix = out.post_adj);
+    push!(post_networks, (; fw_ID = string(fwid), Model = string(model_name), AdjacencyMatrix = Int.(out.post_adj));
                           promote = true)
 end
 
