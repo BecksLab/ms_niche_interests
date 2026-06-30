@@ -40,7 +40,7 @@ include(joinpath("lib", "maxentmodel.jl"))
 MASTER_SEED = 66
 Random.seed!(MASTER_SEED)
 
-SPECIES_RICHNESS = [15, 50, 80]
+SPECIES_RICHNESS = [10, 15, 20]
 N_REPLICATES = 100 # number networks per S
 
 # --- Verification Toggle ---
