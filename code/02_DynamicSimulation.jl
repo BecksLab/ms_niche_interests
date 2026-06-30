@@ -65,7 +65,6 @@ for i in 1:nrow(pre_networks)
     met_class = pre_networks.MetabolicClasses[i]
     pre_adj = pre_networks.AdjacencyMatrix[i]
 
-
     fw = Foodweb(pre_adj)
 
     if model_name in ("ADBM", "ATN", "LTM")
@@ -126,8 +125,9 @@ for i in 1:nrow(pre_networks)
         promote=true)
 
     # Save the post-simulation adjacency matrix.
+    post_adj_out = ismissing(out.post_adj) ? missing : Int.(out.post_adj)
     push!(post_networks, (; fw_ID=string(fwid), Model=string(model_name),
-            AdjacencyMatrix=Int.(out.post_adj), MetabolicClasses=out.met_class_alive_connected);
+            AdjacencyMatrix=post_adj_out, MetabolicClasses=out.met_class_alive_connected);
         promote=true)
 end
 
