@@ -12,11 +12,6 @@ dynamic_metric <- read_csv(
   "outputs/dynamic_metrics.csv",
   show_col_types = FALSE)
 
-dynamic_metric <- dynamic_metric %>%
-  glow_up(
-    # use log10(x + 1) because some food webs collapse at equilibrium
-    log_total_biomass = log10(biomass_shannon + 1))
-
 #------2. Difference checks across models --------------------------------------
 
 # MANOVA for dynamic outputs
@@ -96,8 +91,11 @@ for (m in dyn_metrics) {
 # Convert the EMMs list to a df
 emm_df <- bind_rows(emm_list)
 
+
 # plot
-ggplot(emm_df, 
+plot_local <- 
+  ggplot(emm_df %>%
+           yeet(metric %in% c("resilience", "reactivity")), 
        aes(x = model, 
            y = emmean, 
            color = model)) +
@@ -113,13 +111,48 @@ ggplot(emm_df,
   facet_wrap(~ metric,
              scales = "free_y") +
   labs(x = NULL,
-       y = "Predicted value")  +
+       y = "Predicted value",
+       title = 'Local Stability')  +
   scale_colour_manual(values = model_colours) +
-  figure_theme
+  scale_y_continuous(expand = expansion(mult = c(0.05, 0.15))) +
+  figure_theme +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+
+# plot
+plot_net <- ggplot(emm_df %>%
+         yeet(metric %in% c("gini_fluxes_formula", "persistence", "skewness_IS")), 
+       aes(x = model, 
+           y = emmean, 
+           color = model)) +
+  geom_point(size = 3) +
+  geom_errorbar(aes(ymin = lower.CL, 
+                    ymax = upper.CL), 
+                width = 0.2, 
+                linewidth = 0.8) +
+  geom_text(aes(label = .group, 
+                y = upper.CL),
+            vjust = -0.6, size = 3.5, 
+            colour = shark_black) +
+  facet_wrap(~ metric,
+             scales = "free_y",
+             ncol = 2) +
+  labs(x = NULL,
+       y = "Predicted value",
+       title = "Network Stability")  +
+  scale_colour_manual(values = model_colours) +
+  scale_y_continuous(expand = expansion(mult = c(0.05, 0.15))) +
+  figure_theme +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+plot_local /
+  plot_net +
+  plot_layout(guides='collect',
+              heights = c(1, 2))
 
 ggsave("../figures/dynamics_emmeans.png", 
-       width = 12, 
-       height = 7, 
+       width = 9, 
+       height = 10, 
        dpi = 600)
 
 #------5. LDA on dynamic metrics -----------------------------------------------
