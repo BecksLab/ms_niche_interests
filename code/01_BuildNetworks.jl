@@ -115,7 +115,7 @@ for S in SPECIES_RICHNESS
             BASAL_RANGE,
             CONNECTANCE_RANGE)
         push!(master_df, (run_ID,
-            "ltm_$i",
+            "ltm_$(i)_$(S)",
             "LTM",
             S,
             target_basal_fraction, missing,
@@ -132,7 +132,7 @@ for S in SPECIES_RICHNESS
             BASAL_RANGE,
             CONNECTANCE_RANGE)
         push!(master_df, (run_ID,
-            "atn_$i",
+            "atn_$(i)_$(S)",
             "ATN",
             S,
             target_basal_fraction, missing,
@@ -150,7 +150,7 @@ for S in SPECIES_RICHNESS
             BASAL_RANGE,
             CONNECTANCE_RANGE)
         push!(master_df, (run_ID,
-            "adbm_$i",
+            "adbm_$(i)_$(S)",
             "ADBM",
             S,
             target_basal_fraction,
@@ -168,7 +168,7 @@ for S in SPECIES_RICHNESS
             BASAL_RANGE,
             CONNECTANCE_RANGE)
         push!(master_df, (run_ID,
-            "niche_$i",
+            "niche_$(i)_$(S)",
             "Niche",
             S,
             missing,
@@ -185,7 +185,7 @@ for S in SPECIES_RICHNESS
             BASAL_RANGE,
             CONNECTANCE_RANGE)
         push!(master_df, (run_ID,
-            "cascade_$i",
+            "cascade_$(i)_$(S)",
             "Cascade",
             S,
             missing,
@@ -202,7 +202,7 @@ for S in SPECIES_RICHNESS
             BASAL_RANGE,
             CONNECTANCE_RANGE)
         push!(master_df, (run_ID,
-            "random_$i",
+            "random_$(i)_$(S)",
             "Random",
             S,
             missing,
@@ -233,7 +233,7 @@ for S in SPECIES_RICHNESS
         adj_me = build_maxent_network(deg_samp.kin, deg_samp.kout; iterations=3000)
         # Calculate the emergent metrics for this MaxEnt network to store alongside the summary
         m_me = calculate_maxent_metrics(adj_me)
-        push!(master_df, (run_ID, "maxent_$i",
+        push!(master_df, (run_ID, "maxent_$(i)_$(S)",
             "MaxEnt",
             S,
             missing,
