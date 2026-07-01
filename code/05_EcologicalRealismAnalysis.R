@@ -123,6 +123,45 @@ p_struct_2 <-
   figure_theme +
   theme(legend.position = 'none')
 
+p_struct_3  <- 
+  realism_df %>%
+  vibe_check(model, fw_ID, state, S) %>%
+  pivot_wider(names_from = state,
+              values_from = S) %>%
+  glow_up(spp_loss = post/pre) %>%
+  ggplot(aes(y = spp_loss,
+             x = model,
+             colour = model)) +
+  geom_hline(yintercept = 0.8, 
+             colour = shark_silver) +
+  geom_sina(position = "dodge", 
+            alpha = 0.5) +
+  scale_colour_manual(values = model_colours) +
+  labs(y = "Percent species retained",
+       x = NULL) +
+  figure_theme +
+  theme(legend.position = 'none')
+
+p_interval  <- 
+  realism_df %>%
+  vibe_check(model, state, intervality) %>%
+  na.omit() %>%
+  squad_up(model, state) %>%
+  no_cap(prop_nonzero = mean(intervality != 0),
+    n = dplyr::n()) %>%
+  ggplot(aes(y = prop_nonzero,
+             x = state,
+             fill = model)) +
+  geom_hline(yintercept = 0.3, 
+             colour = shark_silver) +
+  geom_col(position = position_dodge()) +
+  scale_fill_manual(values = model_colours) +
+  labs(y = "Proportion non-interval networks",
+       x = NULL) +
+  figure_theme +
+  theme(legend.position = 'none')
+  
+
 # ============================================================
 # Species realism plots
 # ============================================================
@@ -161,10 +200,12 @@ p_species_2 <-
 
 (
   p_struct_1 +
-    p_struct_2
+    p_struct_2 +
+    p_struct_3
 ) /
   (
-    p_species_1 +
+    p_interval +
+      p_species_1 +
       p_species_2
   ) +
   plot_layout(guides='collect') +
@@ -242,4 +283,31 @@ left_join(pre_summary, post_summary) %>%
          stab_state == "stable") %>%
   vibe_check(fw_ID) %>%
   write_csv("outputs/perfect_net_ids.csv")
+
+library(ggridges)
+
+realism_df %>%
+  vibe_check(model, intervality, loops, mx_tl) %>%
+  pivot_longer(-model) %>%
+  ggplot(aes(x = value, 
+           y = model, 
+           fill = model)) +
+  geom_density_ridges() +
+  scale_fill_manual(values = model_colours) +
+  facet_wrap(vars(name),
+             scales = "free") + 
+  theme(legend.position = "none")
+
+realism_df %>%
+  vibe_check(model, intervality, loops, mx_tl) %>%
+  pivot_longer(-model) %>%
+  ggplot() +
+  geom_density(aes(fill = model,
+                   value),
+               position = "fill") +
+  facet_wrap(vars(name)) +
+  scale_fill_manual(values = model_colours)
+
+
+
 
