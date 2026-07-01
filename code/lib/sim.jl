@@ -224,8 +224,30 @@ function get_fw_reactivity(J::AbstractMatrix)
 end
 
 
-## --- Function to get all output of a simulation -----------------
+## --- Function to assign species metabolic classes (producers/consumers) based on adj matrix ---
+"""
+    get_metabolic_classes_from_adj(A)
+Assign species metabolic classes based on the equilibrium adjacency matrix.
+- Producer: species with no prey (sum of row = 0)
+- Consumer: species with at least one prey (sum of row > 0)
+"""
+function assign_metabolic_classes_from_adj(A::AbstractMatrix)
+    S = size(A, 1)
+    met_class = Vector{String}(undef, S)
 
+    for i in 1:S
+        if sum(A[i, :]) == 0
+            met_class[i] = "producer"
+        else
+            met_class[i] = "consumer"
+        end
+    end
+
+    return met_class
+end
+
+
+## --- Function to get all output of a simulation -----------------
 """
     get_sim_summary(params, sol)
 
@@ -244,20 +266,14 @@ Returned metrics:
 """
 function get_sim_summary(params, sol)
 
-    # Original species metabolic classes
-    met_class = params.metabolic_class
+    # Original adjacency matrix
+    A = params.A
 
     # Final state biomasses
     Beq = sol.u[end]
 
-    # Original adjacency matrix
-    A = params.A
-
     # Alive and connected species
     alive_connected_idx = get_alive_connected_species(Beq, params)
-
-    # Alive and connected species metabolic classes
-    met_class_alive_connected = met_class[alive_connected_idx]
 
     # Empty case
     if isempty(alive_connected_idx)
@@ -271,22 +287,24 @@ function get_sim_summary(params, sol)
             resilience = NaN,
             reactivity = NaN,
             post_adj = spzeros(0, 0),
-            met_class_alive_connected = String[]
+            met_class_post = String[]
         )
     end
 
     # Reduced biomass and adjacency matrix
     Beq_alive_connected = Beq[alive_connected_idx]
     post_adj = A[alive_connected_idx, alive_connected_idx]
+
+    # Species metabolic classes based on the equilibrium adjacency matrix
+    met_class_post = assign_metabolic_classes_from_adj(post_adj)
+
+    # Species richness and links
+    S_initial = ENDI.richness(params.A)
     S_post = length(alive_connected_idx)
     L_post = sum(post_adj)
 
-    # Species richness
-    S_initial = ENDI.richness(params.A)
-    S_eq = length(alive_connected_idx)
-
     # Persistence
-    persistence_eq = S_eq / S_initial
+    persistence_eq = S_post / S_initial
 
     # Biomass Shannon diversity
     biomass_shannon_eq = ENDI.shannon_diversity(Beq_alive_connected)
@@ -332,7 +350,7 @@ function get_sim_summary(params, sol)
         resilience = resilience_eq,
         reactivity = reactivity_eq,
         post_adj = post_adj,
-        met_class_alive_connected = met_class_alive_connected
+        met_class_post = met_class_post
     )
 end
 
