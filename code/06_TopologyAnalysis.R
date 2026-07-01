@@ -142,7 +142,6 @@ fig_space
 
 centroids <-
   topology_space %>%
-  yeet(fw_ID != "ltm_49") %>%
   squad_up(model, state) %>%
   summarise(
     across(starts_with("PC"), mean),
