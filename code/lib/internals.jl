@@ -65,7 +65,7 @@ function network_summary(N::SpeciesInteractionNetwork{<:Partiteness,<:Binary})
 
     top = sum(vec(sum(A, dims = 1) .== 0))
 
-    #chain = chain_metrics(A; max_depth = 6)
+    chain = chain_metrics(N; max_depth = 6)
 
     # for centrality - freeman centralisation
     c = collect(values(centrality(N)))
@@ -80,7 +80,7 @@ function network_summary(N::SpeciesInteractionNetwork{<:Partiteness,<:Binary})
         :generality => std(gen / l_s),
         :vulnerability => std(vul / l_s),
         :top => top / S,
-        #:ChLen => chain.ChLen,
+        :ChLen => chain.ChLen,
         :centrality => sum(Cmax .- c),
         :clustering => clustering(A),
         :trophicCoherence => trophic_coherence(N)
@@ -138,181 +138,141 @@ function _diameter(N::SpeciesInteractionNetwork{<:Partiteness,<:Binary})
     return findmax(shortpath)[1]
 end
 
-"""
-    compute_reachable_to_top(A)
+function compute_reachable_to_top(N, top_set)
 
-Identify all species that can reach at least one top predator.
+    reachable = Set(top_set)
+    changed = true
 
-# Arguments
-- `A::AbstractMatrix{Bool}`: Adjacency matrix where `A[i,j] == true`
-  indicates that predator `i` consumes prey `j`.
+    while changed
+        changed = false
 
-# Returns
-A `BitVector` indicating which species lie on at least one path to a
-top predator.
-
-# Notes
-This performs a reverse graph traversal beginning from all top predators.
-Species that cannot contribute to any basal-to-top food chain are pruned
-before chain enumeration.
-"""
-function compute_reachable_to_top(A::AbstractMatrix{Bool})
-
-    S = size(A, 1)
-
-    predator_list = [findall(@view A[:, i]) for i in 1:S]
-
-    top = findall(vec(sum(A; dims = 1) .== 0))
-
-    reachable = falses(S)
-
-    stack = copy(top)
-
-    reachable[top] .= true
-
-    while !isempty(stack)
-
-        node = pop!(stack)
-
-        for predator in predator_list[node]
-
-            if !reachable[predator]
-                reachable[predator] = true
-                push!(stack, predator)
+        for s in species(N)
+            if any(n in reachable for n in predecessors(N, s))
+                if !(s in reachable)
+                    push!(reachable, s)
+                    changed = true
+                end
             end
-
         end
-
     end
 
     return reachable
-
 end
 
+function chain_metrics(N; max_depth=6)
 
-"""
-    chain_metrics(A; max_depth=6)
+    # --- STEP 1: Identify basal and top ---
+    gen = SpeciesInteractionNetworks.generality(N)
+    basal = collect(keys(filter(((k, v),) -> v == 0, gen)))
 
-Calculate food-chain statistics by enumerating all simple food chains from
-basal species to top predators.
+    vul = SpeciesInteractionNetworks.vulnerability(N)
+    top_set = Set(keys(filter(((k, v),) -> v == 0, vul)))
 
-A food chain is defined as a simple path (no repeated species) beginning
-at a basal species and terminating at a top predator.
-
-# Arguments
-
-- `A::AbstractMatrix{Bool}`:
-  Adjacency matrix where `A[i,j] == true` indicates predator `i`
-  consumes prey `j`.
-
-# Keyword Arguments
-
-- `max_depth=6`:
-  Maximum permitted chain length. Recursion terminates once this depth
-  is exceeded.
-
-# Returns
-
-Named tuple containing
-
-- `ChLen` : Mean food-chain length.
-- `ChSD`  : Standard deviation of food-chain lengths.
-- `ChNum` : Logarithm of the number of distinct food chains.
-
-# Notes
-
-This implementation enumerates every simple basal-to-top food chain.
-The algorithm is exact but may become computationally expensive for
-highly reticulated food webs with many alternative pathways.
-"""
-function chain_metrics(
-    A::AbstractMatrix{Bool};
-    max_depth::Int = 6
-)
-
-    S = size(A, 1)
-
-    predator_list = [findall(@view A[:, i]) for i in 1:S]
-
-    basal = findall(vec(sum(A; dims = 2) .== 0))
-    top = falses(S)
-    top[findall(vec(sum(A; dims = 1) .== 0))] .= true
-
-    if isempty(basal) || !any(top)
-        return (
-            ChLen = NaN,
-            ChSD = NaN,
-            ChNum = 0.0
-        )
+    # If no structure exists → return early
+    if isempty(basal) || isempty(top_set)
+        return (ChLen = NaN, ChSD = NaN, ChNum = 0.0)
     end
 
-    reachable = compute_reachable_to_top(A)
+    # --- STEP 2: Reachability pruning ---
+    reachable = compute_reachable_to_top(N, top_set)
 
-    visited = falses(S)
+    # --- STEP 3: Memoized DFS ---
+    memo = Dict{Any, Vector{Int}}()
 
-    count = Ref(0)
-    total = Ref(0.0)
-    total2 = Ref(0.0)
-
-    function dfs(node::Int, depth::Int)
+    function dfs(node, visited, depth)
 
         if depth > max_depth
-            return
+            return Int[]
         end
 
-        if visited[node]
-            return
+        if node in visited
+            return Int[]
         end
 
-        if !reachable[node]
-            return
+        # prune unreachable nodes
+        if node ∉ reachable
+            return Int[]
         end
 
-        visited[node] = true
-
-        if top[node]
-
-            count[] += 1
-            total[] += depth
-            total2[] += depth^2
-
+        if haskey(memo, node)
+            return memo[node]
         end
 
-        for predator in predator_list[node]
-            dfs(predator, depth + 1)
+        push!(visited, node)
+
+        lengths = Int[]
+
+        # If this is a top node → chain ends here
+        if node in top_set
+            push!(lengths, 0)
         end
 
-        visited[node] = false
+        # Traverse UP the food web
+        for nxt in predecessors(N, node)
+            sub_lengths = dfs(nxt, visited, depth + 1)
+            for l in sub_lengths
+                push!(lengths, l + 1)
+            end
+        end
 
+        delete!(visited, node)
+
+        memo[node] = lengths
+        return lengths
     end
+
+    # --- STEP 4: Collect all chain lengths ---
+    all_lengths = Int[]
 
     for b in basal
-        dfs(b, 0)
+        append!(all_lengths, dfs(b, Set(), 0))
     end
 
-    if count[] == 0
-        return (
-            ChLen = NaN,
-            ChSD = NaN,
-            ChNum = 0.0
-        )
-    end
-
-    μ = total[] / count[]
-
-    σ = if count[] > 1
-        sqrt((total2[] - total[]^2 / count[]) / (count[] - 1))
-    else
-        0.0
+    # --- STEP 5: Return summary stats ---
+    if isempty(all_lengths)
+        return (ChLen = NaN, ChSD = NaN, ChNum = 0.0)
     end
 
     return (
-        ChLen = μ,
-        ChSD = σ,
-        ChNum = log(count[])
+        ChLen = mean(all_lengths),
+        ChSD  = std(all_lengths),
+        ChNum = log(length(all_lengths))
     )
-
 end
+
+"""
+trophic_coherence(N::SpeciesInteractionNetwork)
+
+Returns the trophic incoherence parameter q.
+Lower q indicates higher trophic coherence.
+"""
+function trophic_coherence(N::SpeciesInteractionNetwork)
+
+    A = Matrix(N.edges.edges)
+    Spp = species(N)
+    tl = trophic_level(Bool.(A); species = Spp)
+
+    spp = species(N)
+    s = [tl[k] for k in spp]
+
+    trophic_dist = Float64[]
+
+    for i in eachindex(spp)
+        for j in eachindex(spp)
+
+            if A[i, j] == true
+                push!(trophic_dist, s[i] - s[j])
+            end
+
+        end
+    end
+
+    # variance of trophic distances
+    q = std(trophic_dist)
+
+    return q
+end
+
 
 """
 clustering(A::Matrix{Bool})
@@ -366,37 +326,4 @@ function clustering(A::Matrix{Bool})
     mean_C = mean(C_values)
     
     return mean_C
-end
-
-"""
-trophic_coherence(N::SpeciesInteractionNetwork)
-
-Returns the trophic incoherence parameter q.
-Lower q indicates higher trophic coherence.
-"""
-function trophic_coherence(N::SpeciesInteractionNetwork)
-
-    A = Matrix(N.edges.edges)
-    Spp = species(N)
-    tl = trophic_level(Bool.(A); species = Spp)
-
-    spp = species(N)
-    s = [tl[k] for k in spp]
-
-    trophic_dist = Float64[]
-
-    for i in eachindex(spp)
-        for j in eachindex(spp)
-
-            if A[i, j] == true
-                push!(trophic_dist, s[i] - s[j])
-            end
-
-        end
-    end
-
-    # variance of trophic distances
-    q = std(trophic_dist)
-
-    return q
 end
