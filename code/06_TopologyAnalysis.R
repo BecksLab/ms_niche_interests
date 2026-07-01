@@ -7,9 +7,7 @@
 # reconstruction frameworks.
 ############################################################
 
-############################################################
-# 1. LIBRARIES
-############################################################
+#------1. Load libraries -------------------------------------------------------
 
 library(tidyverse)
 library(vegan)
@@ -20,14 +18,14 @@ library(genzplyr)
 library(geomorph)
 library(circular)
 library(RVAideMemoire)
+library(vegan)
+library(tidytext)
 
 source("lib/plotting_theme.R")
 
 set.seed(66)
 
-############################################################
-# IMPORT DATA
-############################################################
+#------2. Load data ------------------------------------------------------------
 
 pre_df <-
   read_csv("outputs/topology_initial.csv") %>%
@@ -40,7 +38,6 @@ post_df <-
   na.omit()
 
 # keep only matched networks
-
 valid_ids <- intersect(pre_df$fw_ID, post_df$fw_ID)
 
 pre_df <-
@@ -52,7 +49,6 @@ post_df <-
   yeet(fw_ID %in% valid_ids)
 
 # combine
-
 combined <-
   bind_rows(
     pre_df %>%
@@ -61,22 +57,17 @@ combined <-
       mutate(state = "Post")
   )
 
-# DEFINE TOPOLOGY VARIABLES
-
+# define topo vars
 topo_vars <-
   combined %>%
   vibe_check(-fw_ID, -model, -state) %>%
   names()
 
-############################################################
-# 6. STANDARDISE METRICS
-############################################################
+#------3. Standardise Metrics --------------------------------------------------
 
 X <- scale(combined[, topo_vars])
 
-############################################################
-# 7. PCA
-############################################################
+#------4. PCA ------------------------------------------------------------------
 
 pca <- prcomp(X,
               center = FALSE,
@@ -88,9 +79,27 @@ topology_space <- bind_cols(combined[,c("fw_ID","model","state")],
                             scores) %>%
   glow_up(state = factor(state, levels = c("Pre", "Post")))
 
-############################################################
-# 8. VARIANCE EXPLAINED
-############################################################
+#------5. PERMANOVA ------------------------------------------------------------
+
+# subset pre state and run PERMANOVA
+pre_space <- topology_space %>%
+  yeet(state == "Pre")
+pre_dist  <- vegdist(pre_space[, c("PC1", "PC2", "PC3", "PC4", "PC5")], 
+                     method = "euclidean")
+
+permanova_pre <- adonis2(pre_dist ~ model, data = pre_space, permutations = 999)
+print(permanova_pre)
+
+# Subset post state and run PERMANOVA
+post_space <- topology_space %>% 
+  yeet(state == "Post")
+post_dist  <- vegdist(post_space[, c("PC1", "PC2", "PC3", "PC4", "PC5")], 
+                      method = "euclidean")
+
+permanova_post <- adonis2(post_dist ~ model, data = post_space, permutations = 999)
+print(permanova_post)
+
+#------6. Variance expalined ---------------------------------------------------
 
 variance_explained <-
   tibble(
@@ -103,10 +112,8 @@ variance_explained <-
 
 variance_explained
 
-############################################################
 # FIGURE 1
-# COMMON TOPOLOGY SPACE
-############################################################
+# common topo space
 
 fig_space <-
   ggplot(topology_space,
@@ -156,7 +163,7 @@ fig_traj <-
             linewidth = 1.2) +
   scale_colour_manual(values = model_colours) +
   labs(x = glue::glue("PC1 ({round(variance_explained$variance[1],1)}%)"),
-       y = glue::glue("PC3 ({round(variance_explained$variance[3],1)}%)"),
+       y = glue::glue("PC2 ({round(variance_explained$variance[2],1)}%)"),
        subtitle = "Trajectory of networks from pre to post, using centroid") +
   figure_theme
 
@@ -210,30 +217,39 @@ trajectory_vectors <-
                                     dPC5^2),
          angle_deg = atan2(dPC2, dPC1) * 180 / pi)
 
-disp_plot <- 
+disp_plot <-
   trajectory_vectors %>%
   vibe_check(model, dPC1, dPC2, dPC3, dPC4, dPC5) %>%
   pivot_longer(-model) %>%
   squad_up(model) %>%
   glow_up(col_colour = if_else(abs(value) == max(abs(value)),
                                shark_black,
-                               NA)) %>%
+                               NA),
+          fill_col = model_colours[model]) %>%
+  disband() %>%
+  glow_up(model = reorder_within(model, -abs(value), name)) %>%
   ggplot() +
   geom_col(aes(y = value,
-               x = name,
-               fill = model,
+               x = model,
+               fill = fill_col,
                colour = col_colour),
-           alpha = 0.7) +
-  geom_hline(yintercept = 0, 
+           alpha = 0.8) +
+  geom_hline(yintercept = 0,
              colour = shark_black) +
-  facet_wrap(vars(model)) +
-  scale_fill_manual(values = model_colours) +
+  facet_wrap(vars(name), 
+             scales = "free_x") +
+  scale_x_reordered() +
+  scale_fill_identity() +
   scale_colour_identity() +
-  labs(y = "Displacement of centroid along PC axis",
-       x = "PC axis",
-       subtitle = "Black bounding box denotes axis with largest absolute displacement") +
-  figure_theme
+  labs(
+    y = "Displacement of centroid along PC axis",
+    x = "Model",
+    subtitle = "Black bounding box denotes axis with largest absolute displacement"
+  ) +
+  figure_theme +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
+disp_plot
 
 ############################################################
 # 11. COSINE SIMILARITY AMONG MODELS
@@ -439,15 +455,15 @@ loading_plot <-
   geom_segment(aes(x = 0,
                    y = 0,
                    xend = PC1,
-                   yend = PC3),
+                   yend = PC2),
                colour = shark_black,
                arrow = arrow(length = unit(0.1, "cm"))) +
   geom_text_repel(aes(x = PC1,
-                      y = PC3,
+                      y = PC2,
                       label = metric),
                   colour = shark_black) +
   labs(x = "PC1",
-       y = "PC3",
+       y = "PC2",
        subtitle = "Metric loadings with PC axis") +
   figure_theme
 
@@ -477,7 +493,7 @@ met_corr <-
 
 
 combo_plot <-
-  (loading_plot + fig_traj) / (disp_plot + theme(legend.position = "none") + dist_plot)
+  (fig_space) / (loading_plot + fig_traj) / (disp_plot + theme(legend.position = "none") + dist_plot)
 
 combo_plot
 
@@ -485,5 +501,5 @@ ggsave("../figures/PTA.png",
        combo_plot,
        dpi = 600,
        width = 10000,
-       height = 7000,
+       height = 12000,
        units = "px")
