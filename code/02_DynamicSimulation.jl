@@ -2,7 +2,7 @@
 This script performs dynamic simulations of generated food webs 
 and generates two output files.
 
-First, a jld2 file (post_networks.jld2) containing the post-simulation food web networks, 
+First, a jld2 file (networks_END.jld2) containing the post-simulation food web networks, 
        represented as adjacency matrices of feeding links among species that remain alive and connected at equilibrium.
 
 Second, a CSV file (dynamic_metrics.csv) containing dynamic stability-related metrics for each food web:
@@ -39,12 +39,12 @@ tmin, tmax = 2000, 5000
 
 dynamic_metrics = DataFrame(
     fw_ID=String[],
-    model=String[],
+    Model=String[],
     S_post=Int64[], # Number of species in the post-simulation network
     L_post=Int64[], # Number of links in the post-simulation network
     persistence=Float64[], # Persistence
     biomass_shannon=Float64[], # Shannon diversity of biomass distribution
-    gini_fluxes_formula=Float64[], # Gini coefficient of energy fluxes (formula)
+    gini_fluxes=Float64[], # Gini coefficient of energy fluxes
     skewness_IS=Float64[], # Skewness of absolute interaction strengths
     resilience=Float64[],  # Resilience
     reactivity=Float64[]  # Reactivity
@@ -64,7 +64,6 @@ for i in 1:nrow(pre_networks)
     body_masses = pre_networks.BodyMasses[i]
     met_class = pre_networks.MetabolicClasses[i]
     pre_adj = pre_networks.AdjacencyMatrix[i]
-
 
     fw = Foodweb(pre_adj)
 
@@ -107,26 +106,28 @@ for i in 1:nrow(pre_networks)
             S_post=NaN,
             L_post=NaN,
             biomass_shannon=NaN,
-            gini_fluxes_formula=NaN,
+            gini_fluxes=NaN,
             skewness_IS=NaN,
             resilience=NaN,
             reactivity=NaN,
-            post_adj=missing
+            post_adj=missing,
+            met_class_alive_connected=missing
         )
     end
 
     # Remove matrix object before saving summary to CSV
     summary_out = NamedTuple{
-        filter(k -> k != :post_adj, keys(out))
+        filter(k -> k != :post_adj && k != :met_class_alive_connected, keys(out))
     }(out)
 
     # Save scalar dynamic metrics.
-    push!(dynamic_metrics, (; fw_ID=string(fwid), model=string(model_name), summary_out...);
+    push!(dynamic_metrics, (; fw_ID=string(fwid), Model=string(model_name), summary_out...);
         promote=true)
 
     # Save the post-simulation adjacency matrix.
+    post_adj_out = ismissing(out.post_adj) ? missing : Int.(out.post_adj)
     push!(post_networks, (; fw_ID=string(fwid), Model=string(model_name),
-            AdjacencyMatrix=out.post_adj, MetabolicClasses=met_class);
+            AdjacencyMatrix=post_adj_out, MetabolicClasses=out.met_class_alive_connected);
         promote=true)
 end
 
