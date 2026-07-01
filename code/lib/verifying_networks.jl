@@ -315,9 +315,9 @@ function run_and_filter_niche(
     connectance_range::Tuple{Float64,Float64},
 )
     # 1. Call the core model function.
-    #    This assumes `generate_niche_model` is the *modified* version
+    #    This assumes `niche_model` is the *modified* version
     #    that does no internal filtering and just returns an adj matrix.
-    adj = generate_niche_model(S, C_rand)
+    adj = niche_model(S, C_rand)
     # 2. Process and filter the resulting matrix.
     return _process_web(adj, verify_web, basal_range, connectance_range)
 end
@@ -335,8 +335,8 @@ function run_and_filter_cascade(
     connectance_range::Tuple{Float64,Float64},
 )
     # 1. Call the core model function.
-    #    This assumes `generate_cascade_model` is the *modified* version.
-    adj = generate_cascade_model(S, C_rand)
+    #    This assumes `cascade_model` is the *modified* version.
+    adj = cascade_model(S, C_rand)
     # 2. Process and filter the resulting matrix.
     return _process_web(adj, verify_web, basal_range, connectance_range)
 end
@@ -354,8 +354,8 @@ function run_and_filter_random(
     connectance_range::Tuple{Float64,Float64},
 )
     # 1. Call the core model function.
-    #    This assumes `generate_random_model` is the *modified* version.
-    adj = generate_random_model(S, C_rand)
+    #    This assumes `random_model` is the *modified* version.
+    adj = random_model(S, C_rand)
     # 2. Process and filter the resulting matrix.
     return _process_web(adj, verify_web, basal_range, connectance_range)
 end

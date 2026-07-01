@@ -138,33 +138,7 @@ function _diameter(N::SpeciesInteractionNetwork{<:Partiteness,<:Binary})
     return findmax(shortpath)[1]
 end
 
-"""
-    compute_reachable_to_top(A)
-
-Identify all species that can reach at least one top predator.
-
-# Arguments
-- `A::AbstractMatrix{Bool}`: Adjacency matrix where `A[i,j] == true`
-  indicates that predator `i` consumes prey `j`.
-
-# Returns
-A `BitVector` indicating which species lie on at least one path to a
-top predator.
-
-# Notes
-This performs a reverse graph traversal beginning from all top predators.
-Species that cannot contribute to any basal-to-top food chain are pruned
-before chain enumeration.
-"""
-function compute_reachable_to_top(A::AbstractMatrix{Bool})
-
-    S = size(A, 1)
-
-    predator_list = [findall(@view A[:, i]) for i in 1:S]
-
-    top = findall(vec(sum(A; dims = 1) .== 0))
-
-    reachable = falses(S)
+function compute_reachable_to_top(N, top_set)
 
     stack = copy(top)
 
@@ -313,6 +287,40 @@ function chain_metrics(
     )
 
 end
+
+"""
+trophic_coherence(N::SpeciesInteractionNetwork)
+
+Returns the trophic incoherence parameter q.
+Lower q indicates higher trophic coherence.
+"""
+function trophic_coherence(N::SpeciesInteractionNetwork)
+
+    A = Matrix(N.edges.edges)
+    Spp = species(N)
+    tl = trophic_level(Bool.(A); species = Spp)
+
+    spp = species(N)
+    s = [tl[k] for k in spp]
+
+    trophic_dist = Float64[]
+
+    for i in eachindex(spp)
+        for j in eachindex(spp)
+
+            if A[i, j] == true
+                push!(trophic_dist, s[i] - s[j])
+            end
+
+        end
+    end
+
+    # variance of trophic distances
+    q = std(trophic_dist)
+
+    return q
+end
+
 
 """
 clustering(A::Matrix{Bool})
