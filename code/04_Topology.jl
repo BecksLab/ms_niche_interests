@@ -11,8 +11,8 @@ using CSV
 using DataFrames
 using JLD2
 using LinearAlgebra
-using Plots
 using SpeciesInteractionNetworks
+using FoodWebTools
 
 # --- 2. Load All Code ---
 include("lib/internals.jl");
@@ -66,7 +66,6 @@ function calculate_topology(networks::DataFrame)
         else
             net = build_network(A)
 
-            # ---------------- FIX ADDED HERE ----------------
             # guard against empty / degenerate networks
             if isempty(A) || count(!iszero, A) == 0
                 push!(topology, (
@@ -87,7 +86,6 @@ function calculate_topology(networks::DataFrame)
                 ))
                 continue
             end
-            # ------------------------------------------------
 
             d = network_summary(net)
 
