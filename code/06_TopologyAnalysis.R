@@ -63,15 +63,11 @@ topo_vars <-
   vibe_check(-fw_ID, -model, -state) %>%
   names()
 
-#------3. Standardise Metrics --------------------------------------------------
-
-X <- scale(combined[, topo_vars])
-
 #------4. PCA ------------------------------------------------------------------
 
-pca <- prcomp(X,
-              center = FALSE,
-              scale. = FALSE)
+pca <- prcomp(combined[, topo_vars],
+              center = TRUE,
+              scale. = TRUE)
 
 scores <- as.data.frame(pca$x[,1:5])
 
