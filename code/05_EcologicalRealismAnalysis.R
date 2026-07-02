@@ -21,7 +21,7 @@ classify_foodwebs <- function(dat) {
       # Structural violations
       viol_mx_tl       = mx_tl > expected_mx_tl,
       viol_connectance = connectance < 0.01 | connectance > 0.40,
-
+      
       # Species violations
       viol_isolated     = isolated >= 1,
       viol_illogical    = illogical >= 1,
@@ -100,8 +100,10 @@ p_co <-
            xmin = -Inf, xmax = Inf,
            ymin = 0.01, ymax = 0.4) +
   geom_sina(position = "dodge", 
-              alpha = 0.5) +
-  labs(x = NULL) +
+            alpha = 0.5) +
+  labs(x = NULL,
+       y = NULL,
+       title = "Connectance") +
   scale_colour_manual(values = model_colours) +
   figure_theme +
   theme(legend.position = 'none')
@@ -119,10 +121,11 @@ p_tlmax <-
            xmin = -Inf, xmax = Inf,
            ymin = 0, ymax = 1) +
   geom_sina(position = "dodge", 
-              alpha = 0.5) +
+            alpha = 0.5) +
   scale_colour_manual(values = model_colours) +
-  labs(y = "TL as % of expected max",
+  labs(title = "TL as % of expected max",
        x = NULL,
+       y = NULL,
        caption = "Note networks with negative TL were not reported, expected max = 2 + 0.8 * log2(S)") +
   figure_theme +
   theme(legend.position = 'none')
@@ -144,8 +147,9 @@ p_survive  <-
   geom_sina(position = "dodge", 
             alpha = 0.5) +
   scale_colour_manual(values = model_colours) +
-  labs(y = "Percent species lost",
-       x = NULL) +
+  labs(title = "Percent species lost at equilibrium",
+       x = NULL,
+       y = NULL) +
   figure_theme +
   theme(legend.position = 'none')
 
@@ -155,17 +159,18 @@ p_interval  <-
   na.omit() %>%
   squad_up(model, state) %>%
   no_cap(prop_nonzero = mean(intervality != 0),
-    n = dplyr::n()) %>%
+         n = dplyr::n()) %>%
   ggplot(aes(y = prop_nonzero,
              x = state,
              fill = model)) +
   geom_col(position = position_dodge()) +
   scale_fill_manual(values = model_colours) +
-  labs(y = "Proportion non-interval networks",
-       x = NULL) +
+  labs(title = "Proportion non-interval networks",
+       x = NULL,
+       y = NULL) +
   figure_theme +
   theme(legend.position = 'none')
-  
+
 
 # ============================================================
 # Species realism plots
@@ -187,20 +192,49 @@ p_iso <-
              fill = model)) +
   geom_col(position = position_dodge()) +
   scale_fill_manual(values = model_colours) +
-  labs(y = "Proportion isolated species",
-       x = NULL) +
+  labs(title = "Proportion isolated species",
+       x = NULL,
+       y = NULL) +
   figure_theme
 
 p_illog <-
-  ggplot(realism_df_freq,
-         aes(y = prop_illogical,
+  ggplot(realism_df %>%
+           glow_up(illog_prop = illogical/S) %>%
+           squad_up(model, state) %>%
+           no_cap(illog_prop = mean(illog_prop)),
+         aes(y = illog_prop,
              x = state,
              fill = model)) +
   geom_col(position = position_dodge()) +
   scale_fill_manual(values = model_colours) +
-  labs(y = "Proportion illogical species",
-       x = NULL) +
+  labs(title = "Mean proportion of illogical species per network (illogical/S)",
+       x = NULL,
+       y = NULL) +
   figure_theme
+
+p_stable <-
+  read.csv("outputs/realism_END.csv") %>%
+  left_join(read.csv("outputs/realism_initial.csv") %>%
+              glow_up(richness_init = case_when(S == 10 ~ "S_init = 10",
+                                                S == 15 ~ "S_init = 15",
+                                                S == 20 ~ "S_init = 20")) %>%
+              vibe_check(fw_ID, richness_init)) %>%
+  glow_up(stab_state = if_else(is.na(S),
+                               1,
+                               0)) %>%
+  squad_up(model, richness_init) %>%
+  no_cap(prop_failed = sum(stab_state)/n()) %>%
+  ggplot(aes(y = prop_failed,
+             x = model,
+             fill = model)) +
+  geom_col(position = position_dodge()) +
+  scale_fill_manual(values = model_colours) +
+  facet_wrap(vars(richness_init)) +
+  labs(title = "Proportion of networks not reaching stability",
+       x = NULL,
+       y = NULL) +
+  figure_theme
+
 
 # ============================================================
 # Assemble figure
@@ -213,20 +247,21 @@ p_illog <-
 ) /
   (
     p_interval +
+      theme(legend.position = 'bottom') +
       p_iso +
-      p_illog
+      theme(legend.position = 'bottom') +
+      p_illog +
+      theme(legend.position = 'bottom')
   ) +
   plot_layout(guides='collect') +
-  plot_annotation(
-    title = "Food-web realism space"
-  )
+  plot_annotation(title = "Food-web realism space",
+                  theme = theme(legend.position = 'bottom'))
 
 ggsave("../figures/realism_space.png",
        dpi = 600,
-       width = 8000,
-       height = 6000,
+       width = 10000,
+       height = 7000,
        units = "px")
-
 
 pre_summary  <-  
   read.csv("outputs/realism_initial.csv") %>%
@@ -351,8 +386,8 @@ realism_df %>%
   vibe_check(model, intervality, loops, mx_tl) %>%
   pivot_longer(-model) %>%
   ggplot(aes(x = value, 
-           y = model, 
-           fill = model)) +
+             y = model, 
+             fill = model)) +
   geom_density_ridges() +
   scale_fill_manual(values = model_colours) +
   facet_wrap(vars(name),
