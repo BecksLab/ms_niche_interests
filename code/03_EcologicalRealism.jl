@@ -25,7 +25,7 @@ include(joinpath("lib", "internals.jl"))
 # --- 3. Custom Metrics ---
 function calculate_custom_metrics(
     A::AbstractMatrix{<:Integer},
-    met_classes::Union{Vector{Symbol},Missing};
+    met_classes::Union{Vector,Missing};
     max_species_for_loops::Int=15 # Safety check threshold
 )
 
