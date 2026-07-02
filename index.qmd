@@ -127,9 +127,9 @@ The analysis was designed to isolate the effect of network-generating assumption
 
 Need to report the number of networks that fail and 'how' they fail...
 
-![TODO](figures/realism_space.png){#fig-checks}
+![TODO. Green shaded region indicates the 'realism' space](figures/realism_space.png){#fig-checks}
 
-![TODO](figures/realism_space_sankey.png){#fig-sankey}
+![TODO. Darker streams indicate networks that are stable and 'pass' as realistic networks](figures/realism_space_sankey.png){#fig-sankey}
 
 ## Networks Converge in Structure
 
@@ -144,6 +144,12 @@ Comparison of trajectory vectors demonstrated that most models exhibited small a
 Finally, realised networks showed evidence of convergence within topology space (@fig-PTA D). The mean Euclidean distance to the global realised-network centroid decreased following dynamic simulations for all models, suggesting that ecological dynamics drove networks towards a common structural endpoint despite differences in initial topology.
 
 ![Ecological dynamics reshape food-web topology within a shared multivariate topology space. Network structural metrics were standardised and summarised using principal component analysis, with each network represented by its position before and after dynamic simulations. (A) Principal component loadings showing the contribution of individual network metrics to topology space. (B) Centroid trajectories for each reconstruction model, illustrating the direction and magnitude of topological change between initial and realised networks. (C) Component-wise displacement of model centroids along the first five principal component axes, highlighting the principal dimensions responsible for topological change. (D) Mean Euclidean distance of networks to the overall realised-network centroid before and after simulations, providing a measure of convergence in network topology.](figures/PTA.png){#fig-PTA}
+
+> This is a bonus result
+
+![Arrows indicate trajectory of individual networks. Points are networks that failed to reach a stable state that have been predicted 'into' the PCA space](figures/PTA_failed_networks.png){#fig-failed_pca}
+
+![Splitting out by richness](figures/PTA_S_init.png){#fig-failed_pca}
 
 ## Models confer similar stability inferences
 

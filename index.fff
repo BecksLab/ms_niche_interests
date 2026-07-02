@@ -6,7 +6,8 @@
 
 }
 
-\caption{\label{fig-checks}TODO}
+\caption{\label{fig-checks}TODO. Green shaded region indicates the
+`realism' space}
 
 \end{figure}
 \efloatseparator
@@ -19,7 +20,8 @@
 
 }
 
-\caption{\label{fig-sankey}TODO}
+\caption{\label{fig-sankey}TODO. Darker streams indicate networks that
+are stable and `pass' as realistic networks}
 
 \end{figure}
 \efloatseparator
@@ -46,6 +48,34 @@ dimensions responsible for topological change. (D) Mean Euclidean
 distance of networks to the overall realised-network centroid before and
 after simulations, providing a measure of convergence in network
 topology.}
+
+\end{figure}
+\efloatseparator
+ 
+\begin{figure}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{figures/PTA_failed_networks.png}}
+
+}
+
+\caption{\label{fig-failed_pca}Arrows indicate trajectory of individual
+networks. Points are networks that failed to reach a stable state that
+have been predicted `into' the PCA space}
+
+\end{figure}
+\efloatseparator
+ 
+\begin{figure}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{figures/PTA_S_init.png}}
+
+}
+
+\caption{\label{fig-failed_pca}Splitting out by richness}
 
 \end{figure}
 \efloatseparator
