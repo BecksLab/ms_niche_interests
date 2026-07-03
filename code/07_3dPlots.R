@@ -221,7 +221,7 @@ model_plots <-
 names(model_plots) <- models
 
 ## Example:
-model_plots[[1]]
+model_plots[[4]]
 
 ##------------------------------------------------------------
 ## Multi-panel figure
@@ -274,8 +274,8 @@ for(i in seq_along(plots)) {
   layout_list[[scene]] <- list(
     
     domain = list(
-      x = c(x0 + 0.02, x1 - 0.02),
-      y = c(y0 + 0.05, y1 - 0.05)
+      x = c(x0, x1),
+      y = c(y0, y1)
     ),
     
     xaxis = list(title = "PC1"),
