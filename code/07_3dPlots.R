@@ -113,32 +113,55 @@ plot_scene <- function(ellipsoids,
   fig <- plot_ly()
   
   ##------------------------
-  ## Ellipsoid surfaces
+  ## Ellipsoid wireframes
   ##------------------------
   
-  for(i in seq_len(nrow(ellipsoids))){
+  for(i in seq_len(nrow(ellipsoids))) {
     
     ell <- make_ellipsoid(
       ellipsoids$covmat[[i]],
       ellipsoids$centre[[i]]
     )
     
-    fig <-
-      fig %>%
-      add_surface(
-        x = ell$x,
-        y = ell$y,
-        z = ell$z,
-        opacity = 0.18,
-        showscale = FALSE,
-        surfacecolor = matrix(0, nrow(ell$x), ncol(ell$x)),
-        colorscale = list(
-          c(0, ellipsoids$colour[i]),
-          c(1, ellipsoids$colour[i])
-        ),
-        hoverinfo = "skip",
-        showlegend = FALSE
-      )
+    ## Latitude lines
+    for(j in seq_len(nrow(ell$x))) {
+      
+      fig <- fig %>%
+        add_trace(
+          x = ell$x[j, ],
+          y = ell$y[j, ],
+          z = ell$z[j, ],
+          type = "scatter3d",
+          mode = "lines",
+          line = list(
+            color = ellipsoids$colour[i],
+            width = 2
+          ),
+          hoverinfo = "skip",
+          showlegend = FALSE
+        )
+      
+    }
+    
+    ## Longitude lines
+    for(j in seq_len(ncol(ell$x))) {
+      
+      fig <- fig %>%
+        add_trace(
+          x = ell$x[, j],
+          y = ell$y[, j],
+          z = ell$z[, j],
+          type = "scatter3d",
+          mode = "lines",
+          line = list(
+            color = ellipsoids$colour[i],
+            width = 2
+          ),
+          hoverinfo = "skip",
+          showlegend = FALSE
+        )
+      
+    }
     
   }
   
