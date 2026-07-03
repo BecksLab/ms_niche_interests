@@ -358,7 +358,7 @@ ggplot(angle_df,
   figure_theme
 
 ############################################################
-# 12. CENTROID CONVERGENCE
+# CENTROID CONVERGENCE
 ############################################################
 
 post_centroid <- traj_mat_indiv_nets %>%
@@ -497,4 +497,138 @@ ggsave("../figures/PTA.png",
        dpi = 600,
        width = 10000,
        height = 12000,
+       units = "px")
+
+
+############################################################
+# BONUS FIGURES
+############################################################
+
+centroids_rich <-
+  topology_space %>%
+  left_join(pre_df %>%
+              vibe_check(fw_ID, richness)) %>%
+  squad_up(model, state, richness) %>%
+  summarise(
+    across(starts_with("PC"), mean),
+    .groups = "drop"
+  ) %>%
+  glow_up(richness = case_when(richness == 10 ~ "S_init = 10",
+                               richness == 15 ~ "S_init = 15",
+                               richness == 20 ~ "S_init = 20"))
+
+fig_traj <-
+  ggplot(centroids_rich,
+         aes(x = PC1,
+             y = PC2,
+             colour = model,
+             group = model)) +
+  geom_vline(xintercept = 0, 
+             colour = shark_silver) +
+  geom_hline(yintercept = 0, 
+             colour = shark_silver) +
+  geom_path(arrow = arrow(length = unit(0.25, "cm")),
+            linewidth = 1.2) +
+  facet_grid(row = ~richness) +
+  scale_colour_manual(values = model_colours) +
+  labs(x = glue::glue("PC1 ({round(variance_explained$variance[1],1)}%)"),
+       y = glue::glue("PC2 ({round(variance_explained$variance[2],1)}%)"),
+       subtitle = "Trajectory of networks from pre to post, using centroid") +
+  figure_theme
+
+fig_traj
+
+replicate_paths_rich <-
+  topology_space %>%
+  left_join(pre_df %>%
+              vibe_check(fw_ID, richness))  %>%
+  glow_up(richness = case_when(richness == 10 ~ "S_init = 10",
+                               richness == 15 ~ "S_init = 15",
+                               richness == 20 ~ "S_init = 20"))
+
+ggplot(replicate_paths_rich,
+       aes(x = PC1,
+           y = PC2,
+           group = fw_ID,
+           colour = model)) +
+  geom_vline(xintercept = 0, 
+             colour = shark_silver) +
+  geom_hline(yintercept = 0, 
+             colour = shark_silver) +
+  geom_path(arrow = arrow(length = unit(0.1, "cm")),
+            alpha = 0.2) +
+  geom_path(data = centroids_rich,
+            aes(x = PC1,
+                y = PC2,
+                colour = model,
+                group = model),
+            arrow = arrow(length = unit(0.25, "cm")),
+            linewidth = 1.2) +
+  facet_grid(cols = vars(richness),
+             rows = vars(model)) +
+  scale_colour_manual(values = model_colours) +
+  figure_theme +
+  theme(legend.position = 'none')
+
+ggsave("../figures/PTA_S_init.png",
+       dpi = 600,
+       width = 7000,
+       height = 5000,
+       units = "px")
+
+# project 'fail' networks into PCA space
+
+failed_df <-
+  read_csv("outputs/topology_END.csv") %>%
+  yeet(is.na(richness))
+
+pre_df_fail <-
+  read_csv("outputs/topology_initial.csv") %>%
+  yeet(fw_ID %in% failed_df$fw_ID) %>%
+  na.omit()
+
+
+new_scores <- predict(pca, 
+                      newdata = pre_df_fail[, topo_vars])
+
+topology_fail_space <- bind_cols(pre_df_fail[,c("fw_ID","model", "richness")],
+                                 new_scores)  %>%
+  glow_up(richness = case_when(richness == 10 ~ "S_init = 10",
+                               richness == 15 ~ "S_init = 15",
+                               richness == 20 ~ "S_init = 20"))
+
+ggplot(replicate_paths,
+       aes(x = PC1,
+           y = PC2,
+           group = fw_ID,
+           colour = model)) +
+  geom_vline(xintercept = 0, 
+             colour = shark_silver) +
+  geom_hline(yintercept = 0, 
+             colour = shark_silver) +
+  geom_path(arrow = arrow(length = unit(0.1, "cm")),
+            alpha = 0.1) +
+  geom_path(data = centroids,
+            aes(x = PC1,
+                y = PC2,
+                colour = model,
+                group = model),
+            arrow = arrow(length = unit(0.25, "cm")),
+            linewidth = 1.2) +
+  geom_point(data = topology_fail_space,
+             aes(x = PC1,
+                 y = PC2,
+                 fill = model),
+             shape = 21,
+             colour = shark_black) +
+  facet_wrap(vars(model)) +
+  scale_colour_manual(values = model_colours) +
+  scale_fill_manual(values = model_colours) +
+  figure_theme +
+  theme(legend.position = 'none')
+
+ggsave("../figures/PTA_failed_networks.png",
+       dpi = 600,
+       width = 7000,
+       height = 5000,
        units = "px")
