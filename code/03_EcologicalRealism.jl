@@ -119,7 +119,7 @@ function calculate_realism_metrics(
         met_classes = networks.MetabolicClasses[i]
 
         ## Skip failed networks stored as sparse matrices
-        if A isa SparseArrays.SparseMatrixCSC
+        if size(A, 1) == 0
 
             @warn "Skipping malformed network $fw_id"
 
