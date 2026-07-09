@@ -6,7 +6,7 @@ ENDI = EcologicalNetworksDynamics.Internals
 """
     rescale_bodymass(bodymasses::AbstractVector, met_class::AbstractVector)
     bodymasses = vector of bodymasses
-    met_class = vector of metabolic classes (:producer, :herbivore, :carnivore, etc.)  
+    met_class = vector of metabolic classes (:producer, :consumer)  
     Rescale bodymasses so that the smallest producer has bodymass = 1. 
 """
 function rescale_bodymass(bodymasses::AbstractVector, met_class::AbstractVector)
@@ -22,35 +22,66 @@ end
     get_alive_connected_species(Beq, params)
 1. use get_alive_species(Beq) to identify alive species;
 2. subset the adjacency matrix to alive species;
-3. keep species that have at least one prey or at least one consumer
-   among the alive species.
+3. keep the initial producers that are alive and still have at least 
+   one consumer among the alive species
+4. keep the initial consumers that are alive and still have at least 
+    one prey among the alive species.
 """
-function get_alive_connected_species(Beq, params)
-    # Get alive species
-    alive_idx = get_alive_species(Beq)
+function get_alive_connected_species(Beq, params; extinction_threshold = 1e-8)
+    # Original producer / consumer identity
+    met_class = String.(params.metabolic_class)
+    producers_idx = findall(==("producer"), met_class)
+    consumers_idx = findall(!=("producer"), met_class)
+
+    # Alive species
+    alive_idx = findall(Beq .> extinction_threshold)
 
     if isempty(alive_idx)
         return Int[]
     end
 
-    # Original trophic adjacency matrix
     A = params.A
 
-    # Subset to alive species
-    A_alive = A[alive_idx, alive_idx]
+    # Start with all alive species
+    current_idx = copy(alive_idx)
 
-    # Consumers: rows with at least one prey
-    has_prey = vec(sum(A_alive; dims = 2)) .> 0
+    while true
+        A_current = A[current_idx, current_idx]
 
-    # Resources: columns with at least one consumer
-    has_consumer = vec(sum(A_alive; dims = 1)) .> 0
+        has_prey = vec(sum(A_current; dims = 2)) .> 0
+        has_consumer = vec(sum(A_current; dims = 1)) .> 0
 
-    # Keep species that are connected as either consumer or resource
-    keep_mask = has_prey .| has_consumer
+        is_producer = in.(current_idx, Ref(producers_idx))
+        is_consumer = in.(current_idx, Ref(consumers_idx))
 
-    alive_connected_idx = alive_idx[keep_mask]
+        keep_mask =
+            (is_producer .& has_consumer) .|
+            (is_consumer .& has_prey)
 
-    return alive_connected_idx
+        new_idx = current_idx[keep_mask]
+
+        # Stop when no further species are removed
+        if new_idx == current_idx
+            break
+        end
+
+        current_idx = new_idx
+
+        if isempty(current_idx)
+            return Int[]
+        end
+    end
+
+    # Final safety check:
+    # a valid food web should contain at least one producer and one consumer
+    final_is_producer = in.(current_idx, Ref(producers_idx))
+    final_is_consumer = in.(current_idx, Ref(consumers_idx))
+
+    if !(any(final_is_producer) && any(final_is_consumer))
+        return Int[]
+    end
+
+    return current_idx
 end
 
 
@@ -58,21 +89,15 @@ end
 """
     energy_flux_classic_formula(B, params; assimilated = false)
 
-Calculate realised trophic fluxes under ClassicResponse using an explicit formula.
-
+Calculate realised trophic fluxes under ClassicResponse using formula.
 For ClassicResponse:
-
     F[i, j] =
         ω[i, j] * aᵣ[i, j] * B[j]^h /
         (M[i] * (1 + c[i] * B[i] +
          sum_k ω[i, k] * aᵣ[i, k] * hₜ[i, k] * B[k]^h))
-
 Then realised prey-loss flux is:
-
     flux[i, j] = B[i] * F[i, j]
-
-If assimilated = true, returns:
-
+If production rather than consumption, assimilated = true, returns:
     flux[i, j] = B[i] * e[i, j] * F[i, j]
 """
 function energy_flux_classic_formula(
@@ -247,6 +272,81 @@ function assign_metabolic_classes_from_adj(A::AbstractMatrix)
 end
 
 
+function check_steady_state(
+    sol;
+    window = 2.0, # only simply check the last 2 rows
+    extinction_threshold = 1e-6,
+    reltol = 1e-3
+)
+    t_end = sol.t[end]
+    t_start = max(sol.t[1], t_end - window)
+
+    B_start = sol(t_start)
+    B_end = sol(t_end)
+
+    # Only check species that are alive at the final time
+    alive = B_end .> extinction_threshold
+
+    # Relative change for all species
+    rel_change = fill(NaN, length(B_end))
+    if any(alive)
+        rel_change[alive] .= (B_end[alive] .- B_start[alive]) ./ B_start[alive]
+    end
+
+    # Species whose relative biomass change is still too large
+    bad_idx = findall(x -> isfinite(x) && abs(x) > reltol, rel_change)
+
+    return (
+        steady = isempty(bad_idx),
+        rel_change = rel_change,
+        bad_idx = bad_idx
+    )
+end
+
+
+using Statistics
+
+function check_steady_state(
+    sol;
+    n_last = 5,
+    dt = 1.0,
+    extinction_threshold = 1e-6,
+    cvtol = 1e-3
+)
+    t_end = sol.t[end]
+    ts = collect((t_end - (n_last - 1) * dt):dt:t_end)
+
+    # Interpolated biomass matrix: species × time
+    B = hcat(sol.(ts)...)
+
+    # Species alive at final time
+    alive = B[:, end] .> extinction_threshold
+
+    cv = fill(NaN, size(B, 1))
+
+    # If <= 1 species alive, not steady
+    if sum(alive) <= 1
+        return (
+            steady = false,
+            cv = cv,
+            max_cv = NaN,
+            bad_idx = Int[],
+            alive = alive
+        )
+    end
+
+    cv[alive] .= vec(std(B[alive, :], dims = 2) ./ mean(B[alive, :], dims = 2))
+
+    max_cv = maximum(cv[alive])
+    bad_idx = findall(x -> isfinite(x) && x > cvtol, cv)
+
+    return (
+        steady = max_cv < cvtol,
+        max_cv = max_cv,
+        bad_idx = bad_idx
+    )
+end
+
 ## --- Function to get all output of a simulation -----------------
 """
     get_sim_summary(params, sol)
@@ -264,7 +364,7 @@ Returned metrics:
 - reactivity
 - post_adj
 """
-function get_sim_summary(params, sol)
+function get_sim_summary(params, sol, S_ori)
 
     # Original adjacency matrix
     A = params.A
@@ -274,7 +374,7 @@ function get_sim_summary(params, sol)
 
     # Alive and connected species
     alive_connected_idx = get_alive_connected_species(Beq, params)
-
+    
     # Empty case
     if isempty(alive_connected_idx)
         return (
@@ -287,7 +387,9 @@ function get_sim_summary(params, sol)
             resilience = NaN,
             reactivity = NaN,
             post_adj = spzeros(0, 0),
-            met_class_post = String[]
+            met_class_post = String[],
+            body_mass_post = Float64[],
+            Beq_post = Float64[]
         )
     end
 
@@ -296,15 +398,24 @@ function get_sim_summary(params, sol)
     post_adj = A[alive_connected_idx, alive_connected_idx]
 
     # Species metabolic classes based on the equilibrium adjacency matrix
-    met_class_post = assign_metabolic_classes_from_adj(post_adj)
+    # met_class_post = assign_metabolic_classes_from_adj(post_adj)
+
+    # Filter metabolic classes based on the original metabolic classes
+    met_class = params.metabolic_class
+    met_class_post = met_class[alive_connected_idx]
+
+    # Filter species body masses (will be used for the second simulation)
+    body_mass_post = params.body_mass[alive_connected_idx]
+
+    # Filter the final biomasses (will be used for the second simulation)
+    Beq_post = Beq[alive_connected_idx]
 
     # Species richness and links
-    S_initial = ENDI.richness(params.A)
     S_post = length(alive_connected_idx)
     L_post = sum(post_adj)
 
     # Persistence
-    persistence_eq = S_post / S_initial
+    persistence_eq = S_post / S_ori # S_ori is the original species richness of pre_networks
 
     # Biomass Shannon diversity
     biomass_shannon_eq = ENDI.shannon_diversity(Beq_alive_connected)
@@ -350,7 +461,9 @@ function get_sim_summary(params, sol)
         resilience = resilience_eq,
         reactivity = reactivity_eq,
         post_adj = post_adj,
-        met_class_post = met_class_post
+        met_class_post = met_class_post,
+        body_mass_post = body_mass_post,
+        Beq_post = Beq_post
     )
 end
 
