@@ -7,7 +7,7 @@ First, a jld2 file (networks_END.jld2) containing：
     - final equilibrium network structure: AdjacencyMatrix
     - final metabolic classes
 
-Second, a CSV file (dynamic_metrics.csv) containing dynamic stability-related metrics:
+Second, a CSV file (stability_metrics.csv) containing dynamic stability-related metrics:
     - S_post: number of species in the post-simulation network (save for NAN checking)
     - L_post: number of links in the post-simulation network (save for NAN checking)
     - Persistence: ratio of richness in the final post-simulation network to the original pre-simulation network
@@ -54,7 +54,7 @@ sort!(pre_networks, :fw_ID)
 # --- 4. Run Dynamic Simulations ---
 tmin, tmax = 2000, 20000
 
-dynamic_metrics = DataFrame(
+stability_metrics = DataFrame(
     fw_ID=String[],
     Model=String[],
     S_post=Int64[], # Number of species in the post-simulation network
@@ -237,7 +237,7 @@ for i in 1:nrow(pre_networks)
     end
 
     # Save scalar dynamic metrics.
-    push!(dynamic_metrics, (
+    push!(stability_metrics, (
             fw_ID=string(fwid),
             Model=string(model_name),
             S_post=out.S_post,
@@ -266,6 +266,6 @@ end
 
 
 # --- 5. Save Simulation Summary ---
-CSV.write("outputs/dynamic_metrics.csv", dynamic_metrics)
+CSV.write("outputs/stability_metrics.csv", stability_metrics)
 JLD2.save_object("networks/networks_END.jld2", post_networks)
 
