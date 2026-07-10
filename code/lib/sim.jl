@@ -274,40 +274,6 @@ end
 
 function check_steady_state(
     sol;
-    window = 2.0, # only simply check the last 2 rows
-    extinction_threshold = 1e-6,
-    reltol = 1e-3
-)
-    t_end = sol.t[end]
-    t_start = max(sol.t[1], t_end - window)
-
-    B_start = sol(t_start)
-    B_end = sol(t_end)
-
-    # Only check species that are alive at the final time
-    alive = B_end .> extinction_threshold
-
-    # Relative change for all species
-    rel_change = fill(NaN, length(B_end))
-    if any(alive)
-        rel_change[alive] .= (B_end[alive] .- B_start[alive]) ./ B_start[alive]
-    end
-
-    # Species whose relative biomass change is still too large
-    bad_idx = findall(x -> isfinite(x) && abs(x) > reltol, rel_change)
-
-    return (
-        steady = isempty(bad_idx),
-        rel_change = rel_change,
-        bad_idx = bad_idx
-    )
-end
-
-
-using Statistics
-
-function check_steady_state(
-    sol;
     n_last = 5,
     dt = 1.0,
     extinction_threshold = 1e-6,
