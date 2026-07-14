@@ -10,7 +10,7 @@ shark_black <- "#00181F"
 ## 2. General Figure Theme ----
 
 figure_theme = 
-  theme_classic() +
+  theme_classic(16) +
   theme(panel.border = element_rect(colour = shark_black,
                                     fill = "white"),
         panel.grid.minor = element_blank(),
