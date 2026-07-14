@@ -464,7 +464,7 @@ loading_plot <-
 
 scores <- pca$x[, 1:5]
 
-pc_cor <- cor(X,
+pc_cor <- cor(combined[, topo_vars],
               scores) %>%
   as_tibble(rownames = "metric") %>%
   pivot_longer(-metric,
