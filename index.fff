@@ -67,15 +67,13 @@ have been predicted `into' the PCA space}
 \end{figure}
 \efloatseparator
  
-\begin{figure}
+\begin{figure}[H]
 
-\centering{
-
-\pandocbounded{\includegraphics[keepaspectratio]{figures/PTA_S_init.png}}
+{\centering \pandocbounded{\includegraphics[keepaspectratio]{figures/PTA_S_init.png}}
 
 }
 
-\caption{\label{fig-failed_pca}Splitting out by richness}
+\caption{Splitting out by richness}
 
 \end{figure}
 \efloatseparator
@@ -84,7 +82,7 @@ have been predicted `into' the PCA space}
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{figures/dynamics_emmeans.png}}
+\pandocbounded{\includegraphics[keepaspectratio]{figures/stability_adjusted_model_means.png}}
 
 }
 
