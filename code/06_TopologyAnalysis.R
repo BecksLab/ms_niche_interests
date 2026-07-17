@@ -29,7 +29,8 @@ set.seed(66)
 
 pre_df <-
   read_csv("outputs/topology_initial.csv") %>%
-  na.omit()
+  na.omit() %>%
+  yeet(fw_ID != "ltm_63_20")
 
 post_df <-
   read_csv("outputs/topology_END.csv") %>%
@@ -621,7 +622,8 @@ ggplot(replicate_paths,
                  fill = model),
              shape = 21,
              colour = shark_black) +
-  facet_wrap(vars(model)) +
+  facet_wrap(vars(model),
+             scales = "free") +
   scale_colour_manual(values = model_colours) +
   scale_fill_manual(values = model_colours) +
   figure_theme +
