@@ -165,6 +165,8 @@ Reconstruction is Not Neutral (or maybe it is): Discuss how models act as struct
 
 Template Dependence: Address the core question: Is everything a derivative of the niche model? If dynamic models show unique cascade patterns not captured by the niche model, argue that the niche template may be insufficient for dynamic questions.
 
+> Important point to bring up here is that the niche and the cascade models are the only models that have no failures - but is this because they create ecologically sound networks or is it because they align better with the internal grammar of the BEFW. IE this is not a test of ecological plausibility but cross model matching. this leads back to the idea that we are mapping the behaviour of models as opposed to any actual ecology
+
 Scale-Dependent Robustness: Reflect on why species-level patterns might look similar across models while the fine-grained story of dynamic change is highly model-contingent.
 
 Implications for Theory: Suggest that researchers must align their reconstruction framework with their inferential goals rather than defaulting to a one-size-fits-all niche template.
