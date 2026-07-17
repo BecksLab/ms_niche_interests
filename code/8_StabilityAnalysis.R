@@ -17,7 +17,7 @@ source("lib/plotting_theme.R")
 model_order <- c("ADBM", "ATN", "LTM", "Niche", "Cascade", "MaxEnt", "Random")
 model_colours <- model_colours[model_order]
 
-stability_meta <- read_csv("outputs/dynamic_metrics.csv", show_col_types = FALSE) %>%
+stability_meta <- read_csv("outputs/stability_metrics.csv", show_col_types = FALSE) %>%
   mutate(Model = factor(Model, levels = model_order))
 
 stability_metrics <- c("persistence", "biomass_shannon", "gini_fluxes", "skewness_IS",
@@ -169,6 +169,7 @@ effect_size_plot <- effect_size_summary %>%
   geom_col(position = position_dodge(width = 0.75), width = 0.65) +
   coord_flip() +
   labs(x = "", y = "Partial eta-squared", fill = "") +
+  scale_fill_manual(values = c(col_div[1], col_div[3])) +
   figure_theme +
   theme(legend.position = "top")
 
