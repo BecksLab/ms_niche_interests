@@ -227,7 +227,7 @@
 1%
 }%
 }
-\date{2026-07-15}
+\date{2026-07-17}
 
 \usepackage{setspace}
 \usepackage[left]{lineno}
@@ -288,21 +288,85 @@ food webs%
 
 \section{Introduction}\label{introduction}
 
-The Niche Model Hegemony: Establish how the Niche Model (and its
-topological derivatives like the Cascade model) has historically served
-as the structural prior or template for most network theory.
+For over two decades, community ecology has relied heavily on static
+generative models as a means to understand the complexity of empirical
+trophic networks. At the center of this structural framework is the
+niche model. Introduced by Williams \& Martinez (2000) as a major
+advancement over the strictly hierarchical cascade model (Cohen et al.,
+1990), the niche model posits that complex food webs can be reproduced
+by mapping species onto a one-dimensional, continuous niche axis where
+consumers feed on a contiguous interval of prey. The simplicity of these
+rules has proven to be remarkably successful, being able to accurate
+replicate emergent topological properties of empirical networks (such as
+degree distributions, path lengths, and realistic proportions of trophic
+guilds (Williams \& Martinez, 2000)). Consequently, the niche model has
+established itself as the default baseline for exploring the
+macro-ecological patterns of ecosystems, evaluating network robustness
+to primary extinctions, and parameterising Jacobian matrices to probe
+the boundaries of ecosystem stability (Allesina \& Tang, 2012;
+Curtsdotter et al., 2011).
 
-The Philosophy Gap: Contrast structural/topological models (which
-prioritise species-agnostic link distributions) with realised/dynamic
-models like ATN and ADBM (which prioritise biological mechanisms like
-bioenergetics and optimal foraging). Additionally also including the
-MaxEnt model which is a structural model but is based on statistical
-mechanics rather than the niche template.
+However, this widespread reliance on topological heuristics has obscured
+a fundamental philosophical divide between structural abstractions and
+the biological processes that realise real-world networks (Strydom,
+Dunhill, et al., 2026). Traditional structural models operate from the
+network down, prioritising the statistical distribution of links across
+a network without explicitly accounting for individual organismal traits
+or evolutionary constraints. In stark contrast, mechanical frameworks
+build interaction networks from the node up by determining the presence
+of links between nodes to build the network. For example, the Allometric
+Diet Breadth Model (ADBM) implements optimal foraging theory, asserting
+that a consumer's realised diet is a deterministic outcome of energy
+maximization relative to handling times and encounter rates scaled to
+body mass (Petchey et al., 2008). Similarly, the Allometric Trophic
+Network (ATN) framework anchors interaction probabilities in
+consumer-resource body-mass ratios, treating metabolic scaling and
+physical size limits as the primary limitations of energy flux (Brose et
+al., 2006; Schneider et al., 2016). Occupying a distinct space between
+these mechanistic and phenomenological perspectives is the Maximum
+Entropy (MaxEnt) framework (Banville et al., 2023). While MaxEnt remains
+a structural approach free of explicit biological traits, its
+philosophical origins lie in statistical mechanics rather than an
+assumed ecological niche axis. By generating network configurations that
+maximise informational entropy subject only to macroscopic constraints
+(such as joint degree distributions), MaxEnt offers a fundamentally
+different null expectation for network architecture, unburdened by an
+underlying hierarchical template.
 
-The Research Question: Do these different philosophical starting points
-(mechanical vs.~statistical) lead to the same conclusions about
-community stability, or does the choice of template fundamentally bias
-our understanding of network dynamics?.
+This conceptual divergence raises a critical question for theoretical
+ecology: Do these distinct structural, statistical, and bioenergetic
+templates represent interchangeable starting points that ultimately lead
+to the same conclusions about community dynamics, or does the choice of
+network construction inherently bias our understanding of ecosystem
+stability? Recent work has demonstrated that different network
+construction methods using identical species pools generate vastly
+different topological signatures and display high interaction
+(link-based) differences (Strydom, Karapunar, et al., 2026). Because the
+choice of reconstruction framework influences realised network
+properties we cannot assume that dynamical predictions are immune to
+these initial structural assumptions. Indeed, network structure heavily
+coordinates how biomass is efficiently stored and distributed across
+trophic levels (Delmas et al., n.d.). If the structural template
+dictates a community's emergent bioenergetic properties (such as its
+biomass top-heaviness) then the choice of generative model likely
+carries heavy, unexplored cascading consequences for long-term community
+dynamics.
+
+If the stability of ecological communities is governed primarily by
+coarse, systemic constraints on topology, then distinct generative
+models should yield functionally redundant dynamic behaviors and
+converge under the selective pressure of competitive exclusion.
+Conversely, if body-mass distributions and optimal foraging behaviors
+create unique, non-random structural dependencies that cannot be
+compressed onto a one-dimensional niche axis, defaulting to the niche
+model may systematically distort our predictions of community resilience
+and multi-trophic biodiversity loss. In this study, we systematically
+isolate the inferential consequences of these structural priors. By
+embedding networks generated from six distinct modelling philosophies
+(spanning purely structural, statistical, and trait-driven approaches)
+within an identical bioenergetic simulation framework, we evaluate
+whether our foundational models function as benign structural templates
+or if they fundamentally direct the trajectory of ecological inference.
 
 \section{Methods}\label{methods}
 
@@ -339,10 +403,10 @@ identity, input parameters, emergent structural properties, and (where
 applicable) species traits.
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2055}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2055}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2466}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.3425}}@{}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2297}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2297}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2297}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.3108}}@{}}
 \caption{Summary of food web models used in this study. Structural
 models (Niche, Cascade, MaxEnt) generate network topology based on
 abstract or statistical rules, while realised/dynamic models (ADBM, ATN,
@@ -620,15 +684,13 @@ have been predicted `into' the PCA space}
 
 \end{figure}%
 
-\begin{figure}
+\begin{figure}[H]
 
-\centering{
-
-\pandocbounded{\includegraphics[keepaspectratio]{figures/PTA_S_init.png}}
+{\centering \pandocbounded{\includegraphics[keepaspectratio]{figures/PTA_S_init.png}}
 
 }
 
-\caption{\label{fig-failed_pca}Splitting out by richness}
+\caption{Splitting out by richness}
 
 \end{figure}%
 
@@ -643,7 +705,7 @@ also the model that delivers the weird netowkrs (ecologically speaking)
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{figures/dynamics_emmeans.png}}
+\pandocbounded{\includegraphics[keepaspectratio]{figures/stability_adjusted_model_means.png}}
 
 }
 
@@ -661,6 +723,16 @@ derivative of the niche model? If dynamic models show unique cascade
 patterns not captured by the niche model, argue that the niche template
 may be insufficient for dynamic questions.
 
+\begin{quote}
+Important point to bring up here is that the niche and the cascade
+models are the only models that have no failures - but is this because
+they create ecologically sound networks or is it because they align
+better with the internal grammar of the BEFW. IE this is not a test of
+ecological plausibility but cross model matching. this leads back to the
+idea that we are mapping the behaviour of models as opposed to any
+actual ecology
+\end{quote}
+
 Scale-Dependent Robustness: Reflect on why species-level patterns might
 look similar across models while the fine-grained story of dynamic
 change is highly model-contingent.
@@ -674,6 +746,11 @@ defaulting to a one-size-fits-all niche template.
 
 \protect\phantomsection\label{refs}
 \begin{CSLReferences}{1}{0}
+\bibitem[\citeproctext]{ref-allesina2012}
+Allesina, S., \& Tang, S. (2012). Stability criteria for complex
+ecosystems. \emph{Nature}, \emph{483}(7388), 205--208.
+\url{https://doi.org/10.1038/nature10832}
+
 \bibitem[\citeproctext]{ref-banville2023}
 Banville, F., Gravel, D., \& Poisot, T. (2023). What constrains food
 webs? A maximum entropy framework for predicting their structure with
@@ -695,6 +772,19 @@ Cohen, J. E., Briand, F., \& Newman, C. (1990). \emph{Community food
 webs: Data and theory}. Springer-Verlag.
 \url{https://www.springer.com/gp/book/9783642837869}
 
+\bibitem[\citeproctext]{ref-curtsdotter2011}
+Curtsdotter, A., Binzer, A., Brose, U., De Castro, F., Ebenman, B.,
+Eklöf, A., Riede, J. O., Thierry, A., \& Rall, B. C. (2011). Robustness
+to secondary extinctions: Comparing trait-based sequential deletions in
+static and dynamic food webs. \emph{Basic and Applied Ecology},
+\emph{12}(7), 571--580. \url{https://doi.org/10.1016/j.baae.2011.09.008}
+
+\bibitem[\citeproctext]{ref-delmas2020}
+Delmas, E., Stouffer, D. B., \& Poisot, T. (n.d.). \emph{Food web
+structure alters ecological communities top-heaviness with little effect
+on the biodiversity-functioning relationship}.
+\url{https://doi.org/10.1101/2020.06.10.144949}
+
 \bibitem[\citeproctext]{ref-petchey2008}
 Petchey, O. L., Beckerman, A. P., Riede, J. O., \& Warren, P. H. (2008).
 Size, foraging, and food web structure. \emph{Proceedings of the
@@ -706,6 +796,25 @@ Rohr, R., Scherer, H., Kehrli, P., Mazza, C., \& Bersier, L.-F. (2010).
 Modeling food webs: Exploring unexplained structure using latent traits.
 \emph{The American Naturalist}, \emph{176}(2), 170--177.
 \url{https://doi.org/10.1086/653667}
+
+\bibitem[\citeproctext]{ref-schneider2016}
+Schneider, F. D., Brose, U., Rall, B. C., \& Guill, C. (2016). Animal
+diversity and ecosystem functioning in dynamic food webs. \emph{Nature
+Communications}, \emph{7}(1), 12718.
+\url{https://doi.org/10.1038/ncomms12718}
+
+\bibitem[\citeproctext]{ref-strydom2026}
+Strydom, T., Dunhill, A. M., Dunne, J. A., Poisot, T., \& Beckerman, A.
+P. (2026). From metawebs to realised webs: A framework for ecological
+network representation under global change. \emph{EcoEvoRxiv}.
+\url{https://doi.org/10.32942/X2JW8K}
+
+\bibitem[\citeproctext]{ref-strydom2026b}
+Strydom, T., Karapunar, B., Dunne, J. A., Hull, P., Little, C. T. S.,
+Pimiento, C., Ridgwell, A., Beckerman, A. P., \& Dunhill, A. M. (2026).
+\emph{Are we mapping ecosystems or models? Framework choices dominate
+food web topology and extinction inferences}.
+\url{https://ecoevorxiv.org/repository/view/13495/}
 
 \bibitem[\citeproctext]{ref-williams2000}
 Williams, R. J., \& Martinez, N. D. (2000). Simple rules yield complex
