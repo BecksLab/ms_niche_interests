@@ -57,7 +57,7 @@ function generate_bodymass_inputs(
     )
     # Randomly shuffle the assignments.
     shuffle!(metabolic_classes)
-    
+
     # --- 2. Create Boolean Vector ---
     # Create the boolean vector needed by some models.
     # We must explicitly convert the BitVector (from .==) to a Vector{Bool}
@@ -82,9 +82,9 @@ function generate_bodymass_inputs(
 
     # Return all generated inputs.
     return (
-        bodymasses = bodymasses,
-        metabolic_classes = metabolic_classes,
-        is_producer = is_producer,
+        bodymasses=bodymasses,
+        metabolic_classes=metabolic_classes,
+        is_producer=is_producer,
     )
 end
 
@@ -132,7 +132,7 @@ function calculate_emergent_producers(adj::AbstractMatrix)
         return 0.0
     end
     # Sum along rows (dims=2) to get the out-degree for each species.
-    out_degrees = sum(adj, dims = 2) # S x 1 Matrix
+    out_degrees = sum(adj, dims=2) # S x 1 Matrix
     # Count how many species have an out-degree of 0.
     basal_count = sum(vec(out_degrees) .== 0)
     # Return the fraction.
@@ -216,7 +216,7 @@ function _process_web(
         if !is_in_basal_range(percent_basal, basal_range)
             return nothing # Failed verification
         end
-        
+
         # Check 2: Emergent Connectance
         if !is_in_connectance_range(connectance, connectance_range)
             return nothing # Failed verification
@@ -227,7 +227,7 @@ function _process_web(
     # --- 3. Return Success ---
     # If verify_web is false, or if it's true and both checks passed,
     # return the results.
-    return (adj = adj, percent_basal = percent_basal, connectance = connectance)
+    return (adj=adj, percent_basal=percent_basal, connectance=connectance)
 end
 
 
@@ -250,7 +250,10 @@ function run_and_filter_ltm(
     connectance_range::Tuple{Float64,Float64},
 )
     # 1. Call the core model function.
-    ltm_result = ltm(species_indices, bodymasses, metabolic_classes)
+    ltm_result = ltm(species_indices, bodymasses, metabolic_classes;
+        P_max_target=rand(Uniform(0.10, 0.80)),
+        sigma_x=rand(Uniform(0.5, 3.5)),
+        δ=rand(Uniform(0.0, 8.0)))
     # 2. Process and filter the resulting matrix.
     #    (Note: model_type argument removed from _process_web)
     return _process_web(
@@ -295,7 +298,7 @@ function run_and_filter_adbm(
     connectance_range::Tuple{Float64,Float64},
 )
     # 1. Get model-specific parameters.
-    params = adbm_parameters(bodymass, is_producer; Nmethod = :biomass)
+    params = adbm_parameters(bodymass, is_producer; Nmethod=:biomass)
     # 2. Call the core model function (converts Bool matrix to Int).
     adj = Int.(adbm(spp_list_any, params, biomass_adbm))
     # 3. Process and filter the resulting matrix.
@@ -373,18 +376,18 @@ function run_and_filter_ltm_laura(
     verify_web::Bool,
     basal_range::Tuple{Float64,Float64},
     connectance_range::Tuple{Float64,Float64};
-    mass_ratio_envelope::Tuple{Float64,Float64} = (1e-1, 1e4) # Pass down strict Borse et al. bounds
+    mass_ratio_envelope::Tuple{Float64,Float64}=(1e-1, 1e4) # Pass down strict Borse et al. bounds
 )
     # 1. Call your custom core model function with the physical envelope constraints
     ltm_laura_result = ltm_laura(
-        species_indices, 
-        bodymasses, 
+        species_indices,
+        bodymasses,
         metabolic_classes;
-        mass_ratio_envelope = mass_ratio_envelope,
-        trait_correlation = 1.0, # Keeps standard perfect correlation for standard LTM matching
-        stochastic = true        # Allow probabilistic link realization matching script defaults
+        mass_ratio_envelope=mass_ratio_envelope,
+        trait_correlation=1.0, # Keeps standard perfect correlation for standard LTM matching
+        stochastic=true        # Allow probabilistic link realization matching script defaults
     )
-    
+
     # 2. Process and extract emergent metrics via the unified project pipeline
     return _process_web(
         ltm_laura_result.binary_matrix,
