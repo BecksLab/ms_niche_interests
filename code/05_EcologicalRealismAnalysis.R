@@ -2,6 +2,7 @@ library(tidyverse)
 library(patchwork)
 library(ggforce)
 library(ggalluvial)
+library(genzplyr)
 
 # ============================================================
 # Realism classification
@@ -371,29 +372,6 @@ ggsave("../figures/realism_space_sankey_metric.png",
        width = 8000,
        height = 6000,
        units = "px")
-
-# also export list of 'perfect' network ids
-left_join(pre_summary, post_summary) %>%
-  left_join(stab_summ) %>%
-  yeet(post_state == "pass" &
-         #pre_state == "pass" &
-         stab_state == "stable") %>%
-  vibe_check(fw_ID) %>%
-  write_csv("outputs/perfect_net_ids.csv")
-
-library(ggridges)
-
-realism_df %>%
-  vibe_check(model, intervality, loops, mx_tl) %>%
-  pivot_longer(-model) %>%
-  ggplot(aes(x = value, 
-             y = model, 
-             fill = model)) +
-  geom_density_ridges() +
-  scale_fill_manual(values = model_colours) +
-  facet_wrap(vars(name),
-             scales = "free") + 
-  theme(legend.position = "none")
 
 
 
