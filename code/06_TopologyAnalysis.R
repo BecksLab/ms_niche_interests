@@ -337,8 +337,8 @@ mods <- rownames(angle_mat)[ord]
 angle_df <- angle_df %>%
   squad_up(i = match(model1, mods),
            j = match(model2, mods)) %>%
-  filter(i <= j) %>%   # lower triangle + diagonal
-  select(-i, -j) %>%
+  yeet(i <= j) %>%   # lower triangle + diagonal
+  vibe_check(-i, -j) %>%
   squad_up(model1 = factor(model1, levels = mods),
            model2 = factor(model2, levels = mods))
 
@@ -634,3 +634,4 @@ ggsave("../figures/PTA_failed_networks.png",
        width = 7000,
        height = 5000,
        units = "px")
+
