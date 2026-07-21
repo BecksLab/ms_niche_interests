@@ -49,25 +49,25 @@ function calculate_custom_metrics(
 
     # 💀: skip cycle counting if network is too large/dense
     # Exponential algorithm will crash the session otherwise.
-    closed_loops = missing
-    if S <= max_species_for_loops
-        try
-            g = SimpleDiGraph(A)
-            closed_loops = length(simplecycles(g))
-        catch e
-            @warn "Cycle detection failed or ran out of memory."
-            closed_loops = missing
-        end
-    else
-        @warn "Network size ($S species) exceeds safety limit. Skipping closed loop count."
-    end
+    #closed_loops = missing
+    #if S <= max_species_for_loops
+    #    try
+    #        g = SimpleDiGraph(A)
+    #        closed_loops = length(simplecycles(g))
+    #    catch e
+    #        @warn "Cycle detection failed or ran out of memory."
+    #        closed_loops = missing
+    #    end
+    #else
+    #    @warn "Network size ($S species) exceeds safety limit. Skipping closed loop count."
+    #end
 
     return (
         S,
         conn,
         isolated,
-        illogical,
-        closed_loops
+        illogical#,
+        #closed_loops
     )
 end
 
@@ -88,8 +88,7 @@ function calculate_realism_metrics(
         mx_tl=Union{Float64,Missing}[],
         intervality=Union{Int,Missing}[],
         isolated=Union{Int,Missing}[],
-        illogical=Union{Int,Missing}[],
-        loops=Union{Int,Missing}[]
+        illogical=Union{Int,Missing}[]
     )
 
     for i in 1:total_networks
@@ -108,8 +107,7 @@ function calculate_realism_metrics(
                 mx_tl=missing,
                 intervality=missing,
                 isolated=missing,
-                illogical=missing,
-                loops=missing
+                illogical=missing
             ))
             continue
         end
@@ -131,15 +129,14 @@ function calculate_realism_metrics(
                 mx_tl=missing,
                 intervality=missing,
                 isolated=missing,
-                illogical=missing,
-                loops=missing
+                illogical=missing
             ))
 
             continue
         end
 
         # S, conn, iso, illog, loops
-        S, conn, iso, illog, loop =
+        S, conn, iso, illog =
             calculate_custom_metrics(A, met_classes; max_species_for_loops=100)
 
         # high-level metric summary
@@ -162,8 +159,7 @@ function calculate_realism_metrics(
             mx_tl=d_tl,
             intervality=interval,
             isolated=iso,
-            illogical=illog,
-            loops=loop
+            illogical=illog
         ))
 
     end
