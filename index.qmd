@@ -79,7 +79,7 @@ To isolate model effects from input variation, all trait-based models were param
 Networks were generated using a rejection-sampling procedure to enforce comparable emergent properties. A network was retained only if its realised basal fraction and connectance fell within the target ranges (0.1–0.3 and 0.05–0.3, respectively). For trait-based models, networks were accepted only when all three models successfully generated valid networks from the same species pool. We obtained **100** valid replicates per model, with an upper bound on sampling attempts to prevent non-termination. MaxEnt networks were constructed by sampling joint in- and out-degree distributions consistent with a target number of links, followed by entropy-maximising rewiring under degree constraints. For each network, we recorded the adjacency matrix, model identity, input parameters, emergent structural properties, and (where applicable) species traits.
 
 | Model | Type | Main Inputs | Key Assumptions |
-|-----------------|-----------------|-----------------|-----------------------|
+|------------------|------------------|------------------|-------------------|
 | Niche model [@williams2000] | Structural | Species niche values | Trophic interactions structured by a 1D feeding niche; species consume all prey within a contiguous range; allows cannibalism. |
 | Cascade model [@cohen1990] | Structural | Species rank | Consumers feed only on species with lower ranks; strictly hierarchical; no loops or omnivory. |
 | MaxEnt model [@banville2023] | Structural | Species richness, connectance | Links assigned to maximize entropy; captures global network properties without species-specific mechanisms. |
@@ -97,11 +97,22 @@ All networks were converted to directed interaction networks and analysed using 
 
 ## Dynamic simulations
 
-To evaluate the dynamical consequences of different generative models, all networks were subjected to a common bioenergetic simulation framework using EcologicalNetworksDynamics.jl.
+To evaluate the dynamical consequences of different generative models, we simulated each network using the bio-energetic food web dynamic model implemented in *EcologicalNetworksDynamics.jl* [@lajaaiti2025]. A key feature of the bio-energetic model is the allometric scaling of metabolism, growth and foraging rates with body mass. For trait-based models (ATN, ADBM, LTN), species body masses were taken from the generative networks and rescaled relative to the producer with the lowest body mass. For structural models (Niche, Cascade, MaxEnt, Random), which did not include body mass information, body masses were assigned from species trophic levels assuming apredator–prey body-mass ratio of 100.
 
-For trait-based models (ATN, ADBM, LTN), species body masses were taken from the generative networks and rescaled relative to the producer with the lowest body mass. These models were then parameterised with their corresponding body masses and standard allometric scaling. For structural models (Niche, Cascade, MaxEnt, Random), where explicit trait information was not available, we assigned body masses using trophic scaling with a predator–prey body-mass ratio of 100, a value commonly used for aquatic food webs. Initial species biomasses were randomly assigned. Dynamics were simulated using a Type III functional response, with a Hill exponent of 2.
+For a consumer species $i$, biomass dynamics were determined by gains from feeding, losses to predators, and metabolic maintenance, which is expressed as: $$\frac{dB_i}{dt} = \sum_{j \in \mathrm{prey}(i)}e_{ij} B_i F_{ij} - \sum_{j \in \mathrm{predators}(i)} B_j F_{ji} - x_i B_i$$
 
-Each network was simulated until a steady state was reached, with a minimum simulation time of 2000 time units and a maximum of 5000 time units. Equilibrium properties were calculated over the final 500 time units of each simulation. Species were considered extinct and removed when their biomass fell below 10−6. At equilibrium, both extinct species and disconnected species were removed, yielding the realised post-simulation network.
+where $B_i$ is the biomass of consumer $i$, $e_{ij}$ is its assimilation efficiency when feeding on prey *j*, $x_i$ is its metabolic rate scaled with body mass, and $F_{ij}$ is the functional response of consumer *i* feeding on prey *j*, defined as
+
+$$F_{ij} = \frac{\omega_{i} a_{ij} B_j^{h}} {M_i\left (1 + \displaystyle\sum_{k \in \mathrm{prey}(i)} \omega_{i} a_{ik} h_{ik} B_k^{h} \right)}$$\
+where $w_i$ is the equal preference of the consumer i feeding on its prey, $w_i$ = 1/number of prey species. $a_{ij}$ is the attack rate, $h_{ij}$ is the handling time, and $M_i$ is the body mass of consumer *i*. Attack rates and handling times scaled with both consumer and prey body masses. The Hill exponent was set to $h = 2$ as a Type III functional response.
+
+For a basal species $j$, biomass dynamics were determined by its logistic growth and losses to consumers, expressed as:
+
+$$\frac{dB_j}{dt} = r_j G_j B_j - \sum_{i \in \mathrm{predators}(j)} B_i F_{ij}$$ where $r_j$ is the intrinsic growth rate and $G_j = 1 - \frac{B_j}{K_j}$ is the logistic growth modifier , with $K_j$ is the carrying capacity. Both $r_j$ and $K_j$ scaled with species body mass.
+
+All allometric constants used to parametrisse $x_i$, $a_{ij}$, $h_{ij}$, $r_j$, and $K_j$ were set to the default values provided by [@lajaaiti2025].
+
+Each network was simulated until it reached a steady state. Species were considered extinct when their biomass fell below 10−6. At equilibrium, both extinct species and disconnected species were removed, yielding the realised post-simulation network.
 
 ## Post-simulation analyses
 
@@ -115,9 +126,15 @@ To quantify how ecological dynamics reshaped network topology, all structural me
 
 Trajectory vectors were calculated as the displacement between pre- and post-dynamics positions in the five-dimensional PCA space. Trajectory length was calculated as the Euclidean distance between the two states, providing a measure of the magnitude of topological change. Mean trajectories (centroids) were calculated for each network reconstruction model to summarise their overall direction of change. Pairwise angular differences between trajectory vectors were then calculated using cosine similarity to quantify whether different reconstruction models exhibited similar directions of topological change, independent of the magnitude of displacement. Finally, convergence among network topologies was assessed by calculating each network's Euclidean distance to the global post-dynamics centroid before and after simulation, with positive reductions in distance indicating convergence towards a common realised network topology.
 
-### Community dynamics
+### Community stability
 
-For community dynamics, we focused on persistence (proportion of species surviving), total community biomass, maximum trophic level, diversity (Shannon, evenness), and local stability metrics (resilience and reactivity). Local stability metrics were calculated using EcoNetPostProcessing.jl. Note this allows us to see if we draw the same inferences in network behaviour between models.
+At equilibrium, we calculated two sets of stability metrics to compare realised networks across generative models. First, network-level stability was characterised by species persistence, Shannon diversity of biomasses, the Gini coefficient of consumption fluxes, and the skewness of interspecific interaction strengths. Second, local stability was characterised by resilience and reactivity. Resilience was measured by the real part of the dominant eigenvalue of the Jacobian matrix, with more negative values indicating faster return to equilibrium following a small perturbation [@deruiter1995]. Reactivity quantified the maximum instantaneous amplification of perturbations, with more positive values indicating a stronger tendency for some perturbations to initially move the system further away from equilibrium [@neubert1997].
+
+For each stability metric, we fitted a linear model including food web model and equilibrium species richness as additive predictors:
+
+$\text{Stability metric} \sim \text{Food-web model} + \text{Equilibrium richness}$.
+
+We used Type II ANOVA to assess the contribution of each predictor while controlling for the other. The magnitude of each association was quantified using partial eta-squared, which represents the proportion of effect-plus-residual variation attributable to a predictor after accounting for the other predictor.
 
 ## Experimental design
 
@@ -153,11 +170,15 @@ Finally, realised networks showed evidence of convergence within topology space 
 
 ![Splitting out by richness](figures/PTA_S_init.png)
 
-## Models confer similar stability inferences
+## Network stability inferences
 
-LTM is outlier but arguably not properly initialised/parameterised (cf Laura). Random also occasional 'outlier' but that makes sense - it's also the model that delivers the weird netowkrs (ecologically speaking)
+Equilibrium richness explained substantially more variation than generative food web models in network-level stability metrics, with the strongest contribution observed for Shannon diversity of biomasses, followed by the skewness of interaction strengths, species persistence and the Gini coefficient of consumption fluxes (@fig-rel_contribution). In contrast, variation in resilience was influenced by both richness and model, with a larger contribution from model. Reactivity was explained primarily by generative food web models, with very little contribution from equilibrium richness.
 
-![TODO.](figures/stability_adjusted_model_means.png){#fig-emmeans}
+![Relative contributions of equilibrium species richness and generative food web models to variation in network and local stability metrics](figures/stability_effect_size_model_vs_richness.png){#fig-rel_contribution}
+
+After accounting for equilibrium richness, Niche, Cascade, ATN and MaxEnt generally supported higher species persistence than ADBM, LTM and Random generated food webs (@fig-emmeans). Biomass diversity was highest in Cascade and Niche webs, but comparatively low in LTM and MaxEnt. Random model had the most uneven consumption fluxes, while MaxEnt and Random webs showed the strongest skewness in interaction strengths. ADBM and LTM generated food webs showed the highest resilience, i.e.,fastest asymptotic recovery, whereas LTM food webs were also the most reactive, i.e., strongest initial amplification of perturbations.
+
+![Network and local stability metrics across generative food web models. Points are estimated marginal means adjusted to the mean equilibrium species richness. Bars show 95% confidence intervals.](figures/stability_adjusted_model_means.png){#fig-emmeans}
 
 # Discussion
 

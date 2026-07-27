@@ -272,6 +272,7 @@ function assign_metabolic_classes_from_adj(A::AbstractMatrix)
 end
 
 
+# --- Function to check if the simulation has reached steady state ---
 function check_steady_state(
     sol;
     n_last = 5,
