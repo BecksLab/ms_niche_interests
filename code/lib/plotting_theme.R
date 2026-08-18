@@ -27,6 +27,9 @@ figure_theme =
         legend.margin = margin(1, 2, 1, 2)
   )
 
+# this set the theme once so dont need to call every time when plotting
+set_theme(figure_theme)
+
 ## 3. Model Color Palette ----
 # Assigns specific hex codes to each modelling framework
 # This ensures a model is always the same colour across all plots
