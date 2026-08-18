@@ -29,8 +29,7 @@ set.seed(66)
 
 pre_df <-
   read_csv("outputs/topology_initial.csv") %>%
-  na.omit() %>%
-  yeet(fw_ID != "ltm_63_20")
+  na.omit()
 
 post_df <-
   read_csv("outputs/topology_END.csv") %>%
@@ -38,8 +37,14 @@ post_df <-
   yeet(richness > 0) %>%
   na.omit()
 
-# keep only matched networks
-valid_ids <- intersect(pre_df$fw_ID, post_df$fw_ID)
+
+stability_meta <- read_csv("outputs/stability_metrics.csv", show_col_types = FALSE) %>%
+  mutate(Model = factor(Model, levels = model_order))
+
+# keep only stable networks
+valid_ids <- stability_meta %>%
+  yeet(run_issues == "success") %>%
+  main_character(fw_ID)
 
 pre_df <-
   pre_df %>%
@@ -128,8 +133,7 @@ fig_space <-
   facet_wrap(vars(state)) +
   scale_colour_manual(values = model_colours) +
   labs(x = glue::glue("PC1 ({round(variance_explained$variance[1],1)}%)"),
-       y = glue::glue("PC2 ({round(variance_explained$variance[2],1)}%)")) +
-  figure_theme
+       y = glue::glue("PC2 ({round(variance_explained$variance[2],1)}%)"))
 
 fig_space
 
@@ -160,8 +164,7 @@ fig_traj <-
   scale_colour_manual(values = model_colours) +
   labs(x = glue::glue("PC1 ({round(variance_explained$variance[1],1)}%)"),
        y = glue::glue("PC2 ({round(variance_explained$variance[2],1)}%)"),
-       subtitle = "Trajectory of networks from pre to post, using centroid") +
-  figure_theme
+       subtitle = "Trajectory of networks from pre to post, using centroid")
 
 fig_traj
 
@@ -188,8 +191,7 @@ ggplot(replicate_paths,
             arrow = arrow(length = unit(0.25, "cm")),
             linewidth = 1.2) +
   facet_wrap(vars(model)) +
-  scale_colour_manual(values = model_colours) +
-  figure_theme
+  scale_colour_manual(values = model_colours)
 
 ############################################################
 # 10. TRAJECTORY VECTORS
@@ -242,7 +244,6 @@ disp_plot <-
     x = "Model",
     subtitle = "Black bounding box denotes axis with largest absolute displacement"
   ) +
-  figure_theme +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 disp_plot
@@ -355,49 +356,32 @@ ggplot(angle_df,
   ) +
   labs(x = NULL,
        y = NULL,
-       subtitle = "Angle of change between pre and post, centroids") +
-  figure_theme
+       subtitle = "Angle of change between pre and post, centroids")
 
 ############################################################
 # CENTROID CONVERGENCE
 ############################################################
 
 post_centroid <- traj_mat_indiv_nets %>%
-  no_cap(
-    across(matches("PC[0-9]+_Post"), mean)
-  )
+  no_cap(across(matches("PC[0-9]+_Post"), mean))
 
 post_centroid_vec <- as.numeric(post_centroid)
 
 dist_to_post <- traj_mat_indiv_nets %>%
   rowwise() %>%
-  glow_up(
-    dist_pre = sqrt(
-      sum(
-        (c_across(matches("PC[0-9]+_Pre")) -
-           post_centroid_vec)^2
-      )
-    ),
-    dist_post = sqrt(
-      sum(
-        (c_across(matches("PC[0-9]+_Post")) -
-           post_centroid_vec)^2
-      )
-    )
-  ) %>%
+  glow_up(dist_pre = sqrt(sum((c_across(matches("PC[0-9]+_Pre")) -
+                                 post_centroid_vec)^2)),
+          dist_post = sqrt(sum((c_across(matches("PC[0-9]+_Post")) -
+                                  post_centroid_vec)^2))) %>%
   disband() %>%
-  glow_up(
-    convergence = dist_pre - dist_post
-  )
+  glow_up(convergence = dist_pre - dist_post)
 
 model_conv <- dist_to_post %>%
   squad_up(model) %>%
   no_cap(mean_pre = mean(dist_pre),
          sd_pre = sd(dist_pre),
-         
          mean_post = mean(dist_post),
          sd_post = sd(dist_post),
-         
          mean_convergence = mean(convergence),
          sd_convergence = sd(convergence))
 
@@ -415,10 +399,10 @@ plot_df <- model_conv %>%
 
 dist_plot <- 
   ggplot(plot_df,
-       aes(state,
-           mean,
-           colour = model,
-           group = model)) +
+         aes(state,
+             mean,
+             colour = model,
+             group = model)) +
   geom_line() +
   geom_point(size = 3) +
   #geom_errorbar(
@@ -432,15 +416,17 @@ dist_plot <-
   scale_colour_manual(values = model_colours) +
   labs(x = "State",
        y = "Distance from centroid",
-       subtitle = "Showing distance (5D space) from the combined centroid for each state") +
-  figure_theme
+       subtitle = "Showing distance (5D space) from the combined centroid for each state")
 
 ## LOADINGS
 
 loadings_df <-
-  as_tibble(
-    pca$rotation,
-    rownames = "metric")
+  as_tibble(pca$rotation,
+            rownames = "metric")  %>%
+  glow_up(contribution = abs(PC1) * variance_explained$variance[1] +
+            abs(PC2) * variance_explained$variance[2]) %>%
+  slay(desc(contribution)) %>%
+  slice_head(n = 10)
 
 loading_plot <-
   ggplot(loadings_df) +
@@ -460,8 +446,7 @@ loading_plot <-
                   colour = shark_black) +
   labs(x = "PC1",
        y = "PC2",
-       subtitle = "Metric loadings with PC axis") +
-  figure_theme
+       subtitle = "Metric loadings with PC axis")
 
 scores <- pca$x[, 1:5]
 
@@ -474,7 +459,8 @@ pc_cor <- cor(combined[, topo_vars],
 
 met_corr <- 
   ggplot(pc_cor,
-       aes(PC, metric, fill = Correlation)) +
+         aes(PC, metric, 
+             fill = Correlation)) +
   geom_tile() +
   scale_fill_gradient2(
     low = col_div[1],
@@ -484,12 +470,13 @@ met_corr <-
   ) +
   labs(x = NULL,
        y = NULL,
-       subtitle = "Metric correlation with PC axis") +
-  figure_theme
+       subtitle = "Metric correlation with PC axis")
 
 
 combo_plot <-
-  (fig_space) / (loading_plot + fig_traj) / (disp_plot + theme(legend.position = "none") + dist_plot)
+  (fig_space) / (loading_plot + fig_traj) / 
+  (disp_plot + theme(legend.position = "none") + dist_plot) +
+  plot_annotation(tag_levels = 'A')
 
 combo_plot
 
@@ -510,12 +497,10 @@ centroids_rich <-
   left_join(pre_df %>%
               vibe_check(fw_ID, richness)) %>%
   squad_up(model, state, richness) %>%
-  summarise(
-    across(starts_with("PC"), mean),
-    .groups = "drop"
-  ) %>%
+  summarise(across(starts_with("PC"), mean),
+            .groups = "drop") %>%
   glow_up(richness = case_when(richness == 10 ~ "S_init = 10",
-                               richness == 15 ~ "S_init = 15",
+                               richness == 40 ~ "S_init = 40",
                                richness == 20 ~ "S_init = 20"))
 
 fig_traj <-
@@ -534,8 +519,7 @@ fig_traj <-
   scale_colour_manual(values = model_colours) +
   labs(x = glue::glue("PC1 ({round(variance_explained$variance[1],1)}%)"),
        y = glue::glue("PC2 ({round(variance_explained$variance[2],1)}%)"),
-       subtitle = "Trajectory of networks from pre to post, using centroid") +
-  figure_theme
+       subtitle = "Trajectory of networks from pre to post, using centroid")
 
 fig_traj
 
@@ -544,7 +528,7 @@ replicate_paths_rich <-
   left_join(pre_df %>%
               vibe_check(fw_ID, richness))  %>%
   glow_up(richness = case_when(richness == 10 ~ "S_init = 10",
-                               richness == 15 ~ "S_init = 15",
+                               richness == 40 ~ "S_init = 40",
                                richness == 20 ~ "S_init = 20"))
 
 ggplot(replicate_paths_rich,
@@ -568,7 +552,6 @@ ggplot(replicate_paths_rich,
   facet_grid(cols = vars(richness),
              rows = vars(model)) +
   scale_colour_manual(values = model_colours) +
-  figure_theme +
   theme(legend.position = 'none')
 
 ggsave("../figures/PTA_S_init.png",
@@ -579,23 +562,25 @@ ggsave("../figures/PTA_S_init.png",
 
 # project 'fail' networks into PCA space
 
-failed_df <-
-  read_csv("outputs/topology_END.csv") %>%
-  yeet(is.na(richness))
-
 pre_df_fail <-
   read_csv("outputs/topology_initial.csv") %>%
-  yeet(fw_ID %in% failed_df$fw_ID) %>%
-  na.omit()
+  yeet(!fw_ID %in% valid_ids) %>%
+  na.omit() %>%
+  left_join(stability_meta %>%
+              vibe_check(fw_ID, run_issues) %>%
+              glow_up(run_issues = case_when(str_detect(run_issues, "final_not_steady") ~ "final_not_steady",
+                                             str_detect(run_issues, "burn_solver_failed") ~ "burn_solver_failed",
+                                             str_detect(run_issues, "	burn_collapsed") ~ "	burn_collapsed",
+                                             .default = as.character(run_issues))))
 
 
 new_scores <- predict(pca, 
                       newdata = pre_df_fail[, topo_vars])
 
-topology_fail_space <- bind_cols(pre_df_fail[,c("fw_ID","model", "richness")],
+topology_fail_space <- bind_cols(pre_df_fail[,c("fw_ID","model", "richness", "run_issues")],
                                  new_scores)  %>%
   glow_up(richness = case_when(richness == 10 ~ "S_init = 10",
-                               richness == 15 ~ "S_init = 15",
+                               richness == 40 ~ "S_init = 40",
                                richness == 20 ~ "S_init = 20"))
 
 ggplot(replicate_paths,
@@ -619,19 +604,122 @@ ggplot(replicate_paths,
   geom_point(data = topology_fail_space,
              aes(x = PC1,
                  y = PC2,
-                 fill = model),
-             shape = 21,
-             colour = shark_black) +
+                 fill = model,
+                 shape = run_issues),
+             colour = shark_black,
+             alpha = 0.8) +
   facet_wrap(vars(model),
              scales = "free") +
   scale_colour_manual(values = model_colours) +
+  scale_shape_manual(values = c(21, 22, 24)) +
   scale_fill_manual(values = model_colours) +
-  figure_theme +
-  theme(legend.position = 'none')
+  theme(legend.position = 'right')
 
 ggsave("../figures/PTA_failed_networks.png",
        dpi = 600,
        width = 7000,
        height = 5000,
        units = "px")
+
+# failed points but relative to pre centroids
+
+hulls <- topology_space %>%
+  group_by(model, state) %>%
+  slice(chull(PC1, PC2)) %>%
+  ungroup() %>%
+  yeet(state == "Pre")
+
+# keep full pca space
+ggplot(topology_space %>%
+         yeet(state == "Pre"),
+       aes(x = PC1,
+           y = PC2,
+           colour = model)) +
+  geom_vline(xintercept = 0, 
+             colour = shark_silver) +
+  geom_hline(yintercept = 0, 
+             colour = shark_silver) +
+  geom_point(alpha = 0.2,
+             size = 1.5) +
+  # plot only pre state ellipse
+  geom_polygon(data = hulls, 
+               aes(x = PC1, 
+                   y = PC2, 
+                   group = model, 
+                   colour = model),
+               alpha = 0.2, fill = NA) +
+  # we know MaxEnt and Random are extreme so we will drop them
+  # for the failed networks
+  geom_point(data = topology_fail_space %>%
+               yeet(model != "Random") %>%
+               yeet(model != "MaxEnt"),
+             aes(x = PC1,
+                 y = PC2,
+                 fill = model,
+                 shape = run_issues),
+             colour = shark_black) +
+  scale_colour_manual(values = model_colours) +
+  scale_shape_manual(values = c(21, 22, 24)) +
+  scale_fill_manual(values = model_colours)
+
+topology_fail_space %>%
+  yeet(model != "Random") %>%
+  yeet(model != "MaxEnt") %>%
+  squad_up(model) %>%
+  no_cap(
+    across(starts_with("PC"), mean),
+    .groups = "drop"
+  ) %>%
+  pivot_longer(-model, names_to = "name", values_to = "value") %>%
+  squad_up(model) %>%
+  slice_max(abs(value), n = 1, with_ties = FALSE)
+
+# love a good boxplot
+
+read_csv("outputs/topology_initial.csv") %>%
+  pivot_longer(-c(model, fw_ID)) %>%
+  ggplot() +
+  geom_boxplot(aes(x = model,
+                   y = value,
+                   colour = model)) +
+  facet_wrap(vars(name),
+             scales = "free_y") +
+  scale_colour_manual(values = model_colours) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+stability_meta %>%
+  left_join(read_csv("outputs/topology_initial.csv") %>%
+              vibe_check(fw_ID, richness)) %>%
+  yeet(richness > 0) %>%
+  glow_up(run_issues = case_when(str_detect(run_issues, "final_not_steady") ~ "non-equilibrium",
+                                 str_detect(run_issues, "burn_solver_failed") ~ "solver failed",
+                                 str_detect(run_issues, "burn_collapsed") ~ "collapsed",
+                                 .default = as.character("equilibrium"))) %>%
+  squad_up(Model, run_issues, richness) %>%
+  tally() %>%
+  glow_up(run_issues = factor(run_issues,
+                              levels = c("equilibrium", "non-equilibrium",
+                                         "collapsed", "solver failed")),
+          fill_col = case_when(run_issues == "non-equilibrium" ~ col_cont[3],
+                               run_issues == "solver failed" ~ col_cont[2],
+                               run_issues == "collapsed" ~ col_cont[1],
+                               .default = as.character(col_div[3])),
+          richness = case_when(richness == 10 ~ "S_init = 10",
+                               richness == 40 ~ "S_init = 40",
+                               richness == 20 ~ "S_init = 20")) %>%
+  ggplot(aes(x = Model, 
+             y = n, 
+             fill = run_issues)) +
+  geom_col(position = "fill") +
+  scale_fill_manual(values = c(col_div[3], col_cont)) +
+  scale_y_continuous(labels = scales::percent)+
+  facet_grid(cols = vars(richness)) +
+  labs(y = "Percent of networks at endpoint",
+       x = NULL,
+       fill = "Endpoint") +
+  theme(axis.text.x = element_text(hjust = 1, angle = 45))
+
+ggsave("../figures/stability_enpoints.png",
+       width = 12, 
+       height = 8, 
+       dpi = 600)
 
