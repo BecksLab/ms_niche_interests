@@ -453,18 +453,18 @@ no loops or omnivory. \\
 MaxEnt model (Banville et al., 2023) & Structural & Species richness,
 connectance & Links assigned to maximize entropy; captures global
 network properties without species-specific mechanisms. \\
-Allometric Diet Breadth Model (ADBM) (Petchey et al., 2008) & Realised /
-Dynamic & Body mass, prey energy content & Consumers maximize energy
-intake; diet breadth determined by profitability and handling time;
-allometric scaling governs parameters. \\
-Allometric Trophic Network (ATN) (Brose et al., 2006) & Realised /
-Dynamic & Body mass & Interactions constrained by body-mass ratios;
-mechanical size limits structure networks; probability of interaction
-follows Ricker function. \\
-Latent trait model (Rohr et al., 2010) & Realised / Dynamic & Species
-traits (\emph{e.g.,} body mass) & Interactions inferred statistically
-based on hidden trait correlations; can incorporate probabilistic
-constraints on links. \\
+Allometric Diet Breadth Model (ADBM) (Petchey et al., 2008) & Realised &
+Body mass, prey energy content & Consumers maximize energy intake; diet
+breadth determined by profitability and handling time; allometric
+scaling governs parameters. \\
+Allometric Trophic Network (ATN) (Brose et al., 2006) & Realised & Body
+mass & Interactions constrained by body-mass ratios; mechanical size
+limits structure networks; probability of interaction follows Ricker
+function. \\
+Latent trait model (Rohr et al., 2010) & Realised & Species traits
+(\emph{e.g.,} body mass) & Interactions inferred statistically based on
+hidden trait correlations; can incorporate probabilistic constraints on
+links. \\
 \end{longtable}
 
 \subsection{Network structure}\label{network-structure}
@@ -822,31 +822,155 @@ intervals.}
 
 \section{Discussion}\label{discussion}
 
-Reconstruction is Not Neutral (or maybe it is): Discuss how models act
-as structural priors that condition ecological inference.
+\subsection{Reconstruction is Not Neutral (or maybe it
+is)}\label{reconstruction-is-not-neutral-or-maybe-it-is}
 
-Template Dependence: Address the core question: Is everything a
-derivative of the niche model? If dynamic models show unique cascade
-patterns not captured by the niche model, argue that the niche template
-may be insufficient for dynamic questions.
+Generative models dictate the baseline: While structural and statistical
+models operate top-down using topological rules or entropy maximisation,
+trait-based models (ADBM, ATN, LTM) construct networks ``bottom-up''
+using body-mass ratios and energetic trade-offs. These fundamental
+differences mean that generative models act as non-neutral structural
+priors rather than interchangeable templates.
+
+This directional movement reflects a clear selection for specific
+structural attributes. Because our simulation framework lacked
+link-rewiring mechanisms, topological changes were driven entirely by
+extinctions. Dynamic simulations systematically pruned tri-trophic
+competition motifs (specifically apparent competition (\(S5\)) and
+direct competition (\(S4\)), and omnivory (\(S2\))) to pull initially
+disparate network structures toward a shared, realized endpoint. This
+observed motif-pruning closely mirrors work demonstrating that
+exploitative and apparent competition motifs generate severe transient
+instabilities that trigger targeted extinctions in unconstrained
+networks (Borrelli, 2015; Stouffer \& Bascompte, 2010).
+
+The existence of a constrained ``optimal'' structural domain for
+stability is further highlighted by the behavior of Random networks.
+Random models exhibited the highest rate of dynamic collapse,
+particularly as initial network size increased. However, the rare Random
+webs that reached equilibrium underwent almost no topological
+reorganization post-simulation. As demonstrated by classic stability
+theory, unconstrained random matrices are overwhelmingly unstable unless
+they happen to possess specific non-random topologies, such as
+modularity or weak interaction loops (Allesina \& Tang, 2012; May,
+1974). The surviving Random networks occupied this precise, narrow
+topological zone from the outset. Conversely, networks that failed to
+achieve steady-state dynamics tended to occupy the outer periphery of
+the initial structural PCA space. Deviating too far from viable
+topological bounds creates severe structural vulnerabilities that
+amplify community collapse as species richness scales (Dunne et al.,
+2002)
 
 \begin{quote}
-Important point to bring up here is that the niche and the cascade
-models are the only models that have no failures - but is this because
-they create ecologically sound networks or is it because they align
-better with the internal grammar of the BEFW. IE this is not a test of
-ecological plausibility but cross model matching. this leads back to the
-idea that we are mapping the behaviour of models as opposed to any
-actual ecology
+since Random models are not ecologically informed this implies there is
+`structural stability' and then having ecology informed structure
+expands that zone into something like `ecological structural stability';
+and then there comes the structural vs body size model differences???
 \end{quote}
 
-Scale-Dependent Robustness: Reflect on why species-level patterns might
-look similar across models while the fine-grained story of dynamic
-change is highly model-contingent.
+\subsection{Template Dependence}\label{template-dependence}
 
-Implications for Theory: Suggest that researchers must align their
-reconstruction framework with their inferential goals rather than
-defaulting to a one-size-fits-all niche template.
+A central objective of this study was to resolve whether structural
+templates, such as the widely used Niche model, serve as universal
+baselines for theoretical ecology. Our results reveal a stark dichotomy:
+while Niche and Cascade models achieved a 100\% equilibrium success rate
+regardless of network size, this resilience should not be confused with
+superior biological realism. As highlighted in critiques of purely
+topological models, the Niche model accurately reproduces
+macro-topological features like degree distributions and chain lengths
+but lacks explicit consumer-resource energetic trade-offs Schneider et
+al. (2016). Instead, the flawless survival rate of traditional
+structural models reflects cross-model compatibility rather than
+empirical plausibility. Because structural models do not explicitly
+include species body masses, masses were assigned post hoc based on
+trophic levels assuming a fixed 100:1 predator-prey body mass ratio.
+This artificial assignment aligns neatly with the underlying
+mathematical grammar and allometric scaling assumptions of the
+Bio-Energetic Food Web (BEFW) dynamic framework (Delmas et al., 2017).
+Consequently, dynamic simulations on structural webs may primarily
+measure how well a generative model's topological heuristics conform to
+bioenergetic differential equations, rather than testing real-world
+ecological persistence.
+
+When explicit trait distributions and optimal foraging constraints are
+enforced (as in ADBM, ATN, and LTM), networks experience lower overall
+species persistence but reveal complex local dynamic behaviors. For
+instance, ADBM and LTM networks supported the highest asymptotic
+resilience (fastest return to equilibrium), yet LTM webs simultaneously
+exhibited the highest reactivity (strongest initial amplification of
+perturbations). This decoupling of short-term transient responses from
+long-term asymptotic stability is a recognized hallmark of
+non-orthogonal, size-structured communities(Neubert \& Caswell, 1997;
+Tang et al., 2014). Structural models that collapse body-mass
+distributions onto a one-dimensional continuous niche axis inherently
+fail to capture these crucial transient dynamics.
+
+\subsection{Scale-Dependent Behaviour}\label{scale-dependent-behaviour}
+
+Our analyses highlight a fundamental scale-dependent decoupling in
+ecological network robustness. At a coarse, macroscopic scale,
+ecological dynamics act as an equalizer - initial differences among
+reconstruction models compress into a shared topological space,
+significantly reducing each network's Euclidean distance to a common
+realised centroid Figure~\ref{fig-PTA}. However, at a fine-grained
+scale, individual dynamic stability properties remain deeply contingent
+on the underlying generative model Figure~\ref{fig-emmeans}. Similar
+scale-dependent dynamics have been observed in experimental and
+theoretical communities, where high-level functional properties converge
+under strong selective filters while fine-scale interactions retain
+significant historical contingency (Ratzke et al., 2020).
+
+This scale dependence is further evidenced by the distinct drivers of
+network-level versus local stability metrics. Network-level stability
+metrics (Shannon diversity of biomasses, interaction strength skewness,
+species persistence, and the Gini coefficient of consumption fluxes)
+were overwhelmingly explained by equilibrium species richness rather
+than the initial generative model Figure~\ref{fig-rel_contribution}.
+This agrees with macro-ecological theory establishing that portfolio
+effects, biomass partitioning, and flux distributions are predominantly
+driven by total diversity and pool size rather than fine-scale network
+architecture (Loreau \& Mazancourt, 2013; Yodzis, 1981).
+
+In sharp contrast, local dynamic stability was governed by the
+generative framework itself. Model identity explained almost all
+variation in system reactivity and exerted a larger effect size on
+asymptotic resilience than equilibrium species richness. Transient
+dynamics and local perturbation responses are highly sensitive to
+specific consumer attack rates, handling times, and metabolic scaling
+parameters---properties defined strictly by the generative trait rules
+rather than species counts
+
+\subsection{Implications for Theory}\label{implications-for-theory}
+
+Theoretical ecology's two-decade reliance on the Niche model as the
+default null baseline for community robustness and stability analyses
+requires careful re-examination (Banville et al., 2023).
+Phenomenological structural rules cannot serve as neutral baselines for
+dynamic questions because they omit the bioenergetic constraints that
+govern real-world ecosystem stability (Strydom et al., 2021).
+
+Rather than relying on a one-size-fits-all template, researchers must
+explicitly match their network reconstruction framework to their
+inferential goals (Poisot et al., 2016):
+
+\begin{itemize}
+\item
+  Macroscopic properties: When evaluating macro-scale patterns such as
+  overall biomass diversity, species persistence, or broad topological
+  convergence, traditional structural models or constrained MaxEnt
+  frameworks may provide adequate, computationally efficient
+  approximations.
+\item
+  Transient dynamics and stability: When probing local asymptotic
+  resilience, transient reactivity, primary extinction cascades, or
+  responses to environmental perturbations, mechanistic, trait-driven
+  models (such as ADBM or ATN) are essential.
+\end{itemize}
+
+Ultimately, because initial structural assumptions fundamentally
+condition short-term transient responses and local stability, historical
+conclusions regarding food web robustness derived exclusively from Niche
+or Cascade templates must be re-evaluated through a bioenergetic lens.
 
 \section*{References}\label{references}
 \addcontentsline{toc}{section}{References}
@@ -863,6 +987,11 @@ Banville, F., Gravel, D., \& Poisot, T. (2023). What constrains food
 webs? A maximum entropy framework for predicting their structure with
 minimal biases. \emph{PLOS Computational Biology}, \emph{19}(9),
 e1011458. \url{https://doi.org/10.1371/journal.pcbi.1011458}
+
+\bibitem[\citeproctext]{ref-borrelli2015}
+Borrelli, J. J. (2015). Selection against instability: Stable subgraphs
+are most frequent in empirical food webs. \emph{Oikos}, \emph{124}(12),
+1583--1588. \url{https://doi.org/10.1111/oik.02176}
 
 \bibitem[\citeproctext]{ref-brose2006}
 Brose, U., Jonsson, T., Berlow, E. L., Warren, P., Banasek-Richter, C.,
@@ -886,11 +1015,22 @@ to secondary extinctions: Comparing trait-based sequential deletions in
 static and dynamic food webs. \emph{Basic and Applied Ecology},
 \emph{12}(7), 571--580. \url{https://doi.org/10.1016/j.baae.2011.09.008}
 
+\bibitem[\citeproctext]{ref-delmas2017}
+Delmas, E., Brose, U., Gravel, D., Stouffer, D. B., \& Poisot, T.
+(2017). Simulations of biomass dynamics in community food webs.
+\emph{Methods in Ecology and Evolution}, \emph{8}(7), 881--886.
+\url{https://doi.org/10.1111/2041-210X.12713}
+
 \bibitem[\citeproctext]{ref-delmas2020}
 Delmas, E., Stouffer, D. B., \& Poisot, T. (n.d.). \emph{Food web
 structure alters ecological communities top-heaviness with little effect
 on the biodiversity-functioning relationship}.
 \url{https://doi.org/10.1101/2020.06.10.144949}
+
+\bibitem[\citeproctext]{ref-dunne2002}
+Dunne, J., Williams, R. J., \& Martinez, N. D. (2002). Network structure
+and biodiversity loss in food webs: Robustness increases with
+connectance. \emph{Ecol. Lett.}, \emph{5}(4), 558--567.
 
 \bibitem[\citeproctext]{ref-lajaaiti2025}
 Lajaaiti, I., Bonnici, I., Kéfi, S., Mayall, H., Danet, A., Beckerman,
@@ -899,17 +1039,39 @@ A julia package to simulate the temporal dynamics of complex ecological
 networks. \emph{Methods in Ecology and Evolution}, \emph{16}(3),
 520--529. \url{https://doi.org/10.1111/2041-210X.14497}
 
+\bibitem[\citeproctext]{ref-loreau2013}
+Loreau, M., \& Mazancourt, C. de. (2013). Biodiversity and ecosystem
+stability: A synthesis of underlying mechanisms. \emph{Ecology Letters},
+\emph{16}(s1), 106--115. \url{https://doi.org/10.1111/ele.12073}
+
+\bibitem[\citeproctext]{ref-may1974}
+May, R. M. (1974). \emph{Stability and complexity in model ecosystems}
+(Vol. 1). Princeton University Press.
+\url{https://doi.org/10.2307/j.ctvs32rq4}
+
 \bibitem[\citeproctext]{ref-neubert1997}
-Neubert, M. G., \& Caswell, H. (1997). ALTERNATIVES TO RESILIENCE FOR
-MEASURING THE RESPONSES OF ECOLOGICAL SYSTEMS TO PERTURBATIONS.
+Neubert, M. G., \& Caswell, H. (1997). Alternatives to resilience for
+measuring the responses of ecological systems to perturbations.
 \emph{Ecology}, \emph{78}(3), 653--665.
-\url{https://doi.org/10.1890/0012-9658(1997)078\%5B0653:atrfmt\%5D2.0.co;2}
+\url{https://doi.org/10.1890/0012-9658(1997)078\%5B0653:ATRFMT\%5D2.0.CO;2}
 
 \bibitem[\citeproctext]{ref-petchey2008}
 Petchey, O. L., Beckerman, A. P., Riede, J. O., \& Warren, P. H. (2008).
 Size, foraging, and food web structure. \emph{Proceedings of the
 National Academy of Sciences}, \emph{105}(11), 4191--4196.
 \url{https://doi.org/10.1073/pnas.0710672105}
+
+\bibitem[\citeproctext]{ref-poisot2016}
+Poisot, T., Stouffer, D. B., \& Kéfi, S. (2016). Describe, understand
+and predict: Why do we need networks in ecology? \emph{Functional
+Ecology}, \emph{30}(12), 1878--1882.
+\url{https://doi.org/10.1111/1365-2435.12799}
+
+\bibitem[\citeproctext]{ref-ratzke2020}
+Ratzke, C., Barrere, J., \& Gore, J. (2020). Strength of species
+interactions determines biodiversity and stability in microbial
+communities. \emph{Nature Ecology \& Evolution}, \emph{4}(3), 376--383.
+\url{https://doi.org/10.1038/s41559-020-1099-4}
 
 \bibitem[\citeproctext]{ref-rohr2010}
 Rohr, R., Scherer, H., Kehrli, P., Mazza, C., \& Bersier, L.-F. (2010).
@@ -929,6 +1091,20 @@ diversity and ecosystem functioning in dynamic food webs. \emph{Nature
 Communications}, \emph{7}(1), 12718.
 \url{https://doi.org/10.1038/ncomms12718}
 
+\bibitem[\citeproctext]{ref-stouffer2010}
+Stouffer, D. B., \& Bascompte, J. (2010). Understanding food-web
+persistence from local to global scales. \emph{Ecology Letters},
+\emph{13}(2), 154--161.
+\url{https://doi.org/10.1111/j.1461-0248.2009.01407.x}
+
+\bibitem[\citeproctext]{ref-strydom2021}
+Strydom, T., Catchen, M. D., Banville, F., Caron, D., Dansereau, G.,
+Desjardins-Proulx, P., Forero-Muñoz, N. R., Higino, G., Mercier, B.,
+Gonzalez, A., Gravel, D., Pollock, L., \& Poisot, T. (2021). A roadmap
+towards predicting species interaction networks (across space and time).
+\emph{Philosophical Transactions of the Royal Society B},
+\emph{376}(1837). \url{https://doi.org/10.1098/rstb.2021.0063}
+
 \bibitem[\citeproctext]{ref-strydom2026}
 Strydom, T., Dunhill, A. M., Dunne, J. A., Poisot, T., \& Beckerman, A.
 P. (2026). From metawebs to realised webs: A framework for ecological
@@ -942,10 +1118,20 @@ Pimiento, C., Ridgwell, A., Beckerman, A. P., \& Dunhill, A. M. (2026).
 food web topology and extinction inferences}.
 \url{https://ecoevorxiv.org/repository/view/13495/}
 
+\bibitem[\citeproctext]{ref-tang2014}
+Tang, S., Pawar, S., \& Allesina, S. (2014). Correlation between
+interaction strengths drives stability in large ecological networks.
+\emph{Ecology Letters}, \emph{17}(9), 1094--1100.
+https://doi.org/\url{https://doi.org/10.1111/ele.12312}
+
 \bibitem[\citeproctext]{ref-williams2000}
 Williams, R. J., \& Martinez, N. D. (2000). Simple rules yield complex
 food webs. \emph{Nature}, \emph{404}(6774), 180--183.
 \url{https://doi.org/10.1038/35004572}
+
+\bibitem[\citeproctext]{ref-yodzis1981}
+Yodzis, P. (1981). The stability of real ecosystems. \emph{Nature},
+\emph{289}(5799), 674--676. \url{https://doi.org/10.1038/289674a0}
 
 \end{CSLReferences}
 
