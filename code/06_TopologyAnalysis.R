@@ -101,6 +101,30 @@ post_dist  <- vegdist(post_space[, c("PC1", "PC2", "PC3", "PC4", "PC5")],
 permanova_post <- adonis2(post_dist ~ model, data = post_space, permutations = 999)
 print(permanova_post)
 
+library(pairwiseAdonis)
+
+# Pairwise comparisons for Pre state
+pairwise_pre <- pairwise.adonis2(pre_dist ~ model, data = pre_space, p.adjust.m = "bonferroni")
+print(pairwise_pre)
+
+# Pairwise comparisons for Post state
+pairwise_post <- pairwise.adonis2(post_dist ~ model, data = post_space, p.adjust.m = "bonferroni")
+print(pairwise_post)
+
+# Check group dispersions for Pre state
+disp_pre <- betadisper(pre_dist, pre_space$model)
+tukey_pre <- TukeyHSD(disp_pre)
+print(tukey_pre)
+
+# Check group dispersions for Post state
+disp_post <- betadisper(post_dist, post_space$model)
+tukey_post <- TukeyHSD(disp_post)
+print(tukey_post)
+
+# Plot to visualize centroids and dispersion
+plot(disp_pre)
+plot(disp_post)
+
 #------6. Variance expalined ---------------------------------------------------
 
 variance_explained <-
@@ -214,6 +238,18 @@ trajectory_vectors <-
                                     dPC4^2 +
                                     dPC5^2),
          angle_deg = atan2(dPC2, dPC1) * 180 / pi)
+
+trajectory_vectors %>%
+  vibe_check(model, dPC1, dPC2, dPC3, dPC4, dPC5) %>%
+  pivot_longer(-model) %>%
+  squad_up(model) %>%
+  no_cap(abs_disp = sum(abs(value))) %>%
+  slay(desc(abs_disp))
+
+trajectory_vectors %>%
+  vibe_check(model, dPC1, dPC2, dPC3, dPC4, dPC5) %>%
+  slay(desc(abs(dPC1)))
+
 
 disp_plot <-
   trajectory_vectors %>%
@@ -448,6 +484,38 @@ loading_plot <-
        y = "PC2",
        subtitle = "Metric loadings with PC axis")
 
+# let plot and save ALL loadings as well
+
+loadings_all <-
+  as_tibble(pca$rotation,
+            rownames = "metric")  %>%
+  glow_up(contribution = abs(PC1) * variance_explained$variance[1] +
+            abs(PC2) * variance_explained$variance[2])
+
+ggplot(loadings_all) +
+  geom_vline(xintercept = 0, 
+             colour = shark_silver) +
+  geom_hline(yintercept = 0, 
+             colour = shark_silver) +
+  geom_segment(aes(x = 0,
+                   y = 0,
+                   xend = PC1,
+                   yend = PC2),
+               colour = shark_black,
+               arrow = arrow(length = unit(0.1, "cm"))) +
+  geom_text_repel(aes(x = PC1,
+                      y = PC2,
+                      label = metric),
+                  colour = shark_black) +
+  labs(x = "PC1",
+       y = "PC2")
+
+ggsave("../figures/loadings.png",
+       dpi = 600,
+       height = 4500,
+       width = 7000,
+       units = "px")
+
 scores <- pca$x[, 1:5]
 
 pc_cor <- cor(combined[, topo_vars],
@@ -581,9 +649,17 @@ topology_fail_space <- bind_cols(pre_df_fail[,c("fw_ID","model", "richness", "ru
                                  new_scores)  %>%
   glow_up(richness = case_when(richness == 10 ~ "S_init = 10",
                                richness == 40 ~ "S_init = 40",
-                               richness == 20 ~ "S_init = 20"))
+                               richness == 20 ~ "S_init = 20"))%>%
+  glow_up(run_issues = case_when(str_detect(run_issues, "final_not_steady") ~ "non-equilibrium",
+                                 str_detect(run_issues, "burn_solver_failed") ~ "solver failed",
+                                 str_detect(run_issues, "burn_collapsed") ~ "collapsed",
+                                 .default = as.character("equilibrium"))) %>%
+  disband() %>%
+  yeet(run_issues != "solver failed") %>%
+  yeet(!model %in% c("Niche", "Cascade"))
 
-ggplot(replicate_paths,
+ggplot(replicate_paths_rich %>%
+         yeet(!model %in% c("Niche", "Cascade")),
        aes(x = PC1,
            y = PC2,
            group = fw_ID,
@@ -594,7 +670,8 @@ ggplot(replicate_paths,
              colour = shark_silver) +
   geom_path(arrow = arrow(length = unit(0.1, "cm")),
             alpha = 0.1) +
-  geom_path(data = centroids,
+  geom_path(data = centroids %>%
+              yeet(!model %in% c("Niche", "Cascade")),
             aes(x = PC1,
                 y = PC2,
                 colour = model,
@@ -608,8 +685,8 @@ ggplot(replicate_paths,
                  shape = run_issues),
              colour = shark_black,
              alpha = 0.8) +
-  facet_wrap(vars(model),
-             scales = "free") +
+  facet_grid(rows = vars(model),
+             cols = vars(richness)) +
   scale_colour_manual(values = model_colours) +
   scale_shape_manual(values = c(21, 22, 24)) +
   scale_fill_manual(values = model_colours) +
