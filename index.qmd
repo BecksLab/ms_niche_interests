@@ -83,9 +83,9 @@ Networks were generated using a rejection-sampling procedure to enforce comparab
 | Niche model [@williams2000] | Structural | Species niche values | Trophic interactions structured by a 1D feeding niche; species consume all prey within a contiguous range; allows cannibalism. |
 | Cascade model [@cohen1990] | Structural | Species rank | Consumers feed only on species with lower ranks; strictly hierarchical; no loops or omnivory. |
 | MaxEnt model [@banville2023] | Structural | Species richness, connectance | Links assigned to maximize entropy; captures global network properties without species-specific mechanisms. |
-| Allometric Diet Breadth Model (ADBM) [@petchey2008] | Realised / Dynamic | Body mass, prey energy content | Consumers maximize energy intake; diet breadth determined by profitability and handling time; allometric scaling governs parameters. |
-| Allometric Trophic Network (ATN) [@brose2006] | Realised / Dynamic | Body mass | Interactions constrained by body-mass ratios; mechanical size limits structure networks; probability of interaction follows Ricker function. |
-| Latent trait model [@rohr2010] | Realised / Dynamic | Species traits (*e.g.,* body mass) | Interactions inferred statistically based on hidden trait correlations; can incorporate probabilistic constraints on links. |
+| Allometric Diet Breadth Model (ADBM) [@petchey2008] | Realised | Body mass, prey energy content | Consumers maximize energy intake; diet breadth determined by profitability and handling time; allometric scaling governs parameters. |
+| Allometric Trophic Network (ATN) [@brose2006] | Realised | Body mass | Interactions constrained by body-mass ratios; mechanical size limits structure networks; probability of interaction follows Ricker function. |
+| Latent trait model [@rohr2010] | Realised | Species traits (*e.g.,* body mass) | Interactions inferred statistically based on hidden trait correlations; can incorporate probabilistic constraints on links. |
 
 : Summary of food web models used in this study. Structural models (Niche, Cascade, MaxEnt) generate network topology based on abstract or statistical rules, while realised/dynamic models (ADBM, ATN, Latent trait) incorporate species-specific traits and biological mechanisms to predict interactions. For each model, we list the main inputs and the key assumptions that govern link formation. {#tbl-models}
 
