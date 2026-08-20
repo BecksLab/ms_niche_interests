@@ -231,7 +231,7 @@
 1%
 }%
 }
-\date{2026-08-19}
+\date{2026-08-20}
 
 \usepackage{setspace}
 \usepackage[left]{lineno}
@@ -278,7 +278,34 @@ Tanya Strydom %
 
 \vfil
 {\small
-\textbf{Abstract:} TODO
+\textbf{Abstract:} Food web ecology relies heavily on generative models
+to reconstruct trophic interactions, yet these models embody
+fundamentally different assumptions about how ecological networks are
+formed. Whether these alternative reconstruction frameworks provide
+interchangeable baselines for studying ecosystem dynamics remains
+largely unknown. Here, we compared seven food-web generative models
+spanning structural, statistical, and trait-based philosophies by
+embedding each within an identical bioenergetic simulation framework
+while controlling species pools and dynamical rules. Initial networks
+occupied distinct regions of multivariate topology space, demonstrating
+that reconstruction framework alone generates substantially different
+food-web architectures. Following bioenergetic simulations, however,
+realised networks converged towards a shared structural region through
+extinction-driven pruning of trophic interactions, indicating that
+ecological dynamics impose strong constraints on viable network
+topology. Despite this structural convergence, local stability
+properties remained strongly dependent on the original generative model.
+Reactivity and resilience differed consistently among reconstruction
+frameworks, whereas broader network-level stability metrics were
+explained primarily by realised species richness rather than model
+identity. These results demonstrate that generative models are not
+neutral representations of ecological communities but inferential priors
+that shape conclusions about ecosystem stability. While structural
+models may provide adequate approximations for broad topological or
+diversity patterns, mechanistic trait-based models are necessary for
+predicting transient dynamics and local stability. Our findings argue
+that food-web reconstruction should be matched explicitly to ecological
+inference rather than treated as a universal modelling baseline.
 \vfil
 \textbf{Keywords:} %
 %
@@ -713,7 +740,7 @@ the `optimum'
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{figures/stability_enpoints.png}}
+\pandocbounded{\includegraphics[keepaspectratio]{figures/stability_endpoints.png}}
 
 }
 
@@ -878,13 +905,13 @@ regardless of network size, this resilience should not be confused with
 superior biological realism. As highlighted in critiques of purely
 topological models, the Niche model accurately reproduces
 macro-topological features like degree distributions and chain lengths
-but lacks explicit consumer-resource energetic trade-offs Schneider et
-al. (2016). Instead, the flawless survival rate of traditional
-structural models reflects cross-model compatibility rather than
-empirical plausibility. Because structural models do not explicitly
-include species body masses, masses were assigned post hoc based on
-trophic levels assuming a fixed 100:1 predator-prey body mass ratio.
-This artificial assignment aligns neatly with the underlying
+but lacks explicit consumer-resource energetic trade-offs (Petchey et
+al., 2008; Schneider et al., 2016). Instead, the flawless survival rate
+of traditional structural models reflects cross-model compatibility
+rather than empirical plausibility. Because structural models do not
+explicitly include species body masses, masses were assigned post hoc
+based on trophic levels assuming a fixed 100:1 predator-prey body mass
+ratio. This artificial assignment aligns neatly with the underlying
 mathematical grammar and allometric scaling assumptions of the
 Bio-Energetic Food Web (BEFW) dynamic framework (Delmas et al., 2017).
 Consequently, dynamic simulations on structural webs may primarily
