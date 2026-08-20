@@ -6,6 +6,7 @@ library(patchwork)
 # for accents
 shark_silver <- "#A2AAAD"
 shark_black <- "#00181F"
+shark_white <- "#F4F1DE"
 
 ## 2. General Figure Theme ----
 
