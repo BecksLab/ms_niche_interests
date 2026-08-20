@@ -160,7 +160,7 @@ With the exception of the Niche and Cascade models not all networks reached an e
 
 > Discussion point - few random models reach equilibrium but those that do do not change a lot - maybe this implies that there is an 'optimal structure' for those networks whereas niche and cascade (100% success) have a bit more 'relaxed' rules as to how far away you can to be from the 'optimum'
 
-![End points of networks indicating the percentage of networks that reached an equilibrium biomass (orange) and if they did not (shades of blue) why not. These are faceted by the initial starting richness for each network](figures/stability_enpoints.png){#fig-stability_endpnts}
+![End points of networks indicating the percentage of networks that reached an equilibrium biomass (orange) and if they did not (shades of blue) why not. These are faceted by the initial starting richness for each network](figures/stability_endpoints.png){#fig-stability_endpnts}
 
 Interestingly if we plot the 'failed' networks into the PCA space (@fig-failed_pca, darker points) these networks do not differ obviously in structure with the 'successful' networks. What is perhaps notable though is that we do begin to see some deviation in this observation for the larger networks (right column, @fig-failed_pca), with these networks typically being on the 'end range' of the pre structural space, for smaller networks is seems a bit more 'random'
 

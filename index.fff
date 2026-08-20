@@ -30,7 +30,7 @@ providing a measure of convergence in network topology.}
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{figures/stability_enpoints.png}}
+\pandocbounded{\includegraphics[keepaspectratio]{figures/stability_endpoints.png}}
 
 }
 
