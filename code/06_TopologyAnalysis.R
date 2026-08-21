@@ -37,6 +37,7 @@ library(ggrepel)
 library(pairwiseAdonis)
 library(effectsize)
 library(genzplyr)
+library(multcomp)
 
 source("lib/plotting_theme.R")
 
@@ -249,6 +250,10 @@ dispersion_emmeans <- emmeans(dispersion_model,
 
 print(dispersion_emmeans)
 
+cld(dispersion_emmeans,
+    Letters = letters,
+    adjust = "sidak") %>%
+  as_tibble()
 
 # ==========================================================
 # 12. PLOT TOPOLOGY SPACE
@@ -1017,6 +1022,13 @@ trajectory_length_emmeans <- emmeans(trajectory_length_model,
 
 print(trajectory_length_emmeans)
 
+trajectory_length_cld <-
+  cld(trajectory_length_emmeans,
+      Letters = letters,
+      adjust = "sidak") %>%
+  as_tibble() %>%
+  glow_up(lett = trimws(.group))
+
 
 trajectory_length_plot <- 
   ggplot(individual_trajectories,
@@ -1026,17 +1038,61 @@ trajectory_length_plot <-
   geom_violin(alpha = 0.25,
               linewidth = 0) +
   geom_boxplot(width = 0.15,
-               outlier.shape = NA) +
+               outliers = FALSE) +
   stat_summary(fun = mean,
                geom = "point",
                shape = 21,
                fill = shark_white,
                size = 2) +
+  geom_text(data = trajectory_length_cld,
+            aes(x = model,
+                y = 20,
+                label = lett),
+            colour = shark_black) +
   scale_fill_manual(values = model_colours) +
   coord_flip() +
+  ylim(0, 22) +
   labs(x = NULL,
        y = "Trajectory length (5D PCA)")
 
+trajectory_length_plot
+
+library(ggsignif) # Optional, if you want automatic pairwise p-value brackets
+
+# 1. Sort your CLD table and lock in the factor levels
+trajectory_length_cld <- trajectory_length_cld %>%
+  arrange(emmean) %>%
+  mutate(model = factor(model, levels = model))
+
+# 2. Match the factor order in your main dataset
+individual_trajectories <- individual_trajectories %>%
+  mutate(model = factor(model, levels = levels(trajectory_length_cld$model)))
+
+
+trajectory_length_plot <-
+  ggplot(individual_trajectories,
+       aes(x = model,
+           y = trajectory_length,
+           fill = model)) +
+  geom_violin(alpha = 0.25, linewidth = 0) +
+  geom_boxplot(width = 0.15, outliers = FALSE) +
+  stat_summary(fun = mean,
+               geom = "point",
+               shape = 21,
+               fill = shark_white,
+               size = 2) +
+  geom_signif(annotations = c("", ""), 
+              y_position = c(20, 20),
+              xmin = c(1, 4),
+              xmax = c(2, 7)) +
+  scale_fill_manual(values = model_colours) +
+  coord_flip() +
+  ylim(0, 22) +
+  labs(x = NULL,
+       y = "Trajectory length (5D PCA)") +
+  theme(legend.position = "none") # Optional: hide legend if fill repeats model names
+
+trajectory_length_plot
 
 # ==========================================================
 # 33. TRAJECTORY LENGTH WITH INITIAL RICHNESS
@@ -1114,7 +1170,7 @@ fig_trajectory_richness <-
 main_figure <-
   (fig_space) /
   (loading_plot + fig_trajectory) /
-  (trajectory_length_plot + dispersion_plot) +
+  (trajectory_length_plot + convergence_plot) +
   plot_annotation(
     tag_levels = "A"
   )
