@@ -16,12 +16,10 @@ loadings showing the contribution of the top ten individual network
 metrics to topology space (C) Centroid trajectories for each
 reconstruction model, illustrating the direction and magnitude of
 topological change between initial and realised networks. (D)
-Component-wise displacement of model centroids along the first five
-principal component axes, highlighting the principal dimensions
-responsible for topological change. Black bounding boxes indicate the
-dimension with the greatest displacement (E) Mean Euclidean distance of
-networks to the overall network centroid before and after simulations,
-providing a measure of convergence in network topology.}
+Displacement of model centroids as trajectory lengths over the first
+five principal component axes, points represent mean length (E) Mean
+Euclidean distance of networks to the centroid before and after
+simulations, providing a measure of convergence in network topology.}
 
 \end{figure}
 \efloatseparator
