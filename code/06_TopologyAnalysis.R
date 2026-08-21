@@ -36,12 +36,11 @@ library(patchwork)
 library(ggrepel)
 library(pairwiseAdonis)
 library(effectsize)
+library(genzplyr)
 
 source("lib/plotting_theme.R")
 
 set.seed(66)
-
-figure_dir <- "../figures"
 
 # Number of PCA axes used throughout the analysis
 n_pcs <- 5
@@ -1146,7 +1145,7 @@ ggsave("../figures/PTA_S_init.png",
        fig_trajectory_richness,
        dpi = 600,
        width = 7000,
-       height = 5000,
+       height = 2500,
        units = "px")
 
 ggsave("../figures/loadings.png",
