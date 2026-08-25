@@ -11,7 +11,7 @@
 <meta name="author" content="Laura Sophia Landon Blake">
 <meta name="author" content="Andrew P. Beckerman">
 <meta name="author" content="Dylan Z. Childs">
-<meta name="dcterms.date" content="2026-08-24">
+<meta name="dcterms.date" content="2026-08-25">
 <meta name="keywords" content="food web reconstruction, bioenergetic dynamics, network stability, ecological networks, generative models, community persistence">
 
 <title>Is everything a Niche model? Food Web Reconstruction Frameworks Converge in Structure but Diverge in Stability</title>
@@ -115,10 +115,10 @@ window.Quarto = {
 <meta name="citation_author" content="Laura Sophia Landon Blake">
 <meta name="citation_author" content="Andrew P. Beckerman">
 <meta name="citation_author" content="Dylan Z. Childs">
-<meta name="citation_publication_date" content="2026-08-24">
-<meta name="citation_cover_date" content="2026-08-24">
+<meta name="citation_publication_date" content="2026-08-25">
+<meta name="citation_cover_date" content="2026-08-25">
 <meta name="citation_year" content="2026">
-<meta name="citation_online_date" content="2026-08-24">
+<meta name="citation_online_date" content="2026-08-25">
 <meta name="citation_language" content="en">
 <meta name="citation_reference" content="citation_title=Simple rules yield complex food webs;,citation_author=Richard J. Williams;,citation_author=Neo D. Martinez;,citation_publication_date=2000-03;,citation_cover_date=2000-03;,citation_year=2000;,citation_fulltext_html_url=https://www.nature.com/articles/35004572;,citation_issue=6774;,citation_doi=10.1038/35004572;,citation_volume=404;,citation_language=en;,citation_journal_title=Nature;">
 <meta name="citation_reference" content="citation_title=Community food webs: Data and theory;,citation_author=Joel E Cohen;,citation_author=Frederic Briand;,citation_author=Charles Newman;,citation_publication_date=1990;,citation_cover_date=1990;,citation_year=1990;,citation_fulltext_html_url=https://www.springer.com/gp/book/9783642837869;,citation_language=en;,citation_series_title=Biomathematics;">
@@ -217,7 +217,7 @@ window.Quarto = {
                 <div>
             <div class="quarto-title-meta-heading">Published</div>
             <div class="quarto-title-meta-contents">
-              <p class="date">August 24, 2026</p>
+              <p class="date">August 25, 2026</p>
             </div>
           </div>
           
@@ -370,9 +370,6 @@ Table&nbsp;1: Summary of food web models used in this study. Structural models (
 <section id="network-structure" class="level2" data-number="2.2">
 <h2 data-number="2.2" class="anchored" data-anchor-id="network-structure"><span class="header-section-number">2.2</span> Network structure</h2>
 <p>All networks were converted to directed interaction networks and analysed using a standardised pipeline. We quantified structural properties across multiple scales, including connectance, trophic level, generality, vulnerability, clustering, centrality, trophic coherence, and path length. These metrics were used to characterise the structural signature of each model.</p>
-<blockquote class="blockquote">
-<p>This could include a table that describes what the metrics ‘mean’ but maybe we can just lean on the ‘usual template’, maybe some of the feature selection stuff.</p>
-</blockquote>
 </section>
 <section id="dynamic-simulations" class="level2" data-number="2.3">
 <h2 data-number="2.3" class="anchored" data-anchor-id="dynamic-simulations"><span class="header-section-number">2.3</span> Dynamic simulations</h2>
@@ -411,9 +408,6 @@ where <span class="math inline">\(w_i\)</span> is the equal preference of the co
 <section id="networks-converge-in-structure" class="level2" data-number="3.1">
 <h2 data-number="3.1" class="anchored" data-anchor-id="networks-converge-in-structure"><span class="header-section-number">3.1</span> Networks Converge in Structure</h2>
 <p>Projection of all networks into a common topology space revealed that initial and realised food web topologies occupied distinct regions of multivariate space (<a href="#fig-PTA" class="quarto-xref">Figure&nbsp;1</a> A). The first two principal components explained 50.7% of the total variation in network structure, with variation primarily associated with linkage density, chain length, apparent competition (S5), and direct competition (S4) (<a href="#fig-PTA" class="quarto-xref">Figure&nbsp;1</a> B). While considerable separation among reconstruction models was evident in the initial topology space, post-dynamics networks exhibited greater overlap, suggesting that ecological dynamics altered structural differences among models.</p>
-<blockquote class="blockquote">
-<p>Discussion point: There is a ‘selection’ for structure since we see networks moving towards a similar end point. Here we can see that its links and indirect interactions - probably resulting from the loss of species specifically associated with these motifs. Something about how although this is a ‘dynamic system’ we must remember that there is no rewiring happening so structural changes are all being driven by the loss of specific species (hence the link and motif changes)</p>
-</blockquote>
 <div id="fig-PTA" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-PTA-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -425,18 +419,12 @@ Figure&nbsp;1: Ecological dynamics reshape food web topology within a shared mul
 </figure>
 </div>
 <p>All reconstruction models underwent measurable shifts in topology following dynamic simulations, although both the magnitude and direction of change differed among models (<a href="#fig-PTA" class="quarto-xref">Figure&nbsp;1</a> C). Centroid trajectories showed that all models moved broadly in the same direction, indicating that ecological dynamics reshaped network topology in a consistent manner. This can be seen when looking at the displacement of models along the various PC axes (<a href="#fig-PTA" class="quarto-xref">Figure&nbsp;1</a> D), where all models showed the greatest displacement along PC1.</p>
-<blockquote class="blockquote">
-<p>Discussion point: Given that this is associated with the two competition motifs (S4, S5) it links to the indirect effects component - and we are seeing a ‘pruning’ happening at these tri-trophic components/units. Which kind of agrees with the Curstdottir justification for dynamic extinctions and also Stouffer’s work about motifs and robustness(?) adjacent stuff.</p>
-</blockquote>
 <p>Comparison of trajectory vectors demonstrated that most models exhibited small angular differences, indicating that ecological dynamics produced similar directions of topological change across reconstruction methods. Trajectory lengths varied across the 5 PCs ranged from with the Cascade models exhibiting the greatest overall restructuring and Random models the least along PC1.</p>
 <p>Finally, realised networks showed evidence of convergence within topology space (<a href="#fig-PTA" class="quarto-xref">Figure&nbsp;1</a> E). The mean Euclidean distance to the global realised-network centroid decreased following dynamic simulations for all models, suggesting that ecological dynamics drove networks towards a common structural endpoint despite differences in initial topology.</p>
 </section>
 <section id="structure-does-not-confer-stability" class="level2" data-number="3.2">
 <h2 data-number="3.2" class="anchored" data-anchor-id="structure-does-not-confer-stability"><span class="header-section-number">3.2</span> Structure does not confer stability</h2>
 <p>With the exception of the Niche and Cascade models not all networks reached an equilibrium biomass (<a href="#fig-stability_endpnts" class="quarto-xref">Figure&nbsp;2</a>). The Random networks had the lowest percentage of networks that reached an equilibrium state, with most of the networks collapsing <em>i.e.,</em> species went extinct. With the two structural networks (Random and MaxEnt) we see that the larger the initial network is the more of them fail to reach an equilibrium state. Conversely the three body size models (ADBM, ATN, and LTM) show the opposite relationship (smaller networks tend to fail). Interestingly we primarily see that networks fail due to extinction of the community as opposed to the network not able to reach an equilibrium state.</p>
-<blockquote class="blockquote">
-<p>Discussion point - few random models reach equilibrium but those that do do not change a lot - maybe this implies that there is an ‘optimal structure’ for those networks whereas niche and cascade (100% success) have a bit more ‘relaxed’ rules as to how far away you can to be from the ‘optimum’</p>
-</blockquote>
 <div id="fig-stability_endpnts" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-stability_endpnts-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -448,9 +436,6 @@ Figure&nbsp;2: End points of networks indicating the percentage of networks that
 </figure>
 </div>
 <p>Interestingly if we plot the ‘failed’ networks into the PCA space (<a href="#fig-failed_pca" class="quarto-xref">Figure&nbsp;3</a>, darker points) these networks do not differ obviously in structure with the ‘successful’ networks. What is perhaps notable though is that we do begin to see some deviation in this observation for the larger networks (right column, <a href="#fig-failed_pca" class="quarto-xref">Figure&nbsp;3</a>), with these networks typically being on the ‘end range’ of the pre structural space, for smaller networks is seems a bit more ‘random’</p>
-<blockquote class="blockquote">
-<p>Discussion point - if we look at the downsampling manuscript the data there seems to suggest that the END is very sensitive to the body size specification (and deviation from the predator prey) which might suggest that these networks collapse because of that. HOWEVER the large networks are the ones where we see instability (non-equilibrium) more than collapse suggesting that non-equilibrium is a product of richness and structural ‘deviation’. Worth pointing out that in general the failed networks are on the outer limits of the structure same (but not obviously so) which might suggest that these are also the networks that are more sensitive to the emergent property (body size) stuff? So structurally robust ‘zone’ and then as soon as you start moving away from that you become at risk of ‘instability’…</p>
-</blockquote>
 <div id="fig-failed_pca" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-failed_pca-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
