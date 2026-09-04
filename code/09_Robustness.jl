@@ -27,7 +27,7 @@ robustness_vals = DataFrame(
         robustness = Float64[],
     )
 
-@showprogress "Calculating robustness" for i in 1:nrow(networks)
+for i in 1:nrow(networks)
 
     N = build_network(networks.AdjacencyMatrix[i])
     N = remove_cannibals(N)
