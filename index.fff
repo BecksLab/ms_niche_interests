@@ -50,11 +50,11 @@ initial starting richness for each network}
 
 \caption{\label{fig-failed_pca}Arrows indicate trajectory of individual
 networks. Points are networks that failed to reach an equilibrium state
-that have been predicted `into' the PCA space. Pale arrows show the
+that have been predicted into the PCA space. Pale arrows show the
 trajectory of each individual network, dark arrows the mean trajectory.
-Note we do not plot networks that `failed' due to solver issues,
-additionally we omit the Niche and Cascade models as they have no
-`failed' networks}
+Note we do not plot networks that failed due to solver issues,
+additionally we omit the Niche and Cascade models as they have no failed
+networks}
 
 \end{figure}
 \efloatseparator
