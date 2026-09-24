@@ -9,7 +9,7 @@ author:
     role: 
     - conceptualization: lead
     - methodology: supporting
-    affiliation:
+    affiliations:
       - id: sheffield
         name: School of Biosciences, University of Sheffield, Sheffield, UK
   - name: Xiaoxiao Li
@@ -21,6 +21,16 @@ author:
     - methodology: supporting
     affiliations:
       - ref: sheffield
+  - name: Alain Danet
+    id: ad
+    orcid: 0000-0002-1592-9483
+    corresponding: false
+    role: 
+    - conceptualization: supporting
+    - methodology: supporting
+    affiliations:
+      - id: decod
+        name: "Dynamique et durabilité des écosystèmes: de la source à l’océan, Rennes, France"
   - name: Laura Sophia Landon Blake
     id: llb
     orcid: 0009-0009-7269-0817
