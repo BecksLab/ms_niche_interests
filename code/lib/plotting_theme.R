@@ -5,7 +5,7 @@ library(patchwork)
 
 # for accents
 shark_silver <- "#A2AAAD"
-shark_black <- "#00181F"
+shark_black <- "#212322"
 shark_white <- "#F4F1DE"
 
 ## 2. General Figure Theme ----
@@ -37,13 +37,13 @@ set_theme(figure_theme)
 
 # 1. DISCRETE MODEL COLORS
 model_colours <- c(
-  "ATN"      = "#FFB81C",
-  "LTM"      = "#f7A48b",
-  "ADBM"     = "#EA7200",
-  "Random"   = "#002B36",
-  "Niche"    = "#C085C2",
-  "Cascade"  = "#006D75",
-  "MaxEnt"   = "#9CDBD9"
+  "ATN"      = "#9CDBD9",
+  "LTM"      = "#002B36",
+  "ADBM"     = "#006D75",
+  "Random"   = "#FFB81C",
+  "Niche"    = "#E6BCD7",
+  "Cascade"  = "#C085C2",
+  "MaxEnt"   = "#EA7200"
 )
 
 pal_df <- data.frame(l = names(model_colours), c = model_colours)
@@ -55,3 +55,53 @@ col_cont <- c("#CCF5FF", "#83C5BE", "#002B36")
 # 3. DIVERGING RAMP
 
 col_div <- c("#006D75", "#F4F1DE", "#EA7200")
+
+# Lookup dictionaries for variables
+
+# models
+
+model_order <- c("ADBM", "ATN", "LTM", "Niche", "Cascade", "MaxEnt", "Random")
+model_colours <- model_colours[model_order]
+
+# model groups
+
+model_groups <- c(
+  ADBM = "Body-size",
+  ATN = "Body-size",
+  LTM = "Body-size",
+  Niche = "Theoretical",
+  Cascade = "Theoretical",
+  MaxEnt = "Structural",
+  Random = "Structural"
+)
+
+mod_shapes <- c(
+  ADBM = 19,
+  ATN = 19,
+  LTM = 19,
+  Niche = 17,
+  Cascade = 17,
+  MaxEnt = 15,
+  Random = 15
+)
+
+# stablity
+
+stability_labels <- c(
+  persistence = "Species persistence",
+  biomass_shannon = "Shannon diversity of biomasses",
+  gini_fluxes = "Gini coeffient of consumption fluxes",
+  skewness_IS = "Skewness of interaction strengths",
+  resilience = "Resilience",
+  reactivity = "Reactivity"
+)
+
+stability_groups <- c(
+  persistence = "Network stability",
+  biomass_shannon = "Network stability",
+  gini_fluxes = "Network stability",
+  skewness_IS = "Network stability",
+  resilience = "Local stability",
+  reactivity = "Local stability"
+)
+

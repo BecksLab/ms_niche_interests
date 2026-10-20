@@ -14,30 +14,14 @@ setwd(here())
 source("lib/plotting_theme.R")
 
 #------1. Load data ------------------------------------------------------------
-model_order <- c("ADBM", "ATN", "LTM", "Niche", "Cascade", "MaxEnt", "Random")
-model_colours <- model_colours[model_order]
 
 stability_meta <- read_csv("outputs/stability_metrics.csv", show_col_types = FALSE) %>%
   mutate(Model = factor(Model, levels = model_order))
 
+
 stability_metrics <- c("persistence", "biomass_shannon", "gini_fluxes", "skewness_IS",
-                 "resilience","reactivity")
-stability_labels <- c(
-  persistence = "Species persistence",
-  biomass_shannon = "Shannon diversity of biomasses",
-  gini_fluxes = "Gini coeffient of consumption fluxes",
-  skewness_IS = "Skewness of interaction strengths",
-  resilience = "Resilience",
-  reactivity = "Reactivity"
-)
-stability_groups <- c(
-  persistence = "Network stability",
-  biomass_shannon = "Network stability",
-  gini_fluxes = "Network stability",
-  skewness_IS = "Network stability",
-  resilience = "Local stability",
-  reactivity = "Local stability"
-)
+                       "resilience","reactivity")
+
 #------2. Difference checks across models --------------------------------------
 # MANOVA check
 stability_df <- stability_meta %>%
@@ -197,13 +181,15 @@ emm_plot_df <- emm_summary %>%
 emm_network_plot <- emm_plot_df %>%
   filter(stability_group == "Network stability") %>%
   ggplot(aes(x = Model, y = emmean, colour = Model)) +
-  geom_pointrange(aes(ymin = lower.CL, ymax = upper.CL),
+  geom_pointrange(aes(ymin = lower.CL, ymax = upper.CL,
+                      shape = Model),
                   linewidth = 0.8, size = 1.1) +
   geom_text(aes(y = letter_y, label = .group),
             colour = "black", size = 4.5, show.legend = FALSE) +
   facet_wrap(~ metric_label, scales = "free_y", 
              nrow = 2, ncol = 2) +
   scale_colour_manual(values = model_colours, limits = model_order) +
+  scale_shape_manual(values = mod_shapes) +
   labs(x = "", y = "Adjusted mean", title = "Network stability") +
   figure_theme +
   theme(legend.position = "none",
@@ -212,7 +198,8 @@ emm_network_plot <- emm_plot_df %>%
 emm_local_plot <- emm_plot_df %>%
   filter(stability_group == "Local stability") %>%
   ggplot(aes(x = Model, y = emmean, colour = Model)) +
-  geom_pointrange(aes(ymin = lower.CL, ymax = upper.CL),
+  geom_pointrange(aes(ymin = lower.CL, ymax = upper.CL,
+                      shape = Model),
                   linewidth = 0.8, size = 1.1) +
   geom_text(aes(y = letter_y, label = .group),
             colour = "black", size = 4.5, show.legend = FALSE) +
@@ -220,6 +207,7 @@ emm_local_plot <- emm_plot_df %>%
              nrow = 1, ncol = 2) +
   scale_colour_manual(values = model_colours, 
                       limits = model_order) +
+  scale_shape_manual(values = mod_shapes) +
   labs(x = "", y = "Adjusted mean", title = "Local stability") +
   figure_theme +
   theme(legend.position = "none",

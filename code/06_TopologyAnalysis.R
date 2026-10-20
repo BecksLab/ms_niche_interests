@@ -90,7 +90,8 @@ combined <- bind_rows(
   post_df %>%
     glow_up(state = "Post")) %>%
   glow_up(state = factor(state,
-                         levels = c("Pre", "Post"))) %>%
+                         levels = c("Pre", "Post")),
+            model = factor(model, levels = model_order)) %>%
   na.omit()
 
 
@@ -272,7 +273,8 @@ fig_space <-
   ggplot(topology_space,
          aes(x = PC1,
              y = PC2,
-             colour = model)) +
+             colour = model,
+             shape = model)) +
   geom_vline(xintercept = 0,
              colour = shark_silver) +
   geom_hline(yintercept = 0,
@@ -282,7 +284,10 @@ fig_space <-
   stat_ellipse(level = 0.95,
                linewidth = 0.8) +
   facet_wrap(~state) +
-  scale_colour_manual(values = model_colours) +
+  scale_colour_manual(values = model_colours,
+                      name = "Model") +
+  scale_shape_manual(values = mod_shapes,
+                     name = "Model") +
   labs(x = pc1_label,
        y = pc2_label)
 
@@ -314,7 +319,8 @@ fig_trajectory <-
              colour = shark_silver) +
   geom_path(arrow = arrow(length = unit(0.25, "cm")),
             linewidth = 1.2) +
-  scale_colour_manual(values = model_colours) +
+  scale_colour_manual(values = model_colours,
+                      name = "Model") +
   labs(x = pc1_label,
        y = pc2_label,
        subtitle = "Trajectory of model centroids from pre to post")
@@ -678,8 +684,12 @@ convergence_plot <-
              colour = model,
              group = model)) +
   geom_line() +
-  geom_point(size = 3) +
-  scale_colour_manual(values = model_colours) +
+  geom_point(aes(shape = model),
+             size = 3) +
+  scale_colour_manual(values = model_colours,
+                      name = "Model") +
+  scale_shape_manual(values = mod_shapes,
+                     name = "Model") +
   labs(x = "State",
        y = "Distance from overall Post centroid",
        subtitle = "Change in distance to the common endpoint centroid")
@@ -717,8 +727,8 @@ loading_plot <-
                arrow = arrow(length = unit(0.1,"cm"))) +
   geom_text_repel(aes(label = metric),
                   colour = shark_black) +
-  labs(x = "PC1",
-       y = "PC2",
+  labs(x = pc1_label,
+       y = pc2_label,
        subtitle = "Top topology metric contributions to PC1 and PC2")
 
 
@@ -739,8 +749,8 @@ loading_plot_all <-
                arrow = arrow(length = unit(0.1,"cm"))) +
   geom_text_repel(aes(label = metric),
                   colour = shark_black) +
-  labs(x = "PC1",
-       y = "PC2")
+  labs(x = pc1_label,
+       y = pc2_label)
 
 
 # ==========================================================
@@ -806,14 +816,13 @@ topology_fail_space <-
   bind_cols(as_tibble(failed_scores[,seq_len(n_pcs)]))
 
 # Richness labels
-richness_labels <- c("10" = "S_init = 10",
-                     "20" = "S_init = 20",
-                     "40" = "S_init = 40")
+richness_labels <- c("10" = "S[init] == 10",
+                     "20" = "S[init] == 20",
+                     "40" = "S[init] == 40")
 
 topology_fail_space <- 
   topology_fail_space %>%
-  glow_up(richness_label = recode(as.character(richness),
-                                  !!!richness_labels))
+  glow_up(richness = as.character(richness))
 
 
 # ==========================================================
@@ -838,9 +847,8 @@ failed_network_plot <-
   geom_path(data = topology_space %>%
               yeet(!model %in% passing_models) %>%
               left_join(pre_raw %>%
-                          vibe_check(fw_ID, richness))%>%
-              glow_up(richness_label = recode(as.character(richness),
-                                              !!!richness_labels)),
+                          vibe_check(fw_ID, richness)) %>%
+              glow_up(richness = as.character(richness)),
             aes(x = PC1,
                 y = PC2,
                 colour = model,
@@ -855,7 +863,10 @@ failed_network_plot <-
              colour = shark_black,
              alpha = 0.8) +
   facet_grid(rows = vars(model),
-             cols = vars(richness_label)) +
+             cols = vars(richness),
+             labeller = labeller(
+               richness = as_labeller(richness_labels, default = label_parsed)
+             )) +
   scale_colour_manual(values = model_colours) +
   scale_fill_manual(values = model_colours) +
   scale_shape_manual(values = c(21, 22)) +
@@ -1071,9 +1082,9 @@ individual_trajectories <- individual_trajectories %>%
 
 trajectory_length_plot <-
   ggplot(individual_trajectories,
-       aes(x = model,
-           y = trajectory_length,
-           fill = model)) +
+         aes(x = model,
+             y = trajectory_length,
+             fill = model)) +
   geom_violin(alpha = 0.25, linewidth = 0) +
   geom_boxplot(width = 0.15, outliers = FALSE) +
   stat_summary(fun = mean,
@@ -1156,7 +1167,10 @@ fig_trajectory_richness <-
   geom_hline(yintercept = 0,
              colour = shark_silver) +
   geom_path(arrow = arrow(length = unit(0.25,"cm")), linewidth = 1.2) +
-  facet_wrap(~richness_label) +
+  facet_wrap(~richness,
+             labeller = labeller(
+               richness = as_labeller(richness_labels, default = label_parsed)
+             )) +
   scale_colour_manual(values = model_colours) +
   labs(x = pc1_label,
        y = pc2_label,
