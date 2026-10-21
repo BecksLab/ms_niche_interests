@@ -132,6 +132,10 @@ topo_distance <- topology_space %>%
   disband() %>%
   vibe_check(fw_ID, model, topo_distance)
 
+# write to csv
+write_csv(topo_distance,
+          "outputs/distance_topology.csv")
+
 # Calculate distance to overall Post centroid
 stab_distance <- stability_space %>%
   rowwise() %>%
@@ -141,6 +145,9 @@ stab_distance <- stability_space %>%
   disband() %>%
   vibe_check(fw_ID, Model, stab_distance) %>%
   lowkey(model = Model)
+
+write_csv(stab_distance,
+          "outputs/distance_stability.csv")
 
 dist_all <- 
   left_join(topo_distance, stab_distance) %>%
