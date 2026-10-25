@@ -1,5 +1,5 @@
 ---
-title: "Is everything a Niche model? Food Web Reconstruction Frameworks Converge in Structure but Diverge in [something]"
+title: "Same structure, different stability: The lasting legacy of food web reconstruction"
 author:
   - name: Tanya Strydom
     id: ts
