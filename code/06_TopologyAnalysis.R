@@ -981,12 +981,9 @@ stability_summary <-
          endpoint = factor(endpoint,levels = c("equilibrium",
                                                "non-equilibrium",
                                                "collapsed",
-                                               "solver failed")),
-         
-         richness_label = recode(as.character(richness),
-                                 !!!richness_labels)) %>%
+                                               "solver failed"))) %>%
   count(Model,
-        richness_label,
+        richness,
         endpoint)
 
 
@@ -997,7 +994,10 @@ stability_plot <-
              fill = endpoint)) +
   geom_col(position = "fill") +
   scale_y_continuous(labels = scales::percent) +
-  facet_grid(cols = vars(richness_label)) +
+  facet_grid(cols = vars(richness),
+             labeller = labeller(
+               richness = as_labeller(richness_labels, default = label_parsed)
+             )) +
   labs(x = NULL,
        y = "Percent of networks at endpoint",
        fill = "Endpoint") +
