@@ -233,37 +233,47 @@ sem_plots <- list()
 for (g in seq_along(model_names)) {
   p <- sem_panels[[g]]
   
-  # Keep significant regression paths and their coefficient labels
+  # Keep significant regression paths and label their direction
   for (k in seq_along(p$layers)) {
     d <- p$layers[[k]]$data
     
     if ("pvalue" %in% names(d)) {
       d <- d %>%
         filter(type == "~", pvalue < 0.05) %>%
-        mutate(direction = if_else(est > 0, "Positive", "Negative"))
+        mutate(
+          direction = if_else(est > 0, "Positive", "Negative")
+        )
       
       p$layers[[k]]$data <- d
       p$layers[[k]]$mapping$colour <- aes(colour = direction)$colour
-      p$layers[[k]]$show.legend <- FALSE
+      p$layers[[k]]$show.legend <- TRUE
     }
   }
   
-  r2_g <- r2_list[[g]]
-  
   p <- p +
-    scale_colour_manual(values = c(Positive = "#2166AC", Negative = "#B2182B"),
-                        limits = c("Positive", "Negative"), guide = "none") +
+    scale_colour_manual(
+      name = "Path direction",
+      values = c(
+        Positive = col_div[3],
+        Negative = col_div[1]
+      ),
+      breaks = c("Positive", "Negative"),
+      limits = c("Positive", "Negative"),
+      drop = FALSE
+    ) +
     figure_theme +
-    theme(panel.grid = element_blank(),
-          panel.border = element_blank(),
-          axis.line = element_blank(),
-          axis.ticks = element_blank(),
-          axis.text = element_blank(),
-          axis.title = element_blank(),
-          plot.margin = margin(2, 2, 2, 2))
+    theme(
+      panel.grid = element_blank(),
+      panel.border = element_blank(),
+      axis.line = element_blank(),
+      axis.ticks = element_blank(),
+      axis.text = element_blank(),
+      axis.title = element_blank(),
+      plot.margin = margin(2, 2, 2, 2)
+    )
   
-  # Keep heatmap axis labels from changing the SEM panel spacing
-  sem_plots[[g]] <- wrap_elements(full = p)
+  # Keep as a ggplot so patchwork can collect its legend
+  sem_plots[[g]] <- p
 }
 
 # Heatmaps of SEM variance sources
@@ -292,7 +302,7 @@ for (j in seq_along(stability_responses)) {
               size = 4.5, show.legend = FALSE) +
     scale_colour_identity() +
     scale_fill_gradient2(
-      low = "#B2182B", mid = "white", high = "#2166AC",
+      low = col_div[1], mid = col_div[2], high = col_div[3],
       midpoint = 0, limits = fill_limits,
       labels = scales::label_number(accuracy = 0.01),
       guide = guide_colourbar(direction = "horizontal")
@@ -310,13 +320,30 @@ for (j in seq_along(stability_responses)) {
   partition_plots[[j]] <- wrap_elements(full = p)
 }
 
-combined_figure <- wrap_plots(
-  c(sem_plots, partition_plots),
-  ncol = 3, widths = c(1, 1, 1), guides = "collect"
+# Extract the shared legend from an SEM plot
+legend <- cowplot::get_legend(
+  sem_plots[[1]] +
+    theme(
+      legend.position = "bottom",
+      legend.box.margin = margin(0, 0, 0, 0)
+    )
 )
+
+# Remove legends from individual SEM panels
+sem_plots_clean <- lapply(sem_plots, function(p) {
+  p + theme(legend.position = "none")
+})
+
+# Put the legend in its own row
+legend_row <- patchwork::wrap_elements(full = legend)
+
+combined_figure <- wrap_plots(c(sem_plots_clean, partition_plots),
+                              ncol = 3,
+                              widths = c(1, 1, 1)) /
+  legend_row +
+  plot_layout(heights = c(1, 0.06))
+
 combined_figure
 
-
-
 ggsave("../figures/SEM_and_variation_partitioning.png", combined_figure,
-       width = 16, height = 13, dpi = 600)
+       width = 16, height = 14, dpi = 600)
