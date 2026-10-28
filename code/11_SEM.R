@@ -384,3 +384,93 @@ ggsave("../figures/SEM_and_variation_partitioning.png", combined_figure,
        width = 16, height = 14, dpi = 600)
 
 
+
+#------5. Hierarchical clustering of SEM coefficients --------------------------
+metric_labels <- c(
+  topo_distance = "Topology distance",
+  S_post = "Richness",
+  biomass_shannon = "Biomass diversity",
+  gini_fluxes = "Flux Gini",
+  skewness_IS = "IS skewness",
+  resilience = "Resilience",
+  reactivity = "Reactivity"
+)
+
+# Rows, generative models; columns, path coefficients
+coef_matrix <- path_df %>%
+  mutate(model = factor(model, levels = model_order),
+         path = paste(metric_labels[predictor], metric_labels[response],
+                      sep = " -> ")) %>%
+  select(model, path, beta) %>%
+  pivot_wider(names_from = path, values_from = beta) %>%
+  arrange(model) %>%
+  column_to_rownames("model") %>%
+  as.matrix()
+coef_matrix
+
+# Compare complete coefficient profiles
+coef_distance <- dist(coef_matrix, method = "euclidean")
+coef_tree <- hclust(coef_distance, method = "ward.D2")
+
+# aim for 3 clusters
+cluster_id <- cutree(coef_tree, k = 3)
+cluster_df <- tibble(
+  model = rownames(coef_matrix),
+  cluster = unname(cluster_id[rownames(coef_matrix)])
+)
+cluster_df
+
+# show the path coefficients with significance labels from the omnibus Wald tests
+# * means at least one generative model has a significantly different coefficient for that path
+wald_labels <- comparison_df %>%
+  mutate(
+    path = paste(metric_labels[predictor], metric_labels[response], sep = " -> "),
+    significance = case_when(
+      p_holm < 0.001 ~ "***",
+      p_holm < 0.01  ~ "**",
+      p_holm < 0.05  ~ "*",
+      TRUE ~ "ns"
+    ),
+    label = paste(path, significance)
+  )
+row_labels <- wald_labels$label[
+  match(colnames(coef_matrix), wald_labels$path)
+]
+
+# Coefficient heatmap with the model dendrogram
+p_cluster <- ComplexHeatmap::pheatmap(
+  t(coef_matrix),
+  cluster_rows = FALSE,
+  cluster_cols = coef_tree,
+  labels_row = row_labels,
+  column_names_side = "top",
+  scale = "none",
+  color = colorRampPalette(c(col_div[1], "white", col_div[3]))(101),
+  breaks = seq(-2.5, 2.5, length.out = 102),
+  border_color = "white",
+  display_numbers = TRUE,
+  number_format = "%.2f",
+  fontsize_number = 12,
+  fontsize_row = 12,
+  fontsize_col = 14,
+  angle_col = "0",
+  treeheight_col = 80,
+  cellwidth = 80,
+  name = "Path coefficient",
+  heatmap_legend_param = list(
+    direction = "horizontal",
+    title_position = "leftcenter",
+    legend_width = grid::unit(5, "cm"),
+    at = c(-2, -1, 0, 1, 2)
+  ), run_draw = FALSE)
+
+cluster_grob <- grid::grid.grabExpr(
+  ComplexHeatmap::draw(p_cluster, heatmap_legend_side = "bottom")
+)
+
+cluster_figure <- wrap_elements(full = cluster_grob)
+cluster_figure
+
+
+ggsave("../figures/SEM_coefficient_clustering.png", cluster_figure,
+       width = 14, height = 10, dpi = 600)
