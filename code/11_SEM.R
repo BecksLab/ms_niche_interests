@@ -5,6 +5,7 @@ library(here)
 library(lavaan)
 library(patchwork)
 library(diy.sem.plot)
+library(pvclust)
 
 source("lib/plotting_theme.R")
 
@@ -408,20 +409,82 @@ coef_matrix <- path_df %>%
   as.matrix()
 coef_matrix
 
-# Compare complete coefficient profiles
+# Ward clustering and multiscale bootstrap support across paths
 coef_distance <- dist(coef_matrix, method = "euclidean")
-coef_tree <- hclust(coef_distance, method = "ward.D2")
+coef_distance
+coef_pv <- pvclust(
+  t(coef_matrix),
+  method.hclust = "ward.D2",
+  method.dist = "euclidean",
+  nboot = 10000,
+  iseed = 2026
+)
+coef_pv
+coef_tree <- coef_pv$hclust
 
-# aim for 3 clusters
-cluster_id <- cutree(coef_tree, k = 3)
+# compare candidate numbers of clusters
+k_values <- 2:(nrow(coef_matrix) - 1)
+
+silhouette_df <- map_dfr(k_values, function(k) {
+  membership <- cutree(coef_tree, k = k)
+  sil <- cluster::silhouette(membership, coef_distance)
+  tibble(k = k, mean_silhouette = mean(sil[, "sil_width"]))
+})
+
+best_k <- silhouette_df$k[which.max(silhouette_df$mean_silhouette)]
+cluster_id <- cutree(coef_tree, k = best_k)
+
 cluster_df <- tibble(
   model = rownames(coef_matrix),
   cluster = unname(cluster_id[rownames(coef_matrix)])
 )
-cluster_df
 
-# show the path coefficients with significance labels from the omnibus Wald tests
-# * means at least one generative model has a significantly different coefficient for that path
+# Identify the models represented by each internal branch
+node_members <- vector("list", nrow(coef_tree$merge))
+
+for (i in seq_len(nrow(coef_tree$merge))) {
+  node_members[[i]] <- sort(unlist(lapply(coef_tree$merge[i, ], function(x) {
+    if (x < 0) coef_tree$labels[-x] else node_members[[x]]
+  })))
+}
+
+cluster_pvalues <- as_tibble(coef_pv$edges) %>%
+  mutate(
+    node = row_number(),
+    models = vapply(node_members, function(x) paste(x, collapse = ", "),
+                    character(1)),
+    n_models = lengths(node_members),
+    .before = 1
+  ) %>%
+  filter(n_models < nrow(coef_matrix)) %>%
+  select(node, models, au, si, bp)
+# lower support: ATN–Niche–Cascade had AU/SI of 83/53, and ADBM–MaxEnt–Random had 85/46.
+supported_clusters <- cluster_pvalues %>% filter(au >= 0.95)
+supported_clusters
+
+# Silhouette plot
+p_silhouette <- ggplot(silhouette_df, aes(k, mean_silhouette)) +
+  geom_vline(xintercept = best_k, linetype = "dashed",
+             colour = "grey65", linewidth = 0.4) +
+  geom_line(linewidth = 0.6) +
+  geom_point(size = 3) +
+  geom_point(data = filter(silhouette_df, k == best_k),
+             colour = col_div[3], size = 3.5) +
+  geom_text(data = filter(silhouette_df, k == best_k),
+            aes(label = sprintf("%.2f", mean_silhouette)),
+            hjust = -0.2, vjust = -0.6, size = 4) +
+  scale_x_continuous(breaks = k_values) +
+  scale_y_continuous(expand = expansion(mult = c(0.05, 0.15))) +
+  labs(x = "Number of clusters", y = "Mean silhouette width") +
+  figure_theme
+
+p_silhouette
+ggsave("../figures/SEM_coefficient_clustering_silhouette.png", p_silhouette,
+       width = 8, height = 6, dpi = 600)
+
+
+# Coefficient heatmap with the model clustering
+# *,**, *** means at least one generative model has a significantly different coefficient for that path from the omnibus Wald tests
 wald_labels <- comparison_df %>%
   mutate(
     path = paste(metric_labels[predictor], metric_labels[response], sep = " -> "),
@@ -437,11 +500,27 @@ row_labels <- wald_labels$label[
   match(colnames(coef_matrix), wald_labels$path)
 ]
 
-# Coefficient heatmap with the model dendrogram
+# Clusters supported by AU >= 0.95, show supported clusters with a different color and line thickness
+au_clusters <- pvclust::pvpick(
+  coef_pv, alpha = 0.95, pv = "au", max.only = TRUE
+)$clusters
+
+coef_dend <- dendrapply(as.dendrogram(coef_pv$hclust), function(d) {
+  supported <- any(vapply(au_clusters, function(models) {
+    all(labels(d) %in% models)
+  }, logical(1)))
+  
+  attr(d, "edgePar") <- list(
+    col = if (supported) col_cont[2] else "grey65",
+    lwd = if (supported) 2.5 else 1
+  )
+  d
+})
+
 p_cluster <- ComplexHeatmap::pheatmap(
   t(coef_matrix),
   cluster_rows = FALSE,
-  cluster_cols = coef_tree,
+  cluster_cols = coef_dend,
   labels_row = row_labels,
   column_names_side = "top",
   scale = "none",
@@ -454,7 +533,7 @@ p_cluster <- ComplexHeatmap::pheatmap(
   fontsize_row = 12,
   fontsize_col = 14,
   angle_col = "0",
-  treeheight_col = 80,
+  treeheight_col = 90,
   cellwidth = 80,
   name = "Path coefficient",
   heatmap_legend_param = list(
@@ -462,7 +541,9 @@ p_cluster <- ComplexHeatmap::pheatmap(
     title_position = "leftcenter",
     legend_width = grid::unit(5, "cm"),
     at = c(-2, -1, 0, 1, 2)
-  ), run_draw = FALSE)
+  ),
+  run_draw = FALSE
+)
 
 cluster_grob <- grid::grid.grabExpr(
   ComplexHeatmap::draw(p_cluster, heatmap_legend_side = "bottom")
@@ -471,6 +552,33 @@ cluster_grob <- grid::grid.grabExpr(
 cluster_figure <- wrap_elements(full = cluster_grob)
 cluster_figure
 
-
 ggsave("../figures/SEM_coefficient_clustering.png", cluster_figure,
        width = 14, height = 10, dpi = 600)
+
+
+# Dendrogram with AU support
+plot_cluster_tree <- function() {
+  old_par <- par(mar = c(4, 5, 1, 1), xpd = NA)
+  on.exit(par(old_par))
+  
+  plot(
+    coef_pv, hang = -1,
+    print.pv = c("au", "si"), print.num = FALSE,
+    col.pv = c(au = col_div[1], si = col_div[3],
+               bp = "grey50", edge = "grey60"),
+    cex = 1.1, cex.pv = 0.9, lwd = 1.1,
+    main = "", sub = "", xlab = "",
+    ylab = "Ward clustering height"
+  )
+  
+  pvrect(coef_pv, alpha = 0.95, pv = "au", max.only = FALSE,
+         border = col_div[1], lwd = 1.2)
+}
+plot_cluster_tree()
+
+png("../figures/SEM_coefficient_clustering_support.png",
+    width = 9, height = 6, units = "in", res = 600)
+plot_cluster_tree()
+dev.off()
+
+
