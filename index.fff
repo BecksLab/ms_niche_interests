@@ -63,13 +63,24 @@ networks}
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{figures/stability_effect_size_model_vs_richness.png}}
+\pandocbounded{\includegraphics[keepaspectratio]{figures/SEM_and_variation_partitioning.png}}
 
 }
 
-\caption{\label{fig-rel_contribution}Relative contributions of
-equilibrium species richness and generative food web models to variation
-in network and local stability metrics}
+\caption{\label{fig-SEM}Structural equation models linking food web
+structure to local community stability across seven generative models.
+(a-g) Significant paths (p \textless{} 0.05) for ADBM, ATN, LTM, Niche,
+Cascade, MaxEnt, and Random. Blue and red arrows indicate positive and
+negative relationships, respectively; Topology distance measures
+distance from the pooled centroid in topological principal component
+space. Flux Gini and IS skewness denote the Gini coefficient of
+consumption fluxes and skewness of absolute interaction strengths.
+Higher resilience values indicate slower recovery; higher reactivity
+indicates greater initial perturbation amplification. (h, i) Fractions
+of total variance in resilience and reactivity explained by the full SEM
+and attributed to richness, residual topological variation, and residual
+biomass, flux, and interaction variation (B-F-IS), including their
+downstream pathways.}
 
 \end{figure}
 \efloatseparator
