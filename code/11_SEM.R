@@ -73,6 +73,8 @@ r2_df <- map_dfr(seq_along(model_names), function(g) {
 })
 
 # Omnibus Wald test: does each path differ among generative models?
+# Significant: evidence that at least one model has a different coefficient for that path.
+# Nonsignificant: insufficient evidence of a difference.
 path_names <- path_df %>% distinct(response, predictor)
 comparison_list <- list()
 
@@ -85,7 +87,7 @@ for (j in seq_len(nrow(path_names))) {
   contrast <- cbind(-1, diag(nrow(df_j) - 1))
   differences <- contrast %*% df_j$beta
   contrast_vcov <- contrast %*% coef_vcov[df_j$free, df_j$free] %*% t(contrast)
-  wald_stat <- as.numeric(t(differences) %*% solve(contrast_vcov, differences))
+  wald_stat <- as.numeric(t(differences) %*% solve(contrast_vcov, differences)) #Calculate the Wald statistic
   
   comparison_list[[j]] <- tibble(
     response = path_names$response[j], predictor = path_names$predictor[j],
@@ -169,13 +171,13 @@ partition_summary <- bind_rows(partition_list)
 # https://cran.r-project.org/web/packages/diy.sem.plot/vignettes/diyPaths-vignette.html
 
 node_list <- list(
-  node("topo_distance",   x = 0, y =  1.5, label = "Topology\ndistance"),
-  node("S_post",          x = 0, y = -1.5, label = "Richness"),
-  node("biomass_shannon", x = 3, y =  0,   label = "Biomass\ndiversity"),
-  node("gini_fluxes",     x = 6, y =  3,   label = "Flux Gini"),
-  node("skewness_IS",     x = 6, y = -3,   label = "IS skewness"),
-  node("resilience",      x = 9, y =  1.5, label = "Resilience"),
-  node("reactivity",      x = 9, y = -1.5, label = "Reactivity")
+  node("topo_distance",   x = -0.2, y =  2, label = "Topology\ndistance"),
+  node("S_post",          x = -0.2, y = -2, label = "Richness"),
+  node("biomass_shannon", x = 3.2, y =  0,   label = "Biomass\ndiversity"),
+  node("gini_fluxes",     x = 7, y =  3.8,   label = "Flux Gini"),
+  node("skewness_IS",     x = 7, y = -3.8,   label = "IS\nskewness"),
+  node("resilience",      x = 10, y =  1.7, label = "Resilience"),
+  node("reactivity",      x = 10, y = -1.7, label = "Reactivity")
 )
 
 path_list <- list(
@@ -223,13 +225,15 @@ sem_panels <- diyPaths(
   digits = 2,
   est_stars = FALSE, show_variances = FALSE, show_group_labels = FALSE,
   node_width = 2.4, node_height = 1.1,
-  observed_node_text_size = 3.8, path_text_size = 3.8,
+  observed_node_text_size = 3.8,
+  path_text_size = 3.8,
   line_thickness = 0.65, arrow_size = 0.2,
   margin_x = 0.2, margin_y = 0.2
 )
 
 sem_plots <- list()
 
+# change path color and line thickness
 for (g in seq_along(model_names)) {
   p <- sem_panels[[g]]
   
@@ -237,16 +241,39 @@ for (g in seq_along(model_names)) {
   for (k in seq_along(p$layers)) {
     d <- p$layers[[k]]$data
     
+    # Thickness of node-box borders
+    if (inherits(p$layers[[k]]$geom, "GeomRect")) {
+      p$layers[[k]]$aes_params$linewidth <- 0.4
+    }
+    
     if ("pvalue" %in% names(d)) {
       d <- d %>%
         filter(type == "~", pvalue < 0.05) %>%
-        mutate(
-          direction = if_else(est > 0, "Positive", "Negative")
-        )
+        mutate(direction = if_else(est > 0, "Positive", "Negative"),
+               width_group = case_when(
+                   abs(est) < 0.2 ~ "0-0.2",
+                   abs(est) < 0.5 ~ "0.2-0.5",
+                   abs(est) < 1 ~ "0.5-1.0",
+                   TRUE ~ "1.0+"
+                 )
+               )
       
       p$layers[[k]]$data <- d
       p$layers[[k]]$mapping$colour <- aes(colour = direction)$colour
-      p$layers[[k]]$show.legend <- TRUE
+      p$layers[[k]]$show.legend <- FALSE
+      
+      if (inherits(p$layers[[k]]$geom, "GeomSegment")) {
+        p$layers[[k]]$aes_params$linewidth <- NULL
+        p$layers[[k]]$mapping$linewidth <- aes(linewidth = width_group)$linewidth
+        p$layers[[k]]$show.legend <- TRUE
+        
+        p$layers[[k]]$geom_params$arrow <- grid::arrow(
+          length = grid::unit(0.2, "cm"),
+          type = "open",
+          angle = 30,
+          ends = "last"
+        )
+      }
     }
   }
   
@@ -261,6 +288,12 @@ for (g in seq_along(model_names)) {
       limits = c("Positive", "Negative"),
       drop = FALSE
     ) +
+    scale_linewidth_manual(
+      name = "Path coefficient",
+      values = c("0-0.2" = 0.3, "0.2-0.5" = 0.8,
+                 "0.5-1.0" = 1.5, "1.0+" = 2.5)
+ #     guide = "none"
+    ) + 
     figure_theme +
     theme(
       panel.grid = element_blank(),
@@ -275,6 +308,8 @@ for (g in seq_along(model_names)) {
   # Keep as a ggplot so patchwork can collect its legend
   sem_plots[[g]] <- p
 }
+
+
 
 # Heatmaps of SEM variance sources
 response_names <- c(resilience = "Resilience", reactivity = "Reactivity")
@@ -347,3 +382,5 @@ combined_figure
 
 ggsave("../figures/SEM_and_variation_partitioning.png", combined_figure,
        width = 16, height = 14, dpi = 600)
+
+
