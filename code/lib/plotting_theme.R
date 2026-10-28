@@ -54,7 +54,7 @@ col_cont <- c("#CCF5FF", "#83C5BE", "#002B36")
 
 # 3. DIVERGING RAMP
 
-col_div <- c("#006D75", "#F4F1DE", "#EA7200")
+col_div <- c("#EA7200", shark_white, "#006D75")
 
 # Lookup dictionaries for variables
 
