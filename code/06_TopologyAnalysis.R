@@ -1001,7 +1001,7 @@ stability_plot <-
   labs(x = NULL,
        y = "Percent of networks at endpoint",
        fill = "Endpoint") +
-  scale_fill_manual(values = c(col_div[3], col_cont)) +
+  scale_fill_manual(values = c(col_div[1], col_cont)) +
   theme(axis.text.x = element_text(angle = 45,hjust = 1))
 
 
