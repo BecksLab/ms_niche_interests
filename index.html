@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.10.19">
+<meta name="generator" content="quarto-1.11.9">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -12,7 +12,7 @@
 <meta name="author" content="Laura Sophia Landon Blake">
 <meta name="author" content="Andrew P. Beckerman">
 <meta name="author" content="Dylan Z. Childs">
-<meta name="dcterms.date" content="2026-10-28">
+<meta name="dcterms.date" content="2026-11-05">
 <meta name="keywords" content="food web reconstruction, bioenergetic dynamics, network stability, ecological networks, generative models, community persistence">
 
 <title>Same structure, different stability: The lasting legacy of food web reconstruction</title>
@@ -59,14 +59,15 @@ div.csl-indent {
 <script src="site_libs/clipboard/clipboard.min.js"></script>
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/scrollable-regions/scrollable-regions.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-bf27225e3a48a9273f3daa8f8e829971.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-63b5708e65d6cd79cd7618c58d0c21e7.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-5996d8f72a18ca19db6a9d8cb5914366.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-7243993cd8e8d3307898efd20dade3cc.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
@@ -117,49 +118,47 @@ window.Quarto = {
 <meta name="citation_author" content="Laura Sophia Landon Blake">
 <meta name="citation_author" content="Andrew P. Beckerman">
 <meta name="citation_author" content="Dylan Z. Childs">
-<meta name="citation_publication_date" content="2026-10-28">
-<meta name="citation_cover_date" content="2026-10-28">
+<meta name="citation_publication_date" content="2026-11-05">
+<meta name="citation_cover_date" content="2026-11-05">
 <meta name="citation_year" content="2026">
-<meta name="citation_online_date" content="2026-10-28">
+<meta name="citation_online_date" content="2026-11-05">
 <meta name="citation_language" content="en">
-<meta name="citation_reference" content="citation_title=Simple rules yield complex food webs;,citation_author=Richard J. Williams;,citation_author=Neo D. Martinez;,citation_publication_date=2000-03;,citation_cover_date=2000-03;,citation_year=2000;,citation_fulltext_html_url=https://www.nature.com/articles/35004572;,citation_issue=6774;,citation_doi=10.1038/35004572;,citation_volume=404;,citation_language=en;,citation_journal_title=Nature;">
-<meta name="citation_reference" content="citation_title=Community food webs: Data and theory;,citation_author=Joel E Cohen;,citation_author=Frederic Briand;,citation_author=Charles Newman;,citation_publication_date=1990;,citation_cover_date=1990;,citation_year=1990;,citation_fulltext_html_url=https://www.springer.com/gp/book/9783642837869;,citation_language=en;,citation_series_title=Biomathematics;">
-<meta name="citation_reference" content="citation_title=What constrains food webs? A maximum entropy framework for predicting their structure with minimal biases;,citation_author=Francis Banville;,citation_author=Dominique Gravel;,citation_author=Timothée Poisot;,citation_publication_date=2023-09-05;,citation_cover_date=2023-09-05;,citation_year=2023;,citation_fulltext_html_url=https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1011458;,citation_issue=9;,citation_doi=10.1371/journal.pcbi.1011458;,citation_volume=19;,citation_language=en;,citation_journal_title=PLOS Computational Biology;">
-<meta name="citation_reference" content="citation_title=Size, foraging, and food web structure;,citation_author=Owen L. Petchey;,citation_author=Andrew P. Beckerman;,citation_author=Jens O. Riede;,citation_author=Philip H. Warren;,citation_publication_date=2008-03-18;,citation_cover_date=2008-03-18;,citation_year=2008;,citation_fulltext_html_url=https://pnas.org/doi/full/10.1073/pnas.0710672105;,citation_issue=11;,citation_doi=10.1073/pnas.0710672105;,citation_volume=105;,citation_language=en;,citation_journal_title=Proceedings of the National Academy of Sciences;">
-<meta name="citation_reference" content="citation_title=Consumerresource body-size relationships in natural food webs;,citation_author=Ulrich Brose;,citation_author=Tomas Jonsson;,citation_author=Eric L. Berlow;,citation_author=Philip Warren;,citation_author=Carolin Banasek-Richter;,citation_author=Louis-Félix Bersier;,citation_author=Julia L. Blanchard;,citation_author=Thomas Brey;,citation_author=Stephen R. Carpenter;,citation_author=Marie-France Cattin Blandenier;,citation_author=Lara Cushing;,citation_author=Hassan Ali Dawah;,citation_author=Tony Dell;,citation_author=Francois Edwards;,citation_author=Sarah Harper-Smith;,citation_author=Ute Jacob;,citation_author=Mark E. Ledger;,citation_author=Neo D. Martinez;,citation_author=Jane Memmott;,citation_author=Katja Mintenbeck;,citation_author=John K. Pinnegar;,citation_author=Björn C. Rall;,citation_author=Thomas S. Rayner;,citation_author=Daniel C. Reuman;,citation_author=Liliane Ruess;,citation_author=Werner Ulrich;,citation_author=Richard J. Williams;,citation_author=Guy Woodward;,citation_author=Joel E. Cohen;,citation_publication_date=2006;,citation_cover_date=2006;,citation_year=2006;,citation_fulltext_html_url=http://esajournals.onlinelibrary.wiley.com/doi/abs/10.1890/0012-9658%282006%2987%5B2411%3ACBRINF%5D2.0.CO%3B2;,citation_issue=10;,citation_doi=https://doi.org/10.1890/0012-9658(2006)87[2411:CBRINF]2.0.CO;2;,citation_volume=87;,citation_language=en;,citation_journal_title=Ecology;">
-<meta name="citation_reference" content="citation_title=Modeling food webs: Exploring unexplained structure using latent traits.;,citation_author=Rudolf&nbsp;Philippe Rohr;,citation_author=Heike Scherer;,citation_author=Patrik Kehrli;,citation_author=Christian Mazza;,citation_author=Louis-Félix Bersier;,citation_publication_date=2010-08;,citation_cover_date=2010-08;,citation_year=2010;,citation_fulltext_html_url=https://www.journals.uchicago.edu/doi/10.1086/653667;,citation_issue=2;,citation_doi=10.1086/653667;,citation_volume=176;,citation_journal_title=The American Naturalist;">
-<meta name="citation_reference" content="citation_title=Stability criteria for complex ecosystems;,citation_author=Stefano Allesina;,citation_author=Si Tang;,citation_publication_date=2012-03;,citation_cover_date=2012-03;,citation_year=2012;,citation_fulltext_html_url=https://www.nature.com/articles/nature10832;,citation_issue=7388;,citation_doi=10.1038/nature10832;,citation_volume=483;,citation_language=en;,citation_journal_title=Nature;">
-<meta name="citation_reference" content="citation_title=Robustness to secondary extinctions: Comparing trait-based sequential deletions in static and dynamic food webs;,citation_author=Alva Curtsdotter;,citation_author=Amrei Binzer;,citation_author=Ulrich Brose;,citation_author=Francisco De Castro;,citation_author=Bo Ebenman;,citation_author=Anna Eklöf;,citation_author=Jens O. Riede;,citation_author=Aaron Thierry;,citation_author=Björn C. Rall;,citation_publication_date=2011-11;,citation_cover_date=2011-11;,citation_year=2011;,citation_fulltext_html_url=https://linkinghub.elsevier.com/retrieve/pii/S1439179111001216;,citation_issue=7;,citation_doi=10.1016/j.baae.2011.09.008;,citation_volume=12;,citation_language=en;,citation_journal_title=Basic and Applied Ecology;">
-<meta name="citation_reference" content="citation_title=From metawebs to realised webs: A framework for ecological network representation under global change;,citation_author=Tanya Strydom;,citation_author=Alexander M. Dunhill;,citation_author=Jennifer A. Dunne;,citation_author=Timothée Poisot;,citation_author=Andrew P. Beckerman;,citation_publication_date=2026-01-21;,citation_cover_date=2026-01-21;,citation_year=2026;,citation_fulltext_html_url=https://ecoevorxiv.org/repository/view/11514/;,citation_doi=10.32942/X2JW8K;,citation_language=en;,citation_journal_title=EcoEvoRxiv;">
-<meta name="citation_reference" content="citation_title=Animal diversity and ecosystem functioning in dynamic food webs;,citation_author=Florian D. Schneider;,citation_author=Ulrich Brose;,citation_author=Björn C. Rall;,citation_author=Christian Guill;,citation_publication_date=2016-10-05;,citation_cover_date=2016-10-05;,citation_year=2016;,citation_fulltext_html_url=https://www.nature.com/articles/ncomms12718;,citation_issue=1;,citation_doi=10.1038/ncomms12718;,citation_volume=7;,citation_language=en;,citation_journal_title=Nature Communications;">
-<meta name="citation_reference" content="citation_title=Food web structure alters ecological communities top-heaviness with little effect on the biodiversity-functioning relationship;,citation_author=Eva Delmas;,citation_author=Daniel B. Stouffer;,citation_author=Timothée Poisot;,citation_doi=10.1101/2020.06.10.144949;,citation_language=en;">
-<meta name="citation_reference" content="citation_title=Are we mapping ecosystems or models? Framework choices dominate food web topology and extinction inferences;,citation_author=Tanya Strydom;,citation_author=Baran Karapunar;,citation_author=Jennifer A. Dunne;,citation_author=Pincelli Hull;,citation_author=Crispin T. S. Little;,citation_author=Catalina Pimiento;,citation_author=Andy Ridgwell;,citation_author=Andrew P. Beckerman;,citation_author=Alexander M. Dunhill;,citation_publication_date=2026-06-17;,citation_cover_date=2026-06-17;,citation_year=2026;,citation_fulltext_html_url=https://ecoevorxiv.org/repository/view/13495/;,citation_language=en;">
-<meta name="citation_reference" content="citation_title=ALTERNATIVES TO RESILIENCE FOR MEASURING THE RESPONSES OF ECOLOGICAL SYSTEMS TO PERTURBATIONS;,citation_author=Michael G. Neubert;,citation_author=Hal Caswell;,citation_publication_date=1997-04;,citation_cover_date=1997-04;,citation_year=1997;,citation_fulltext_html_url=http://dx.doi.org/10.1890/0012-9658(1997)078[0653:ATRFMT]2.0.CO;2;,citation_issue=3;,citation_doi=10.1890/0012-9658(1997)078[0653:atrfmt]2.0.co;2;,citation_volume=78;,citation_language=en;,citation_journal_title=Ecology;">
-<meta name="citation_reference" content="citation_title=EcologicalNetworksDynamics.jl: A julia package to simulate the temporal dynamics of complex ecological networks;,citation_author=Ismaël Lajaaiti;,citation_author=Iago Bonnici;,citation_author=Sonia Kéfi;,citation_author=Hana Mayall;,citation_author=Alain Danet;,citation_author=Andrew P. Beckerman;,citation_author=Thomas Malpas;,citation_author=Eva Delmas;,citation_publication_date=2025;,citation_cover_date=2025;,citation_year=2025;,citation_fulltext_html_url=https://onlinelibrary.wiley.com/doi/abs/10.1111/2041-210X.14497;,citation_issue=3;,citation_doi=10.1111/2041-210X.14497;,citation_volume=16;,citation_language=en;,citation_journal_title=Methods in Ecology and Evolution;">
-<meta name="citation_reference" content="citation_title=Energetics, patterns of interaction strengths, and stability in real ecosystems;,citation_author=Peter C. Ruiter;,citation_author=Anje-Margriet Neutel;,citation_author=John C. Moore;,citation_publication_date=1995-09;,citation_cover_date=1995-09;,citation_year=1995;,citation_fulltext_html_url=http://dx.doi.org/10.1126/science.269.5228.1257;,citation_issue=5228;,citation_doi=10.1126/science.269.5228.1257;,citation_volume=269;,citation_language=en;,citation_journal_title=Science;">
-<meta name="citation_reference" content="citation_title=Selection against instability: Stable subgraphs are most frequent in empirical food webs;,citation_author=Jonathan J. Borrelli;,citation_publication_date=2015-03-06;,citation_cover_date=2015-03-06;,citation_year=2015;,citation_fulltext_html_url=http://dx.doi.org/10.1111/oik.02176;,citation_issue=12;,citation_doi=10.1111/oik.02176;,citation_volume=124;,citation_language=en;,citation_journal_title=Oikos;">
-<meta name="citation_reference" content="citation_title=Understanding food-web persistence from local to global scales;,citation_author=Daniel B. Stouffer;,citation_author=Jordi Bascompte;,citation_publication_date=2010-02;,citation_cover_date=2010-02;,citation_year=2010;,citation_fulltext_html_url=http://doi.wiley.com/10.1111/j.1461-0248.2009.01407.x;,citation_issue=2;,citation_doi=10.1111/j.1461-0248.2009.01407.x;,citation_volume=13;,citation_language=en;,citation_journal_title=Ecology Letters;">
-<meta name="citation_reference" content="citation_title=Network structure and biodiversity loss in food webs: Robustness increases with connectance;,citation_author=Jennifer Dunne;,citation_author=Richard J Williams;,citation_author=Néo D Martinez;,citation_publication_date=2002;,citation_cover_date=2002;,citation_year=2002;,citation_issue=4;,citation_volume=5;,citation_journal_title=Ecol. Lett.;">
-<meta name="citation_reference" content="citation_title=Stability criteria for complex ecosystems;,citation_author=Stefano Allesina;,citation_author=Si Tang;,citation_publication_date=2012-03;,citation_cover_date=2012-03;,citation_year=2012;,citation_fulltext_html_url=https://www.nature.com/articles/nature10832;,citation_issue=7388;,citation_doi=10.1038/nature10832;,citation_volume=483;,citation_language=en;,citation_journal_title=Nature;">
-<meta name="citation_reference" content="citation_title=Stability and complexity in model ecosystems;,citation_author=Robert M. May;,citation_publication_date=1974;,citation_cover_date=1974;,citation_year=1974;,citation_fulltext_html_url=http://www.jstor.org.proxy3.library.mcgill.ca/stable/j.ctvs32rq4;,citation_doi=10.2307/j.ctvs32rq4;,citation_volume=1;">
-<meta name="citation_reference" content="citation_title=Size, foraging, and food web structure;,citation_author=Owen L. Petchey;,citation_author=Andrew P. Beckerman;,citation_author=Jens O. Riede;,citation_author=Philip H. Warren;,citation_publication_date=2008-03-18;,citation_cover_date=2008-03-18;,citation_year=2008;,citation_fulltext_html_url=https://pnas.org/doi/full/10.1073/pnas.0710672105;,citation_issue=11;,citation_doi=10.1073/pnas.0710672105;,citation_volume=105;,citation_language=en;,citation_journal_title=Proceedings of the National Academy of Sciences;">
-<meta name="citation_reference" content="citation_title=Animal diversity and ecosystem functioning in dynamic food webs;,citation_author=Florian D. Schneider;,citation_author=Ulrich Brose;,citation_author=Björn C. Rall;,citation_author=Christian Guill;,citation_publication_date=2016-10-05;,citation_cover_date=2016-10-05;,citation_year=2016;,citation_fulltext_html_url=https://www.nature.com/articles/ncomms12718;,citation_issue=1;,citation_doi=10.1038/ncomms12718;,citation_volume=7;,citation_language=en;,citation_journal_title=Nature Communications;">
-<meta name="citation_reference" content="citation_title=Simulations of biomass dynamics in community food webs;,citation_author=Eva Delmas;,citation_author=Ulrich Brose;,citation_author=Dominique Gravel;,citation_author=Daniel B. Stouffer;,citation_author=Timothée Poisot;,citation_publication_date=2017;,citation_cover_date=2017;,citation_year=2017;,citation_fulltext_html_url=https://onlinelibrary.wiley.com/doi/abs/10.1111/2041-210X.12713;,citation_issue=7;,citation_doi=10.1111/2041-210X.12713;,citation_volume=8;,citation_language=en;,citation_journal_title=Methods in Ecology and Evolution;">
-<meta name="citation_reference" content="citation_title=Correlation between interaction strengths drives stability in large ecological networks;,citation_author=Si Tang;,citation_author=Samraat Pawar;,citation_author=Stefano Allesina;,citation_publication_date=2014;,citation_cover_date=2014;,citation_year=2014;,citation_fulltext_html_url=http://onlinelibrary.wiley.com/doi/abs/10.1111/ele.12312;,citation_issue=9;,citation_doi=https://doi.org/10.1111/ele.12312;,citation_volume=17;,citation_language=en;,citation_journal_title=Ecology Letters;">
-<meta name="citation_reference" content="citation_title=Alternatives to resilience for measuring the responses of ecological systems to perturbations;,citation_author=Michael G. Neubert;,citation_author=Hal Caswell;,citation_publication_date=1997;,citation_cover_date=1997;,citation_year=1997;,citation_fulltext_html_url=https://onlinelibrary.wiley.com/doi/abs/10.1890/0012-9658%281997%29078%5B0653%3AATRFMT%5D2.0.CO%3B2;,citation_issue=3;,citation_doi=10.1890/0012-9658(1997)078[0653:ATRFMT]2.0.CO;2;,citation_volume=78;,citation_language=en;,citation_journal_title=Ecology;">
-<meta name="citation_reference" content="citation_title=Biodiversity and ecosystem stability: A synthesis of underlying mechanisms;,citation_author=Michel Loreau;,citation_author=Claire Mazancourt;,citation_publication_date=2013;,citation_cover_date=2013;,citation_year=2013;,citation_fulltext_html_url=https://onlinelibrary.wiley.com/doi/abs/10.1111/ele.12073;,citation_issue=s1;,citation_doi=10.1111/ele.12073;,citation_volume=16;,citation_language=en;,citation_journal_title=Ecology Letters;">
-<meta name="citation_reference" content="citation_title=What constrains food webs? A maximum entropy framework for predicting their structure with minimal biases;,citation_author=Francis Banville;,citation_author=Dominique Gravel;,citation_author=Timothée Poisot;,citation_publication_date=2023-09-05;,citation_cover_date=2023-09-05;,citation_year=2023;,citation_fulltext_html_url=https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1011458;,citation_issue=9;,citation_doi=10.1371/journal.pcbi.1011458;,citation_volume=19;,citation_language=en;,citation_journal_title=PLOS Computational Biology;">
-<meta name="citation_reference" content="citation_title=Describe, understand and predict: Why do we need networks in ecology?;,citation_author=Timothée Poisot;,citation_author=Daniel B. Stouffer;,citation_author=Sonia Kéfi;,citation_publication_date=2016-12;,citation_cover_date=2016-12;,citation_year=2016;,citation_fulltext_html_url=http://dx.doi.org/10.1111/1365-2435.12799;,citation_issue=12;,citation_doi=10.1111/1365-2435.12799;,citation_volume=30;,citation_language=en;,citation_journal_title=Functional Ecology;">
-<meta name="citation_reference" content="citation_title=A roadmap towards predicting species interaction networks (across space and time);,citation_author=Tanya Strydom;,citation_author=Michael D. Catchen;,citation_author=Francis Banville;,citation_author=Dominique Caron;,citation_author=Gabriel Dansereau;,citation_author=Philippe Desjardins-Proulx;,citation_author=Norma R. Forero-Muñoz;,citation_author=Gracielle Higino;,citation_author=Benjamin Mercier;,citation_author=Andrew Gonzalez;,citation_author=Dominique Gravel;,citation_author=Laura Pollock;,citation_author=Timothée Poisot;,citation_publication_date=2021-09-20;,citation_cover_date=2021-09-20;,citation_year=2021;,citation_fulltext_html_url=http://dx.doi.org/10.1098/rstb.2021.0063;,citation_issue=1837;,citation_doi=10.1098/rstb.2021.0063;,citation_volume=376;,citation_language=en;,citation_journal_title=Philosophical Transactions of the Royal Society B;">
-<meta name="citation_reference" content="citation_title=The stability of real ecosystems;,citation_author=P. Yodzis;,citation_publication_date=1981-02;,citation_cover_date=1981-02;,citation_year=1981;,citation_fulltext_html_url=http://dx.doi.org/10.1038/289674a0;,citation_issue=5799;,citation_doi=10.1038/289674a0;,citation_volume=289;,citation_language=en;,citation_journal_title=Nature;">
-<meta name="citation_reference" content="citation_title=Strength of species interactions determines biodiversity and stability in microbial communities;,citation_author=Christoph Ratzke;,citation_author=Julien Barrere;,citation_author=Jeff Gore;,citation_publication_date=2020-02-10;,citation_cover_date=2020-02-10;,citation_year=2020;,citation_fulltext_html_url=http://dx.doi.org/10.1038/s41559-020-1099-4;,citation_issue=3;,citation_doi=10.1038/s41559-020-1099-4;,citation_volume=4;,citation_language=en;,citation_journal_title=Nature Ecology &amp;amp;amp; Evolution;">
-<meta name="citation_reference" content="citation_title=Evidence for the existence of a robust pattern of prey selection in food webs;,citation_author=Daniel B Stouffer;,citation_author=Juan Camacho;,citation_author=Wenxin Jiang;,citation_author=Luís A Nunes Amaral;,citation_publication_date=2007-08-22;,citation_cover_date=2007-08-22;,citation_year=2007;,citation_fulltext_html_url=https://pmc.ncbi.nlm.nih.gov/articles/PMC2275185/;,citation_issue=1621;,citation_doi=10.1098/rspb.2007.0571;,citation_volume=274;,citation_journal_title=Proceedings of the Royal Society B: Biological Sciences;">
-<meta name="citation_reference" content="citation_title=Julia: A fresh approach to numerical computing;,citation_author=J. Bezanson;,citation_author=A. Edelman;,citation_author=S. Karpinski;,citation_author=V. Shah;,citation_publication_date=2017-01-01;,citation_cover_date=2017-01-01;,citation_year=2017;,citation_fulltext_html_url=http://epubs.siam.org/doi/10.1137/141000671;,citation_issue=1;,citation_doi=10.1137/141000671;,citation_volume=59;,citation_journal_title=SIAM Review;">
-<meta name="citation_reference" content="citation_title=R: A language and environment for statistical computing;,citation_author=R Core Team;,citation_publication_date=2024;,citation_cover_date=2024;,citation_year=2024;,citation_fulltext_html_url=https://www.R-project.org/;">
-<meta name="citation_reference" content="citation_title=A GENERAL FRAMEWORK FOR THE ANALYSIS OF PHENOTYPIC TRAJECTORIES IN EVOLUTIONARY STUDIES;,citation_author=Dean C. Adams;,citation_author=Michael L. Collyer;,citation_publication_date=2009-05;,citation_cover_date=2009-05;,citation_year=2009;,citation_fulltext_html_url=http://dx.doi.org/10.1111/j.1558-5646.2009.00649.x;,citation_issue=5;,citation_doi=10.1111/j.1558-5646.2009.00649.x;,citation_volume=63;,citation_language=en;,citation_journal_title=Evolution;">
+<meta name="citation_reference" content="citation_title=Simple rules yield complex food webs; citation_author=Richard J. Williams; citation_author=Neo D. Martinez; citation_publication_date=2000-03; citation_cover_date=2000-03; citation_year=2000; citation_fulltext_html_url=https://www.nature.com/articles/35004572; citation_issue=6774; citation_doi=10.1038/35004572; citation_volume=404; citation_language=en; citation_firstpage=180; citation_lastpage=183; citation_journal_title=Nature;">
+<meta name="citation_reference" content="citation_title=Community food webs: Data and theory; citation_author=Joel E Cohen; citation_author=Frederic Briand; citation_author=Charles Newman; citation_publication_date=1990; citation_cover_date=1990; citation_year=1990; citation_fulltext_html_url=https://www.springer.com/gp/book/9783642837869; citation_language=en; citation_series_title=Biomathematics;">
+<meta name="citation_reference" content="citation_title=What constrains food webs? A maximum entropy framework for predicting their structure with minimal biases; citation_author=Francis Banville; citation_author=Dominique Gravel; citation_author=Timothée Poisot; citation_publication_date=2023-09-05; citation_cover_date=2023-09-05; citation_year=2023; citation_fulltext_html_url=https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1011458; citation_issue=9; citation_doi=10.1371/journal.pcbi.1011458; citation_volume=19; citation_language=en; citation_firstpage=e1011458; citation_journal_title=PLOS Computational Biology;">
+<meta name="citation_reference" content="citation_title=Size, foraging, and food web structure; citation_author=Owen L. Petchey; citation_author=Andrew P. Beckerman; citation_author=Jens O. Riede; citation_author=Philip H. Warren; citation_publication_date=2008-03-18; citation_cover_date=2008-03-18; citation_year=2008; citation_fulltext_html_url=https://pnas.org/doi/full/10.1073/pnas.0710672105; citation_issue=11; citation_doi=10.1073/pnas.0710672105; citation_volume=105; citation_language=en; citation_firstpage=4191; citation_lastpage=4196; citation_journal_title=Proceedings of the National Academy of Sciences;">
+<meta name="citation_reference" content="citation_title=Consumerresource body-size relationships in natural food webs; citation_author=Ulrich Brose; citation_author=Tomas Jonsson; citation_author=Eric L. Berlow; citation_author=Philip Warren; citation_author=Carolin Banasek-Richter; citation_author=Louis-Félix Bersier; citation_author=Julia L. Blanchard; citation_author=Thomas Brey; citation_author=Stephen R. Carpenter; citation_author=Marie-France Cattin Blandenier; citation_author=Lara Cushing; citation_author=Hassan Ali Dawah; citation_author=Tony Dell; citation_author=Francois Edwards; citation_author=Sarah Harper-Smith; citation_author=Ute Jacob; citation_author=Mark E. Ledger; citation_author=Neo D. Martinez; citation_author=Jane Memmott; citation_author=Katja Mintenbeck; citation_author=John K. Pinnegar; citation_author=Björn C. Rall; citation_author=Thomas S. Rayner; citation_author=Daniel C. Reuman; citation_author=Liliane Ruess; citation_author=Werner Ulrich; citation_author=Richard J. Williams; citation_author=Guy Woodward; citation_author=Joel E. Cohen; citation_publication_date=2006; citation_cover_date=2006; citation_year=2006; citation_fulltext_html_url=http://esajournals.onlinelibrary.wiley.com/doi/abs/10.1890/0012-9658%282006%2987%5B2411%3ACBRINF%5D2.0.CO%3B2; citation_issue=10; citation_doi=https://doi.org/10.1890/0012-9658(2006)87[2411:CBRINF]2.0.CO;2; citation_volume=87; citation_language=en; citation_firstpage=2411; citation_lastpage=2417; citation_journal_title=Ecology;">
+<meta name="citation_reference" content="citation_title=Modeling food webs: Exploring unexplained structure using latent traits.; citation_author=Rudolf&nbsp;Philippe Rohr; citation_author=Heike Scherer; citation_author=Patrik Kehrli; citation_author=Christian Mazza; citation_author=Louis-Félix Bersier; citation_publication_date=2010-08; citation_cover_date=2010-08; citation_year=2010; citation_fulltext_html_url=https://www.journals.uchicago.edu/doi/10.1086/653667; citation_issue=2; citation_doi=10.1086/653667; citation_volume=176; citation_firstpage=170; citation_lastpage=177; citation_journal_title=The American Naturalist;">
+<meta name="citation_reference" content="citation_title=Stability criteria for complex ecosystems; citation_author=Stefano Allesina; citation_author=Si Tang; citation_publication_date=2012-03; citation_cover_date=2012-03; citation_year=2012; citation_fulltext_html_url=https://www.nature.com/articles/nature10832; citation_issue=7388; citation_doi=10.1038/nature10832; citation_volume=483; citation_language=en; citation_firstpage=205; citation_lastpage=208; citation_journal_title=Nature;">
+<meta name="citation_reference" content="citation_title=Robustness to secondary extinctions: Comparing trait-based sequential deletions in static and dynamic food webs; citation_author=Alva Curtsdotter; citation_author=Amrei Binzer; citation_author=Ulrich Brose; citation_author=Francisco De Castro; citation_author=Bo Ebenman; citation_author=Anna Eklöf; citation_author=Jens O. Riede; citation_author=Aaron Thierry; citation_author=Björn C. Rall; citation_publication_date=2011-11; citation_cover_date=2011-11; citation_year=2011; citation_fulltext_html_url=https://linkinghub.elsevier.com/retrieve/pii/S1439179111001216; citation_issue=7; citation_doi=10.1016/j.baae.2011.09.008; citation_volume=12; citation_language=en; citation_firstpage=571; citation_lastpage=580; citation_journal_title=Basic and Applied Ecology;">
+<meta name="citation_reference" content="citation_title=From metawebs to realised webs: A framework for ecological network representation under global change; citation_author=Tanya Strydom; citation_author=Alexander M. Dunhill; citation_author=Jennifer A. Dunne; citation_author=Timothée Poisot; citation_author=Andrew P. Beckerman; citation_publication_date=2026-01-21; citation_cover_date=2026-01-21; citation_year=2026; citation_fulltext_html_url=https://ecoevorxiv.org/repository/view/11514/; citation_doi=10.32942/X2JW8K; citation_language=en; citation_journal_title=EcoEvoRxiv;">
+<meta name="citation_reference" content="citation_title=Animal diversity and ecosystem functioning in dynamic food webs; citation_author=Florian D. Schneider; citation_author=Ulrich Brose; citation_author=Björn C. Rall; citation_author=Christian Guill; citation_publication_date=2016-10-05; citation_cover_date=2016-10-05; citation_year=2016; citation_fulltext_html_url=https://www.nature.com/articles/ncomms12718; citation_issue=1; citation_doi=10.1038/ncomms12718; citation_volume=7; citation_language=en; citation_firstpage=12718; citation_journal_title=Nature Communications;">
+<meta name="citation_reference" content="citation_title=Food web structure alters ecological communities top-heaviness with little effect on the biodiversity-functioning relationship; citation_author=Eva Delmas; citation_author=Daniel B. Stouffer; citation_author=Timothée Poisot; citation_doi=10.1101/2020.06.10.144949; citation_language=en;">
+<meta name="citation_reference" content="citation_title=Are we mapping ecosystems or models? Framework choices dominate food web topology and extinction inferences; citation_author=Tanya Strydom; citation_author=Baran Karapunar; citation_author=Jennifer A. Dunne; citation_author=Pincelli Hull; citation_author=Crispin T. S. Little; citation_author=Catalina Pimiento; citation_author=Andy Ridgwell; citation_author=Andrew P. Beckerman; citation_author=Alexander M. Dunhill; citation_publication_date=2026-06-17; citation_cover_date=2026-06-17; citation_year=2026; citation_fulltext_html_url=https://ecoevorxiv.org/repository/view/13495/; citation_language=en;">
+<meta name="citation_reference" content="citation_title=Alternatives to resilience for measuring the responses of ecological systems to perturbations; citation_author=Michael G. Neubert; citation_author=Hal Caswell; citation_publication_date=1997; citation_cover_date=1997; citation_year=1997; citation_fulltext_html_url=https://onlinelibrary.wiley.com/doi/abs/10.1890/0012-9658%281997%29078%5B0653%3AATRFMT%5D2.0.CO%3B2; citation_issue=3; citation_doi=10.1890/0012-9658(1997)078[0653:ATRFMT]2.0.CO;2; citation_volume=78; citation_language=en; citation_firstpage=653; citation_lastpage=665; citation_journal_title=Ecology;">
+<meta name="citation_reference" content="citation_title=EcologicalNetworksDynamics.jl: A julia package to simulate the temporal dynamics of complex ecological networks; citation_author=Ismaël Lajaaiti; citation_author=Iago Bonnici; citation_author=Sonia Kéfi; citation_author=Hana Mayall; citation_author=Alain Danet; citation_author=Andrew P. Beckerman; citation_author=Thomas Malpas; citation_author=Eva Delmas; citation_publication_date=2025; citation_cover_date=2025; citation_year=2025; citation_fulltext_html_url=https://onlinelibrary.wiley.com/doi/abs/10.1111/2041-210X.14497; citation_issue=3; citation_doi=10.1111/2041-210X.14497; citation_volume=16; citation_language=en; citation_firstpage=520; citation_lastpage=529; citation_journal_title=Methods in Ecology and Evolution;">
+<meta name="citation_reference" content="citation_title=Energetics, patterns of interaction strengths, and stability in real ecosystems; citation_author=Peter C. Ruiter; citation_author=Anje-Margriet Neutel; citation_author=John C. Moore; citation_publication_date=1995-09; citation_cover_date=1995-09; citation_year=1995; citation_fulltext_html_url=http://dx.doi.org/10.1126/science.269.5228.1257; citation_issue=5228; citation_doi=10.1126/science.269.5228.1257; citation_volume=269; citation_language=en; citation_firstpage=1257; citation_lastpage=1260; citation_journal_title=Science;">
+<meta name="citation_reference" content="citation_title=Selection against instability: Stable subgraphs are most frequent in empirical food webs; citation_author=Jonathan J. Borrelli; citation_publication_date=2015-03-06; citation_cover_date=2015-03-06; citation_year=2015; citation_fulltext_html_url=http://dx.doi.org/10.1111/oik.02176; citation_issue=12; citation_doi=10.1111/oik.02176; citation_volume=124; citation_language=en; citation_firstpage=1583; citation_lastpage=1588; citation_journal_title=Oikos;">
+<meta name="citation_reference" content="citation_title=Understanding food-web persistence from local to global scales; citation_author=Daniel B. Stouffer; citation_author=Jordi Bascompte; citation_publication_date=2010-02; citation_cover_date=2010-02; citation_year=2010; citation_fulltext_html_url=http://doi.wiley.com/10.1111/j.1461-0248.2009.01407.x; citation_issue=2; citation_doi=10.1111/j.1461-0248.2009.01407.x; citation_volume=13; citation_language=en; citation_firstpage=154; citation_lastpage=161; citation_journal_title=Ecology Letters;">
+<meta name="citation_reference" content="citation_title=Network structure and biodiversity loss in food webs: Robustness increases with connectance; citation_author=Jennifer Dunne; citation_author=Richard J Williams; citation_author=Néo D Martinez; citation_publication_date=2002; citation_cover_date=2002; citation_year=2002; citation_issue=4; citation_volume=5; citation_firstpage=558; citation_lastpage=567; citation_journal_title=Ecol. Lett.;">
+<meta name="citation_reference" content="citation_title=Stability and complexity in model ecosystems; citation_author=Robert M. May; citation_publication_date=1974; citation_cover_date=1974; citation_year=1974; citation_fulltext_html_url=http://www.jstor.org.proxy3.library.mcgill.ca/stable/j.ctvs32rq4; citation_doi=10.2307/j.ctvs32rq4; citation_volume=1;">
+<meta name="citation_reference" content="citation_title=Simulations of biomass dynamics in community food webs; citation_author=Eva Delmas; citation_author=Ulrich Brose; citation_author=Dominique Gravel; citation_author=Daniel B. Stouffer; citation_author=Timothée Poisot; citation_publication_date=2017; citation_cover_date=2017; citation_year=2017; citation_fulltext_html_url=https://onlinelibrary.wiley.com/doi/abs/10.1111/2041-210X.12713; citation_issue=7; citation_doi=10.1111/2041-210X.12713; citation_volume=8; citation_language=en; citation_firstpage=881; citation_lastpage=886; citation_journal_title=Methods in Ecology and Evolution;">
+<meta name="citation_reference" content="citation_title=Correlation between interaction strengths drives stability in large ecological networks; citation_author=Si Tang; citation_author=Samraat Pawar; citation_author=Stefano Allesina; citation_publication_date=2014; citation_cover_date=2014; citation_year=2014; citation_fulltext_html_url=http://onlinelibrary.wiley.com/doi/abs/10.1111/ele.12312; citation_issue=9; citation_doi=https://doi.org/10.1111/ele.12312; citation_volume=17; citation_language=en; citation_firstpage=1094; citation_lastpage=1100; citation_journal_title=Ecology Letters;">
+<meta name="citation_reference" content="citation_title=Biodiversity and ecosystem stability: A synthesis of underlying mechanisms; citation_author=Michel Loreau; citation_author=Claire Mazancourt; citation_publication_date=2013; citation_cover_date=2013; citation_year=2013; citation_fulltext_html_url=https://onlinelibrary.wiley.com/doi/abs/10.1111/ele.12073; citation_issue=s1; citation_doi=10.1111/ele.12073; citation_volume=16; citation_language=en; citation_firstpage=106; citation_lastpage=115; citation_journal_title=Ecology Letters;">
+<meta name="citation_reference" content="citation_title=Describe, understand and predict: Why do we need networks in ecology?; citation_author=Timothée Poisot; citation_author=Daniel B. Stouffer; citation_author=Sonia Kéfi; citation_publication_date=2016-12; citation_cover_date=2016-12; citation_year=2016; citation_fulltext_html_url=http://dx.doi.org/10.1111/1365-2435.12799; citation_issue=12; citation_doi=10.1111/1365-2435.12799; citation_volume=30; citation_language=en; citation_firstpage=1878; citation_lastpage=1882; citation_journal_title=Functional Ecology;">
+<meta name="citation_reference" content="citation_title=A roadmap towards predicting species interaction networks (across space and time); citation_author=Tanya Strydom; citation_author=Michael D. Catchen; citation_author=Francis Banville; citation_author=Dominique Caron; citation_author=Gabriel Dansereau; citation_author=Philippe Desjardins-Proulx; citation_author=Norma R. Forero-Muñoz; citation_author=Gracielle Higino; citation_author=Benjamin Mercier; citation_author=Andrew Gonzalez; citation_author=Dominique Gravel; citation_author=Laura Pollock; citation_author=Timothée Poisot; citation_publication_date=2021-09-20; citation_cover_date=2021-09-20; citation_year=2021; citation_fulltext_html_url=http://dx.doi.org/10.1098/rstb.2021.0063; citation_issue=1837; citation_doi=10.1098/rstb.2021.0063; citation_volume=376; citation_language=en; citation_journal_title=Philosophical Transactions of the Royal Society B;">
+<meta name="citation_reference" content="citation_title=The stability of real ecosystems; citation_author=P. Yodzis; citation_publication_date=1981-02; citation_cover_date=1981-02; citation_year=1981; citation_fulltext_html_url=http://dx.doi.org/10.1038/289674a0; citation_issue=5799; citation_doi=10.1038/289674a0; citation_volume=289; citation_language=en; citation_firstpage=674; citation_lastpage=676; citation_journal_title=Nature;">
+<meta name="citation_reference" content="citation_title=Evidence for the existence of a robust pattern of prey selection in food webs; citation_author=Daniel B Stouffer; citation_author=Juan Camacho; citation_author=Wenxin Jiang; citation_author=Luís A Nunes Amaral; citation_publication_date=2007-08-22; citation_cover_date=2007-08-22; citation_year=2007; citation_fulltext_html_url=https://pmc.ncbi.nlm.nih.gov/articles/PMC2275185/; citation_issue=1621; citation_doi=10.1098/rspb.2007.0571; citation_volume=274; citation_firstpage=1931; citation_lastpage=1940; citation_journal_title=Proceedings of the Royal Society B: Biological Sciences;">
+<meta name="citation_reference" content="citation_title=Julia: A fresh approach to numerical computing; citation_author=J. Bezanson; citation_author=A. Edelman; citation_author=S. Karpinski; citation_author=V. Shah; citation_publication_date=2017-01-01; citation_cover_date=2017-01-01; citation_year=2017; citation_fulltext_html_url=http://epubs.siam.org/doi/10.1137/141000671; citation_issue=1; citation_doi=10.1137/141000671; citation_volume=59; citation_firstpage=65; citation_lastpage=98; citation_journal_title=SIAM Review;">
+<meta name="citation_reference" content="citation_title=R: A language and environment for statistical computing; citation_author=R Core Team; citation_publication_date=2024; citation_cover_date=2024; citation_year=2024; citation_fulltext_html_url=https://www.R-project.org/;">
+<meta name="citation_reference" content="citation_title=A GENERAL FRAMEWORK FOR THE ANALYSIS OF PHENOTYPIC TRAJECTORIES IN EVOLUTIONARY STUDIES; citation_author=Dean C. Adams; citation_author=Michael L. Collyer; citation_publication_date=2009-05; citation_cover_date=2009-05; citation_year=2009; citation_fulltext_html_url=http://dx.doi.org/10.1111/j.1558-5646.2009.00649.x; citation_issue=5; citation_doi=10.1111/j.1558-5646.2009.00649.x; citation_volume=63; citation_language=en; citation_firstpage=1143; citation_lastpage=1154; citation_journal_title=Evolution;">
+<meta name="citation_reference" content="citation_title=Food web stability and weighted connectance: The complexity-stability debate revisited; citation_author=Cassandra Altena; citation_author=Lia Hemerik; citation_author=Peter C. Ruiter; citation_publication_date=2016-01-12; citation_cover_date=2016-01-12; citation_year=2016; citation_fulltext_html_url=http://dx.doi.org/10.1007/s12080-015-0291-7; citation_issue=1; citation_doi=10.1007/s12080-015-0291-7; citation_volume=9; citation_language=en; citation_firstpage=49; citation_lastpage=58; citation_journal_title=Theoretical Ecology;">
+<meta name="citation_reference" content="citation_title=Interaction strengths in food webs: Issues and opportunities; citation_author=Eric L. Berlow; citation_author=Anje-Margiet Neutel; citation_author=Joel E. Cohen; citation_author=Peter C. De Ruiter; citation_author=Bo Ebenman; citation_author=Mark Emmerson; citation_author=Jeremy W. Fox; citation_author=Vincent A. A. Jansen; citation_author=J. Iwan Jones; citation_author=Giorgos D. Kokkoris; citation_author=Dmitrii O. Logofet; citation_author=Alan J. McKane; citation_author=Jose M. Montoya; citation_author=Owen Petchey; citation_publication_date=2004-04-16; citation_cover_date=2004-04-16; citation_year=2004; citation_fulltext_html_url=http://dx.doi.org/10.1111/j.0021-8790.2004.00833.x; citation_issue=3; citation_doi=10.1111/j.0021-8790.2004.00833.x; citation_volume=73; citation_language=en; citation_firstpage=585; citation_lastpage=598; citation_journal_title=Journal of Animal Ecology;">
+<meta name="citation_reference" content="citation_title=lavaan : An R package for structural equation modeling; citation_author=Yves Rosseel; citation_publication_date=2012; citation_cover_date=2012; citation_year=2012; citation_fulltext_html_url=http://dx.doi.org/10.18637/jss.v048.i02; citation_issue=2; citation_doi=10.18637/jss.v048.i02; citation_volume=48; citation_language=en; citation_journal_title=Journal of Statistical Software;">
+<meta name="citation_reference" content="citation_title=The diversitystability debate; citation_author=Kevin Shear McCann; citation_publication_date=2000-05; citation_cover_date=2000-05; citation_year=2000; citation_fulltext_html_url=https://www.nature.com/articles/35012234; citation_issue=6783; citation_doi=10.1038/35012234; citation_volume=405; citation_language=en; citation_firstpage=228; citation_lastpage=233; citation_journal_title=Nature;">
 </head>
 
-<body class="quarto-light">
+<body class="quarto-light"><a id="quarto-skip-link" class="visually-hidden-focusable" href="#quarto-document-content">Skip to main content</a>
 
 <header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
@@ -230,7 +229,7 @@ window.Quarto = {
                 <div>
             <div class="quarto-title-meta-heading">Published</div>
             <div class="quarto-title-meta-contents">
-              <p class="date">October 28, 2026</p>
+              <p class="date">November 5, 2026</p>
             </div>
           </div>
           
@@ -259,7 +258,7 @@ window.Quarto = {
     </div>  </div>
 </header><div id="quarto-content" class="page-columns page-rows-contents page-layout-article toc-left">
 <div id="quarto-sidebar-toc-left" class="sidebar toc-left">
-  <nav id="TOC" role="doc-toc" class="toc-active">
+  <nav id="TOC" role="doc-toc" aria-labelledby="toc-title" class="toc-active">
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
@@ -268,18 +267,18 @@ window.Quarto = {
   <ul class="collapse">
   <li><a href="#network-generation" id="toc-network-generation" class="nav-link" data-scroll-target="#network-generation"><span class="header-section-number">2.1</span> Network generation</a></li>
   <li><a href="#network-structure" id="toc-network-structure" class="nav-link" data-scroll-target="#network-structure"><span class="header-section-number">2.2</span> Network structure</a></li>
-  <li><a href="#dynamic-simulations" id="toc-dynamic-simulations" class="nav-link" data-scroll-target="#dynamic-simulations"><span class="header-section-number">2.3</span> Dynamic simulations</a></li>
-  <li><a href="#post-simulation-analyses" id="toc-post-simulation-analyses" class="nav-link" data-scroll-target="#post-simulation-analyses"><span class="header-section-number">2.4</span> Post-simulation analyses</a>
+  <li><a href="#network-equilibrium-and-stability" id="toc-network-equilibrium-and-stability" class="nav-link" data-scroll-target="#network-equilibrium-and-stability"><span class="header-section-number">2.3</span> Network equilibrium and stability</a></li>
+  <li><a href="#statistical-analysis" id="toc-statistical-analysis" class="nav-link" data-scroll-target="#statistical-analysis"><span class="header-section-number">2.4</span> Statistical analysis</a>
   <ul class="collapse">
-  <li><a href="#phenotypic-trajectory-analysis" id="toc-phenotypic-trajectory-analysis" class="nav-link" data-scroll-target="#phenotypic-trajectory-analysis"><span class="header-section-number">2.4.1</span> Phenotypic trajectory analysis</a></li>
-  <li><a href="#community-stability" id="toc-community-stability" class="nav-link" data-scroll-target="#community-stability"><span class="header-section-number">2.4.2</span> Community stability</a></li>
+  <li><a href="#phenotypic-trajectory-analysis-of-network-structure" id="toc-phenotypic-trajectory-analysis-of-network-structure" class="nav-link" data-scroll-target="#phenotypic-trajectory-analysis-of-network-structure"><span class="header-section-number">2.4.1</span> Phenotypic trajectory analysis of network structure</a></li>
+  <li><a href="#structural-equation-model-analysis" id="toc-structural-equation-model-analysis" class="nav-link" data-scroll-target="#structural-equation-model-analysis"><span class="header-section-number">2.4.2</span> Structural equation model analysis</a></li>
   </ul></li>
   </ul></li>
   <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results"><span class="header-section-number">3</span> Results</a>
   <ul class="collapse">
   <li><a href="#networks-converge-in-structure" id="toc-networks-converge-in-structure" class="nav-link" data-scroll-target="#networks-converge-in-structure"><span class="header-section-number">3.1</span> Networks Converge in Structure</a></li>
   <li><a href="#structure-does-not-confer-stability" id="toc-structure-does-not-confer-stability" class="nav-link" data-scroll-target="#structure-does-not-confer-stability"><span class="header-section-number">3.2</span> Structure does not confer stability</a></li>
-  <li><a href="#network-stability-inferences" id="toc-network-stability-inferences" class="nav-link" data-scroll-target="#network-stability-inferences"><span class="header-section-number">3.3</span> Network stability inferences</a></li>
+  <li><a href="#structure-stability-relationships-varied-despite-structural-convergence" id="toc-structure-stability-relationships-varied-despite-structural-convergence" class="nav-link" data-scroll-target="#structure-stability-relationships-varied-despite-structural-convergence"><span class="header-section-number">3.3</span> Structure-stability relationships varied despite structural convergence</a></li>
   </ul></li>
   <li><a href="#discussion" id="toc-discussion" class="nav-link" data-scroll-target="#discussion"><span class="header-section-number">4</span> Discussion</a>
   <ul class="collapse">
@@ -289,11 +288,11 @@ window.Quarto = {
   </ul></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
   </ul>
-</nav>
+<div class="quarto-alternate-notebooks"><h2>Notebooks</h2><ul><li><a href="supplement/supplement-preview.html"><i class="bi bi-journal-code"></i>Supplementary Materials</a></li></ul></div></nav>
 </div>
 <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
 </div>
-<main class="content quarto-banner-title-block" id="quarto-document-content">
+<main class="content quarto-banner-title-block" id="quarto-document-content" tabindex="-1">
 
 
 
@@ -305,7 +304,7 @@ window.Quarto = {
 <p>For over two decades, community ecology has relied heavily on generative models to understand and reconstruct the structure of trophic networks. At the centre of this framework is the niche model. Introduced by <span class="citation" data-cites="williams2000">Williams and Martinez (<a href="#ref-williams2000" role="doc-biblioref">2000</a>)</span> as a major advance over the strictly hierarchical Cascade model <span class="citation" data-cites="cohen1990">(<a href="#ref-cohen1990" role="doc-biblioref">Cohen et al. 1990</a>)</span>, the Niche model demonstrated that relatively simple assembly rules could reproduce many emergent properties of empirical food webs, including realistic degree distributions, trophic guild proportions, and path lengths. This success has established the niche model as the default structural baseline for investigating macroecological patterns, robustness to primary extinctions, and the stability of ecological communities <span class="citation" data-cites="allesina2012 curtsdotter2011">(<a href="#ref-allesina2012" role="doc-biblioref">Allesina and Tang 2012</a>; <a href="#ref-curtsdotter2011" role="doc-biblioref">Curtsdotter et al. 2011</a>)</span>.</p>
 <p>The widespread use of the Niche model has also encouraged a broader assumption that different food web reconstruction methods provide interchangeable representations of ecological communities. However, generative models embody fundamentally different assumptions about how trophic interactions arise <span class="citation" data-cites="strydom2026">(<a href="#ref-strydom2026" role="doc-biblioref">Strydom, Dunhill, et al. 2026</a>)</span>. Structural models operate from the network down, generating interactions according to statistical or topological rules. The Niche and Cascade models impose ordered feeding hierarchies along a latent niche axis, while maximum entropy (MaxEnt) models generate networks that satisfy macroscopic constraints while remaining maximally unstructured beyond those constraints <span class="citation" data-cites="banville2023">(<a href="#ref-banville2023" role="doc-biblioref">Banville et al. 2023</a>)</span>. In contrast, mechanistic approaches operate from the species up, constructing networks from organismal traits and ecological processes. The Allometric Diet Breadth Model (ADBM) derives realised diets from optimal foraging and energetic profitability <span class="citation" data-cites="petchey2008">(<a href="#ref-petchey2008" role="doc-biblioref">Petchey et al. 2008</a>)</span>, whereas the Allometric Trophic Network (ATN) framework constrains interactions through body-size scaling and metabolic theory <span class="citation" data-cites="brose2006 schneider2016">(<a href="#ref-brose2006" role="doc-biblioref">Brose et al. 2006</a>; <a href="#ref-schneider2016" role="doc-biblioref">Schneider et al. 2016</a>)</span>. Latent trait models occupy an intermediate position, inferring interactions statistically from underlying species traits without prescribing explicit feeding rules <span class="citation" data-cites="rohr2010">(<a href="#ref-rohr2010" role="doc-biblioref">Rohr et al. 2010</a>)</span>.</p>
 <p>These contrasting modelling philosophies raise a fundamental question. Are they simply different routes to the same ecological inference, or do they encode different assumptions about network architecture that persist into predictions of ecosystem dynamics? Recent work has shown that applying different reconstruction frameworks to identical species pools produces markedly different food web topologies and inference about species extinctions <span class="citation" data-cites="strydom2026b">(<a href="#ref-strydom2026b" role="doc-biblioref">Strydom, Karapunar, et al. 2026</a>)</span>. Because network architecture governs the pathways through which energy, biomass, and indirect effects propagate through communities <span class="citation" data-cites="delmas2020">(<a href="#ref-delmas2020" role="doc-biblioref">Delmas et al., n.d.</a>)</span>, differences in reconstruction may have important consequences for ecological dynamics rather than representing alternative but equivalent descriptions of the same system.</p>
-<p>At the same time, empirical food webs exhibit surprisingly consistent local structural organisation despite large differences in species composition and ecosystem type, suggesting that ecological communities occupy a constrained region of possible network architectures rather than arbitrary combinations of interactions. This has motivated the idea that ecological dynamics selectively retain interaction structures that are compatible with persistence while filtering those that are not <span class="citation" data-cites="stouffer2010 stouffer2007">(<a href="#ref-stouffer2010" role="doc-biblioref">Stouffer and Bascompte 2010</a>; <a href="#ref-stouffer2007" role="doc-biblioref">Stouffer et al. 2007</a>)</span>. Whether this filtering is sufficiently strong to erase the structural differences introduced by alternative reconstruction frameworks remains unknown.</p>
+<p>At the same time, empirical food webs exhibit surprisingly consistent local structural organisation despite large differences in species composition and ecosystem type, suggesting that ecological communities occupy a constrained region of possible network architectures rather than arbitrary combinations of interactions. Understanding how this organisation relates to ecological stability has been a longstanding ambition in ecology, underpinning the diversity–stability debate and efforts to identify the structural properties that allow complex communities to persist <span class="citation" data-cites="mccann2000">(<a href="#ref-mccann2000" role="doc-biblioref">McCann 2000</a>)</span>. This has motivated the idea that ecological dynamics selectively retain interaction structures that are compatible with persistence while filtering those that are not <span class="citation" data-cites="stouffer2010 stouffer2007">(<a href="#ref-stouffer2010" role="doc-biblioref">Stouffer and Bascompte 2010</a>; <a href="#ref-stouffer2007" role="doc-biblioref">Stouffer et al. 2007</a>)</span>. Whether this filtering is sufficiently strong to erase the structural differences introduced by alternative reconstruction frameworks remains unknown.</p>
 <p>Here, we test whether food web reconstruction frameworks function as benign structural templates or whether they fundamentally shape ecological inference. We generated food webs using seven models spanning structural, statistical, and trait-based philosophies and embedded each within an identical bioenergetic simulation framework while controlling species pools and dynamical rules. This design allows us to separate the effects of network construction from the effects of ecological dynamics and ask two questions: (i) do different reconstruction frameworks converge towards a common realised network structure under bioenergetic dynamics, and (ii) if structural convergence occurs, do predictions of biomass equilibrium also converge, or do they retain a signature of the original generative model?</p>
 </section>
 <section id="methods" class="level1" data-number="2">
@@ -381,44 +380,39 @@ Table&nbsp;1: Summary of food web models used in this study. Structural models (
 </section>
 <section id="network-structure" class="level2" data-number="2.2">
 <h2 data-number="2.2" class="anchored" data-anchor-id="network-structure"><span class="header-section-number">2.2</span> Network structure</h2>
-<p>All networks were converted to directed interaction networks and analysed using a standardised pipeline. We quantified structural properties across multiple scales, including connectance, trophic level, generality, vulnerability, clustering, centrality, trophic coherence, and path length. These metrics were used to characterise the structural signature of each model.</p>
-<blockquote class="blockquote">
-<p>I can do a supp matt that breaks all the structural metrics down - I don’t think we need it here in the main text.</p>
-</blockquote>
+<p>All networks were converted to directed interaction networks and analysed using a standardised pipeline. We quantified thirty structural properties across multiple scales (See table S1 for the full list), including connectance, trophic level, generality, vulnerability, clustering, centrality, trophic coherence, and path length. These metrics were used to characterise the structural signature of each model.</p>
 </section>
-<section id="dynamic-simulations" class="level2" data-number="2.3">
-<h2 data-number="2.3" class="anchored" data-anchor-id="dynamic-simulations"><span class="header-section-number">2.3</span> Dynamic simulations</h2>
-<p>To evaluate the dynamical consequences of different generative models, we simulated each network using the bio-energetic food web dynamic model implemented in <code>EcologicalNetworksDynamics.jl</code> <span class="citation" data-cites="lajaaiti2025">(<a href="#ref-lajaaiti2025" role="doc-biblioref">Lajaaiti et al. 2025</a>)</span>. A key feature of the bio-energetic model is the allometric scaling of metabolism, growth and foraging rates with body mass. For trait-based models (ATN, ADBM, LTN), species body masses were taken from the generative networks and rescaled relative to the producer with the lowest body mass. For structural models (Niche, Cascade, MaxEnt, Random), which did not include body mass information, body masses were assigned from species trophic levels assuming apredator–prey body mass ratio of 100.</p>
+<section id="network-equilibrium-and-stability" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="network-equilibrium-and-stability"><span class="header-section-number">2.3</span> Network equilibrium and stability</h2>
+<p>To evaluate the dynamical consequences of different generative models, we simulated each network using the bio-energetic food web dynamic model implemented in <code>EcologicalNetworksDynamics.jl</code> <span class="citation" data-cites="lajaaiti2025">(<a href="#ref-lajaaiti2025" role="doc-biblioref">Lajaaiti et al. 2025</a>)</span>. A key feature of the bio-energetic model is the allometric scaling of metabolism, growth and foraging rates with body mass <span class="citation" data-cites="brose2006">(<a href="#ref-brose2006" role="doc-biblioref">Brose et al. 2006</a>)</span>. For trait-based models (ATN, ADBM, LTN), species body masses were taken from the generative networks and rescaled relative to the producer with the lowest body mass. For structural models (Niche, Cascade, MaxEnt, Random), which did not include body mass information, body masses were assigned from species trophic levels assuming a predator–prey body mass ratio of 100 <span class="citation" data-cites="lajaaiti2025">(<a href="#ref-lajaaiti2025" role="doc-biblioref">Lajaaiti et al. 2025</a>)</span>.</p>
 <p>For a consumer species <span class="math inline">\(i\)</span>, biomass dynamics were determined by gains from feeding, losses to predators, and metabolic maintenance, which is expressed as:</p>
-<p><span class="math display">\[
-\frac{dB_i}{dt} = \sum_{j \in \mathrm{prey}(i)}e_{ij} B_i F_{ij} - \sum_{j \in \mathrm{predators}(i)} B_j F_{ji} - x_i B_i
-\]</span></p>
+<p><span class="math display">\[\frac{dB_i}{dt} = \sum_{j \in \mathrm{prey}(i)}e_{ij} B_i F_{ij} - \sum_{j \in \mathrm{predators}(i)} B_j F_{ji} - x_i B_i\]</span></p>
 <p>where <span class="math inline">\(B_i\)</span> is the biomass of consumer <span class="math inline">\(i\)</span>, <span class="math inline">\(e_{ij}\)</span> is its assimilation efficiency when feeding on prey <em>j</em>, <span class="math inline">\(x_i\)</span> is its metabolic rate scaled with body mass, and <span class="math inline">\(F_{ij}\)</span> is the functional response of consumer <em>i</em> feeding on prey <em>j</em>, defined as</p>
-<p><span class="math display">\[
-F_{ij} = \frac{\omega_{i} a_{ij} B_j^{h}} {M_i\left (1 + \displaystyle\sum_{k \in \mathrm{prey}(i)} \omega_{i} a_{ik} h_{ik} B_k^{h} \right)}
-\]</span></p>
-<p>where <span class="math inline">\(w_i\)</span> is the equal preference of the consumer i feeding on its prey, <span class="math inline">\(w_i\)</span> = 1/number of prey species. <span class="math inline">\(a_{ij}\)</span> is the attack rate, <span class="math inline">\(h_{ij}\)</span> is the handling time, and <span class="math inline">\(M_i\)</span> is the body mass of consumer <em>i</em>. Attack rates and handling times scaled with both consumer and prey body masses. The Hill exponent was set to <span class="math inline">\(h = 2\)</span> as a Type III functional response.</p>
+<p><span class="math display">\[F_{ij} = \frac{\omega_{i} a_{ij} B_j^{h}} {M_i\left (1 + \displaystyle\sum_{k \in \mathrm{prey}(i)} \omega_{i} a_{ik} h_{ik} B_k^{h} \right)}\]</span></p>
+<p>where <span class="math inline">\(w_i\)</span> is the equal preference of the consumer <span class="math inline">\(i\)</span> feeding on its prey, <span class="math inline">\(w_i\)</span> = 1/number of prey species. <span class="math inline">\(a_{ij}\)</span> is the attack rate, <span class="math inline">\(h_{ij}\)</span> is the handling time, and <span class="math inline">\(M_i\)</span> is the body mass of consumer <em>i</em>. Attack rates and handling times scaled with both consumer and prey body masses. The Hill exponent was set to <span class="math inline">\(h = 2\)</span> as a Type III functional response.</p>
 <p>For a basal species <span class="math inline">\(j\)</span>, biomass dynamics were determined by its logistic growth and losses to consumers, expressed as:</p>
-<p><span class="math display">\[
-\frac{dB_j}{dt} = r_j G_j B_j - \sum_{i \in \mathrm{predators}(j)} B_i F_{ij}
-\]</span></p>
+<p><span class="math display">\[\frac{dB_j}{dt} = r_j G_j B_j - \sum_{i \in \mathrm{predators}(j)} B_i F_{ij}\]</span></p>
 <p>where <span class="math inline">\(r_j\)</span> is the intrinsic growth rate and <span class="math inline">\(G_j = 1 - \frac{B_j}{K_j}\)</span> is the logistic growth modifier , with <span class="math inline">\(K_j\)</span> is the carrying capacity. Both <span class="math inline">\(r_j\)</span> and <span class="math inline">\(K_j\)</span> scaled with species body mass.</p>
 <p>All allometric constants used to parametrise <span class="math inline">\(x_i\)</span>, <span class="math inline">\(a_{ij}\)</span>, <span class="math inline">\(h_{ij}\)</span>, <span class="math inline">\(r_j\)</span>, and <span class="math inline">\(K_j\)</span> were set to the default values provided by <span class="citation" data-cites="lajaaiti2025">(<a href="#ref-lajaaiti2025" role="doc-biblioref">Lajaaiti et al. 2025</a>)</span>.</p>
-<p>Each network was simulated until it reached a steady state. Species were considered extinct when their biomass fell below <span class="math inline">\(10^{−6}\)</span>. At equilibrium, both extinct species and disconnected species were removed, yielding the realised post-simulation network.</p>
+<p>We first ran a burn-in simulation for each food web until a steady-state equilibrium was reached. Species with biomass below <span class="math inline">\(10^{-6}\)</span> were considered extinct, and basal species without consumers and consumers without prey were removed. We then simulated the remaining food web again to a steady-state equilibrium, yielding to the realised feasible network. We also recorded cases in which food webs failed to reach equilibrium.</p>
+<p>Based on the realised networks and equilibrium biomasses, we calculated species persistence and the Shannon diversity of species biomasses. We extracted the consumption fluxes along individual trophic links and calculated their Gini coefficient <span class="citation" data-cites="vanaltena2016">(<a href="#ref-vanaltena2016" role="doc-biblioref">Altena et al. 2016</a>)</span>, with higher values indicating more uneven distributions of fluxes. We further derived the Jacobian matrix, whose non-zero off-diagonal elements represent the pairwise interspecific interaction strengths, comprising per capita top-down and bottom-up effects. We calculated the the skewness of interspecific interaction strengths to characterise the asymmetry of their distribution, with greater positive skewness reflecting many weak interactions and a few strong interactions <span class="citation" data-cites="berlow2004">(<a href="#ref-berlow2004" role="doc-biblioref">Berlow et al. 2004</a>)</span>.</p>
+<p>Finally we assessed local community stability using resilience and reactivity. Resilience was measured by the real part of the dominant eigenvalue of the Jacobian matrix, with more negative values indicating faster return to equilibrium following a small perturbation <span class="citation" data-cites="deruiter1995">(<a href="#ref-deruiter1995" role="doc-biblioref">Ruiter et al. 1995</a>)</span>. Reactivity quantified the maximum instantaneous amplification of perturbations, with more positive values indicating a stronger tendency for some perturbations to initially move the system further away from equilibrium <span class="citation" data-cites="neubert1997">(<a href="#ref-neubert1997" role="doc-biblioref">Neubert and Caswell 1997</a>)</span>.</p>
 </section>
-<section id="post-simulation-analyses" class="level2" data-number="2.4">
-<h2 data-number="2.4" class="anchored" data-anchor-id="post-simulation-analyses"><span class="header-section-number">2.4</span> Post-simulation analyses</h2>
-<section id="phenotypic-trajectory-analysis" class="level3" data-number="2.4.1">
-<h3 data-number="2.4.1" class="anchored" data-anchor-id="phenotypic-trajectory-analysis"><span class="header-section-number">2.4.1</span> Phenotypic trajectory analysis</h3>
-<p>To quantify how ecological dynamics reshaped network topology, all structural metrics were recalculated following the dynamic simulations using the realised (post-extinction) network. These post-dynamics metrics were compared with those of the initial network using a phenotypic trajectory analysis (PTA) framework <span class="citation" data-cites="adams2009">(<a href="#ref-adams2009" role="doc-biblioref">Adams and Collyer 2009</a>)</span>, where each network was represented as a point in a multivariate topology space defined by the suite of structural network metrics [TABLE in SI]. Prior to analysis, all metrics were standardised (mean = 0, SD = 1) to remove differences in scale before constructing a common topology space using principal component analysis (PCA). Both pre- and post-dynamics networks were projected into this shared ordination, allowing each network to be represented by a trajectory from its initial to realised topology.</p>
+<section id="statistical-analysis" class="level2" data-number="2.4">
+<h2 data-number="2.4" class="anchored" data-anchor-id="statistical-analysis"><span class="header-section-number">2.4</span> Statistical analysis</h2>
+<section id="phenotypic-trajectory-analysis-of-network-structure" class="level3" data-number="2.4.1">
+<h3 data-number="2.4.1" class="anchored" data-anchor-id="phenotypic-trajectory-analysis-of-network-structure"><span class="header-section-number">2.4.1</span> Phenotypic trajectory analysis of network structure</h3>
+<p>To quantify how ecological dynamics reshaped network topology, all structural metrics were recalculated following the dynamic simulations using the realised (post-extinction) network. These post-dynamics metrics were compared with those of the initial network using a phenotypic trajectory analysis (PTA) framework <span class="citation" data-cites="adams2009">(<a href="#ref-adams2009" role="doc-biblioref">Adams and Collyer 2009</a>)</span>, where each network was represented as a point in a multivariate topology space defined by the suite of structural network metrics (Table S1). Prior to analysis, all metrics were standardised (mean = 0, SD = 1) to remove differences in scale before constructing a common topology space using principal component analysis (PCA). Both pre- and post-dynamics networks were projected into this shared ordination, allowing each network to be represented by a trajectory from its initial to realised topology.</p>
 <p>Trajectory vectors were calculated as the displacement between pre- and post-dynamics positions in the five-dimensional PCA space. Trajectory length was calculated as the Euclidean distance between the two states, providing a measure of the magnitude of topological change. Mean trajectories were calculated for each network reconstruction model centroid to summarise their overall direction of change. Finally, convergence among network topologies was assessed by calculating each network’s Euclidean distance to the global post-dynamics centroid before and after simulation, with positive reductions in distance indicating convergence towards a common realised network topology.</p>
+<blockquote class="blockquote">
+<p>add a section here Phenotypic trajectory analysis of community dynamics and stability??</p>
+</blockquote>
 </section>
-<section id="community-stability" class="level3" data-number="2.4.2">
-<h3 data-number="2.4.2" class="anchored" data-anchor-id="community-stability"><span class="header-section-number">2.4.2</span> Community stability</h3>
-<p>At equilibrium, we calculated two sets of stability metrics to compare realised networks across generative models. First, network-level stability was characterised by species persistence, Shannon diversity of biomasses, the Gini coefficient of consumption fluxes, and the skewness of interspecific interaction strengths. Second, local stability was characterised by resilience and reactivity. Resilience was measured by the real part of the dominant eigenvalue of the Jacobian matrix, with more negative values indicating faster return to equilibrium following a small perturbation <span class="citation" data-cites="deruiter1995">(<a href="#ref-deruiter1995" role="doc-biblioref">Ruiter et al. 1995</a>)</span>. Reactivity quantified the maximum instantaneous amplification of perturbations, with more positive values indicating a stronger tendency for some perturbations to initially move the system further away from equilibrium <span class="citation" data-cites="neubert1997">(<a href="#ref-neubert1997" role="doc-biblioref">Neubert and Caswell 1997</a>)</span>.</p>
-<p>For each stability metric, we fitted a linear model including food web model and equilibrium species richness as additive predictors:</p>
-<p><span class="math inline">\(\text{Stability metric} \sim \text{Food web model} + \text{Equilibrium richness}\)</span>.</p>
-<p>We used Type II ANOVA to assess the contribution of each predictor while controlling for the other. The magnitude of each association was quantified using partial eta-squared, which represents the proportion of effect-plus-residual variation attributable to a predictor after accounting for the other predictor.</p>
+<section id="structural-equation-model-analysis" class="level3" data-number="2.4.2">
+<h3 data-number="2.4.2" class="anchored" data-anchor-id="structural-equation-model-analysis"><span class="header-section-number">2.4.2</span> Structural equation model analysis</h3>
+<p>Ecological inferences drawn from generated food webs depend on how the choice of generative model shapes network structure and community dynamics. We therefore examined how variation in food web stability was associated with richness and topological distinctiveness, and whether these relationships differed among the seven generative models.</p>
+<p>We used multi-group structural equation modelling (SEM) to quantify direct and indirect relationships linking richness and topology distance to resilience and reactivity through the Shannon diversity of species biomasses, the Gini coefficient of consumption fluxes , and the skewness in interaction strengths. Topology distance was calculated as the Euclidean distance from the pooled centroid in the principal component space of standardised topological metrics at equilibrium. The seven generative models shared a common pathway structure, with regression coefficients, intercepts, variances, and residual covariances estimated separately for each group. All variables were standardised using means and standard deviations calculated across the complete dataset, providing common units for coefficient comparisons. Models were fitted using robust maximum likelihood in lavaan <span class="citation" data-cites="rosseel2012">(<a href="#ref-rosseel2012" role="doc-biblioref">Rosseel 2012</a>)</span>.</p>
+<p>We then decomposed the model-implied variance in each stability response into contributions associated with richness, residual topological variation, and residual variation in biomass, flux, and interaction properties. Each contribution was calculated by propagating its source variation through all direct and indirect pathways to stability. The richness contribution included its direct effect and all indirect effects through downstream variables. The topological contribution used the residual variance of topological distance after accounting for richness and its total downstream effect on stability. The biomass, flux, and interaction contribution jointly propagated the residual variation in biomass diversity, flux Gini, and interaction-strength skewness. These three contributions sum to the full SEM (R<sup>2</sup>), with (1-R<sup>2</sup>) representing unexplained variation. This decomposition was performed separately for each stability response and generative model. For example, the fraction of resilience variance attributed to richness was calculated as <span class="math inline">\(\frac{\tau_{S,Y}^{2}\operatorname{Var}(S)}{\operatorname{Var}(Y)}\)</span>, where <span class="math inline">\(S\)</span> denotes richness, <span class="math inline">\(Y\)</span> denotes the stability response, and <span class="math inline">\(\tau_{S,Y}\)</span> is the total effect of richness on resilience, comprising the direct path coefficient plus the sum of coefficient products along all indirect pathways. The variances <span class="math inline">\({Var}(Y)\)</span> refer to the fitted SEM within each generative model.</p>
 </section>
 </section>
 </section>
@@ -464,28 +458,24 @@ Figure&nbsp;3: Arrows indicate trajectory of individual networks. Points are net
 </figcaption>
 </figure>
 </div>
-</section>
-<section id="network-stability-inferences" class="level2" data-number="3.3">
-<h2 data-number="3.3" class="anchored" data-anchor-id="network-stability-inferences"><span class="header-section-number">3.3</span> Network stability inferences</h2>
-<p>Equilibrium richness explained substantially more variation than generative food web models in network-level stability metrics, with the strongest contribution observed for Shannon diversity of biomasses, followed by the skewness of interaction strengths, species persistence and the Gini coefficient of consumption fluxes (<a href="#fig-rel_contribution" class="quarto-xref">Figure&nbsp;4</a>). In contrast, variation in resilience was influenced by both richness and model, with a larger contribution from model. Reactivity was explained primarily by generative food web models, with very little contribution from equilibrium richness.</p>
-<div id="fig-rel_contribution" class="quarto-float quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-rel_contribution-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="figures/stability_effect_size_model_vs_richness.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="Figure&nbsp;4: Relative contributions of equilibrium species richness and generative food web models to variation in network and local stability metrics"><img src="figures/stability_effect_size_model_vs_richness.png" class="img-fluid figure-img"></a>
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-rel_contribution-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;4: Relative contributions of equilibrium species richness and generative food web models to variation in network and local stability metrics
-</figcaption>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="figures/multivariateDistance_aggregate.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="words"><img src="figures/multivariateDistance_aggregate.png" class="img-fluid figure-img" alt="words"></a></p>
+<figcaption>words</figcaption>
 </figure>
 </div>
-<p>After accounting for equilibrium richness, Niche, Cascade, ATN and MaxEnt generally supported higher species persistence than ADBM, LTM and Random generated food webs (<a href="#fig-emmeans" class="quarto-xref">Figure&nbsp;5</a>). Biomass diversity was highest in Cascade and Niche webs, but comparatively low in LTM and MaxEnt. Random model had the most uneven consumption fluxes, while MaxEnt and Random webs showed the strongest skewness in interaction strengths. ADBM and LTM generated food webs showed the highest resilience, i.e.,fastest asymptotic recovery, whereas LTM food webs were also the most reactive, i.e., strongest initial amplification of perturbations.</p>
-<div id="fig-emmeans" class="quarto-float quarto-figure quarto-figure-center anchored">
+</section>
+<section id="structure-stability-relationships-varied-despite-structural-convergence" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="structure-stability-relationships-varied-despite-structural-convergence"><span class="header-section-number">3.3</span> Structure-stability relationships varied despite structural convergence</h2>
+<p>Despite convergence in food web structure, relationships linking structure to stability varied among generative models (<a href="#fig-SEM" class="quarto-xref">Figure&nbsp;4</a>). After accounting for richness, residual topological distance accounted for 0-7% of total variation in resilience and 0-13% in reactivity. Its contribution to reactivity was greatest in Niche (10%) and Cascade (13%). Residual variation in biomass diversity, flux unevenness, and interaction strength skewness jointly made the largest contribution to resilience variation in every model, accounting for 12-40% of total variance, compared with 3-16% attributed to direct and indirect pathways from richness. This combined contribution was particularly large in ADBM (40%) and ATN (28%), whereas richness and residual topology together accounted for 18% in each model.</p>
+<p>Among the direct paths to stability, greater flux unevenness was associated with slower recovery in six models. Greater interaction strength skewness was significantly associated with faster recovery in ADBM, Niche, Cascade, and MaxEnt, however its relationship with reactivity changed direction among models: positive in ADBM, ATN, and LTM, and negative in Niche and Cascade. Thus, even where topology converged, the pathways linking biomass, flux, and interaction properties to stability remained dependent on the generative model.</p>
+<div id="fig-SEM" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-emmeans-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="figures/stability_adjusted_model_means.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5" title="Figure&nbsp;5: Network and local stability metrics across generative food web models. Points are estimated marginal means adjusted to the mean equilibrium species richness. Bars show 95% confidence intervals."><img src="figures/stability_adjusted_model_means.png" class="img-fluid figure-img"></a>
+<div aria-describedby="fig-SEM-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="figures/SEM_and_variation_partitioning.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5" title="Figure&nbsp;4: Structural equation models linking food web structure to local community stability across seven generative models. (a-g) Significant paths (p < 0.05) for ADBM, ATN, LTM, Niche, Cascade, MaxEnt, and Random. Blue and red arrows indicate positive and negative relationships, respectively; Topology distance measures distance from the pooled centroid in topological principal component space. Flux Gini and IS skewness denote the Gini coefficient of consumption fluxes and skewness of absolute interaction strengths. Higher resilience values indicate slower recovery; higher reactivity indicates greater initial perturbation amplification. (h, i) Fractions of total variance in resilience and reactivity explained by the full SEM and attributed to richness, residual topological variation, and residual biomass, flux, and interaction variation (B-F-IS), including their downstream pathways."><img src="figures/SEM_and_variation_partitioning.png" class="img-fluid figure-img"></a>
 </div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-emmeans-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;5: Network and local stability metrics across generative food web models. Points are estimated marginal means adjusted to the mean equilibrium species richness. Bars show 95% confidence intervals.
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-SEM-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4: Structural equation models linking food web structure to local community stability across seven generative models. (a-g) Significant paths (p &lt; 0.05) for ADBM, ATN, LTM, Niche, Cascade, MaxEnt, and Random. Blue and red arrows indicate positive and negative relationships, respectively; Topology distance measures distance from the pooled centroid in topological principal component space. Flux Gini and IS skewness denote the Gini coefficient of consumption fluxes and skewness of absolute interaction strengths. Higher resilience values indicate slower recovery; higher reactivity indicates greater initial perturbation amplification. (h, i) Fractions of total variance in resilience and reactivity explained by the full SEM and attributed to richness, residual topological variation, and residual biomass, flux, and interaction variation (B-F-IS), including their downstream pathways.
 </figcaption>
 </figure>
 </div>
@@ -503,7 +493,7 @@ Figure&nbsp;5: Network and local stability metrics across generative food web mo
 </section>
 <section id="structural-convergence-does-not-imply-dynamical-equivalence" class="level2" data-number="4.2">
 <h2 data-number="4.2" class="anchored" data-anchor-id="structural-convergence-does-not-imply-dynamical-equivalence"><span class="header-section-number">4.2</span> Structural convergence does not imply dynamical equivalence</h2>
-<p>Although ecological dynamics drove networks towards a shared region of topology space, this convergence did not produce equivalent predictions of community stability. Instead, we observed a clear separation between coarse dynamic properties, which were largely explained by realised species richness, and local dynamical properties, which remained strongly dependent on the original reconstruction framework. Structural convergence therefore represents only one dimension of ecological similarity; the dynamical consequences of those structures retain a signature of how the network was assembled.</p>
+<p>Although ecological dynamics drove networks towards a shared region of topology space, this convergence did not produce equivalent predictions of community stability (<a href="#fig-SEM" class="quarto-xref">Figure&nbsp;4</a> and S1). Instead, we observed a clear separation between coarse dynamic properties, which were largely explained by realised species richness, and local dynamical properties, which remained strongly dependent on the original reconstruction framework (<a href="#fig-SEM" class="quarto-xref">Figure&nbsp;4</a> and S2). Structural convergence therefore represents only one dimension of ecological similarity; the dynamical consequences of those structures retain a signature of how the network was assembled.</p>
 <p>This distinction is most apparent when comparing network-level and local stability metrics. Shannon diversity of biomasses, interaction strength skewness, species persistence, and the Gini coefficient of consumption fluxes were explained predominantly by equilibrium richness rather than model identity. This agrees with longstanding ecological theory showing that many aggregate properties of communities emerge from biodiversity itself through biomass partitioning, portfolio effects, and the distribution of energy across trophic levels <span class="citation" data-cites="loreau2013 yodzis1981">(<a href="#ref-loreau2013" role="doc-biblioref">Loreau and Mazancourt 2013</a>; <a href="#ref-yodzis1981" role="doc-biblioref">Yodzis 1981</a>)</span>. Once ecological dynamics had removed species and reduced networks to similar realised sizes, these macroscopic properties became remarkably insensitive to the initial reconstruction framework.</p>
 <p>Local stability, however, behaves differently. Reactivity was explained almost entirely by the generative model, while resilience remained strongly influenced by model identity even after accounting for realised richness. These metrics quantify how perturbations propagate through communities rather than simply whether communities persist, making them inherently sensitive to the organisation of interaction strengths within the Jacobian matrix <span class="citation" data-cites="tang2014 neubert1997">(<a href="#ref-tang2014" role="doc-biblioref">Tang et al. 2014</a>; <a href="#ref-neubert1997" role="doc-biblioref">Neubert and Caswell 1997</a>)</span>. Two networks with similar connectance, trophic structure, and species richness can therefore exhibit fundamentally different transient responses if the underlying energetic constraints that generated their interactions differ.</p>
 <p>The contrast between structural and trait-based models illustrates this point. Niche and Cascade networks consistently reached equilibrium, but this should not be interpreted as evidence that they provide the most biologically realistic representation of ecological persistence. Rather, these models inherit body masses only after network construction through a fixed predator-prey mass ratio, meaning that energetic structure is imposed <em>post hoc</em> to satisfy the assumptions of the bioenergetic model <span class="citation" data-cites="delmas2017">(<a href="#ref-delmas2017" role="doc-biblioref">Delmas et al. 2017</a>)</span>. In contrast, ADBM, ATN, and latent trait networks propagate body mass distributions directly from the reconstruction process into the dynamical model. The resulting interaction strengths, attack rates, handling times, and metabolic rates remain coupled through the biological assumptions embedded in each framework <span class="citation" data-cites="petchey2008 schneider2016 brose2006">(<a href="#ref-petchey2008" role="doc-biblioref">Petchey et al. 2008</a>; <a href="#ref-schneider2016" role="doc-biblioref">Schneider et al. 2016</a>; <a href="#ref-brose2006" role="doc-biblioref">Brose et al. 2006</a>)</span>.</p>
@@ -528,8 +518,14 @@ Adams, Dean C., and Michael L. Collyer. 2009. <span>“A GENERAL FRAMEWORK FOR T
 <div id="ref-allesina2012" class="csl-entry" role="listitem">
 Allesina, Stefano, and Si Tang. 2012. <span>“Stability Criteria for Complex Ecosystems.”</span> <em>Nature</em> 483 (7388): 205–8. <a href="https://doi.org/10.1038/nature10832">https://doi.org/10.1038/nature10832</a>.
 </div>
+<div id="ref-vanaltena2016" class="csl-entry" role="listitem">
+Altena, Cassandra van, Lia Hemerik, and Peter C. de Ruiter. 2016. <span>“Food Web Stability and Weighted Connectance: The Complexity-Stability Debate Revisited.”</span> <em>Theoretical Ecology</em> 9 (1): 49–58. <a href="https://doi.org/10.1007/s12080-015-0291-7">https://doi.org/10.1007/s12080-015-0291-7</a>.
+</div>
 <div id="ref-banville2023" class="csl-entry" role="listitem">
 Banville, Francis, Dominique Gravel, and Timothée Poisot. 2023. <span>“What Constrains Food Webs? A Maximum Entropy Framework for Predicting Their Structure with Minimal Biases.”</span> <em>PLOS Computational Biology</em> 19 (9): e1011458. <a href="https://doi.org/10.1371/journal.pcbi.1011458">https://doi.org/10.1371/journal.pcbi.1011458</a>.
+</div>
+<div id="ref-berlow2004" class="csl-entry" role="listitem">
+Berlow, Eric L., Anje-Margiet Neutel, Joel E. Cohen, et al. 2004. <span>“Interaction Strengths in Food Webs: Issues and Opportunities.”</span> <em>Journal of Animal Ecology</em> 73 (3): 585–98. <a href="https://doi.org/10.1111/j.0021-8790.2004.00833.x">https://doi.org/10.1111/j.0021-8790.2004.00833.x</a>.
 </div>
 <div id="ref-bezanson2017" class="csl-entry" role="listitem">
 Bezanson, J., A. Edelman, S. Karpinski, and V. Shah. 2017. <span>“Julia: A Fresh Approach to Numerical Computing.”</span> <em>SIAM Review</em> 59 (1): 65–98. <a href="https://doi.org/10.1137/141000671">https://doi.org/10.1137/141000671</a>.
@@ -564,6 +560,9 @@ Loreau, Michel, and Claire de Mazancourt. 2013. <span>“Biodiversity and Ecosys
 <div id="ref-may1974" class="csl-entry" role="listitem">
 May, Robert M. 1974. <em>Stability and Complexity in Model Ecosystems</em>. Vol. 1. Princeton University Press. <a href="https://doi.org/10.2307/j.ctvs32rq4">https://doi.org/10.2307/j.ctvs32rq4</a>.
 </div>
+<div id="ref-mccann2000" class="csl-entry" role="listitem">
+McCann, Kevin Shear. 2000. <span>“The Diversity<span></span>stability Debate.”</span> <em>Nature</em> 405 (6783): 228–33. <a href="https://doi.org/10.1038/35012234">https://doi.org/10.1038/35012234</a>.
+</div>
 <div id="ref-neubert1997" class="csl-entry" role="listitem">
 Neubert, Michael G., and Hal Caswell. 1997. <span>“Alternatives to Resilience for Measuring the Responses of Ecological Systems to Perturbations.”</span> <em>Ecology</em> 78 (3): 653–65. <a href="https://doi.org/10.1890/0012-9658(1997)078[0653:ATRFMT]2.0.CO;2">https://doi.org/10.1890/0012-9658(1997)078[0653:ATRFMT]2.0.CO;2</a>.
 </div>
@@ -578,6 +577,9 @@ R Core Team. 2024. <em>R: A Language and Environment for Statistical Computing</
 </div>
 <div id="ref-rohr2010" class="csl-entry" role="listitem">
 Rohr, Rudolf&nbsp;Philippe, Heike Scherer, Patrik Kehrli, Christian Mazza, and Louis-Félix Bersier. 2010. <span>“Modeling Food Webs: Exploring Unexplained Structure Using Latent Traits.”</span> <em>The American Naturalist</em> 176 (2): 170–77. <a href="https://doi.org/10.1086/653667">https://doi.org/10.1086/653667</a>.
+</div>
+<div id="ref-rosseel2012" class="csl-entry" role="listitem">
+Rosseel, Yves. 2012. <span>“<span><strong>Lavaan</strong></span> : An <span><em>R</em></span> Package for Structural Equation Modeling.”</span> <em>Journal of Statistical Software</em> 48 (2). <a href="https://doi.org/10.18637/jss.v048.i02">https://doi.org/10.18637/jss.v048.i02</a>.
 </div>
 <div id="ref-deruiter1995" class="csl-entry" role="listitem">
 Ruiter, Peter C. de, Anje-Margriet Neutel, and John C. Moore. 1995. <span>“Energetics, Patterns of Interaction Strengths, and Stability in Real Ecosystems.”</span> <em>Science</em> 269 (5228): 1257–60. <a href="https://doi.org/10.1126/science.269.5228.1257">https://doi.org/10.1126/science.269.5228.1257</a>.
@@ -692,7 +694,8 @@ Yodzis, P. 1981. <span>“The Stability of Real Ecosystems.”</span> <em>Nature
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
       // Inspect non-navigation links and adorn them if external
-     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      window.quartoDecorateExternalLinks = function (root) {
+     var links = (root || window.document).querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
       for (var i=0; i<links.length; i++) {
         const link = links[i];
         if (!isInternal(link.href)) {
@@ -701,8 +704,69 @@ Yodzis, P. 1981. <span>“The Stability of Real Ecosystems.”</span> <em>Nature
           if (link.dataset.originalHref !== undefined) {
             link.href = link.dataset.originalHref;
           }
+          if (!link.classList.contains('no-external-icon')) {
+          }
         }
       }
+      };
+      window.quartoDecorateExternalLinks(window.document);
+    // Esc closes the popup (WCAG 1.4.13) and focus leaving both trigger and
+    // popup closes it (WCAG 2.4.11); tippy handles neither for interactive popups.
+    const hideOnEscAndFocusOut = {
+      name: 'hideOnEscAndFocusOut',
+      defaultValue: true,
+      fn(instance) {
+        const dismiss = () => {
+          // A show scheduled by the trigger delay would otherwise reopen it
+          instance.clearDelayTimeouts();
+          instance.hide();
+        };
+        const onKeyDown = (event) => {
+          if (event.key !== 'Escape') {
+            return;
+          }
+          // Keep Esc from also reaching page handlers (e.g. reveal.js overview),
+          // except an open reveal.js slide menu, which Esc should close too.
+          // The menu handles keys only when its keyboard option is on.
+          const menuHandlesEsc = window.Reveal?.getPlugin?.('menu')?.isOpen() &&
+            window.Reveal.getConfig().menu?.keyboard !== false;
+          if (!menuHandlesEsc) {
+            event.stopPropagation();
+          }
+          if (instance.popper.contains(window.document.activeElement)) {
+            // Disabled while refocusing so the focus trigger does not reopen it
+            instance.disable();
+            instance.reference.focus();
+            instance.enable();
+          }
+          dismiss();
+        };
+        const onFocusOut = (event) => {
+          const target = event.relatedTarget;
+          if (target && !instance.reference.contains(target) &&
+              !instance.popper.contains(target)) {
+            dismiss();
+          }
+        };
+        // On the trigger too: a click trigger (code-annotations: select) has no
+        // blur handling. Attached for the instance's lifetime so leaving the
+        // trigger also cancels a show still pending on the trigger delay.
+        instance.reference.addEventListener('focusout', onFocusOut);
+        return {
+          onShow() {
+            window.document.addEventListener('keydown', onKeyDown, true);
+            instance.popper.addEventListener('focusout', onFocusOut);
+          },
+          onHide() {
+            window.document.removeEventListener('keydown', onKeyDown, true);
+            instance.popper.removeEventListener('focusout', onFocusOut);
+          },
+          onDestroy() {
+            instance.reference.removeEventListener('focusout', onFocusOut);
+          },
+        };
+      },
+    };
     function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
       const config = {
         allowHTML: true,
@@ -716,6 +780,7 @@ Yodzis, P. 1981. <span>“The Stability of Real Ecosystems.”</span> <em>Nature
         interactiveBorder: 10,
         theme: 'quarto',
         placement: 'bottom-start',
+        plugins: [hideOnEscAndFocusOut],
       };
       if (contentFn) {
         config.content = contentFn;
@@ -878,44 +943,54 @@ Yodzis, P. 1981. <span>“The Stability of Real Ecosystems.”</span> <em>Nature
           const lineIds = lines.map((line) => {
             return targetCell + "-" + line;
           })
-          let top = null;
-          let height = null;
-          let parent = null;
+          // Each band is positioned against its own containing block, which is
+          // not the offsetParent of the lines, so place it from client rects.
+          const placeBand = (band, firstEl, lastEl, codeBlock) => {
+            const container = band.offsetParent;
+            if (container === null) {
+              return;
+            }
+            const containerRect = container.getBoundingClientRect();
+            // Reveal.js scales slides with a transform, so convert client
+            // pixels back to the CSS pixels of the container.
+            const scale = containerRect.height / container.offsetHeight || 1;
+            const firstRect = firstEl.getBoundingClientRect();
+            const lastRect = lastEl.getBoundingClientRect();
+            const top = (firstRect.top - containerRect.top) / scale - container.clientTop + container.scrollTop;
+            const height = (lastRect.bottom - firstRect.top) / scale;
+            band.style.top = top - 2 + "px";
+            band.style.height = height + 4 + "px";
+            if (codeBlock) {
+              // Without the copy button wrapper, the containing block is wider
+              // than the code block, so span the code block explicitly.
+              const blockRect = codeBlock.getBoundingClientRect();
+              band.style.left = (blockRect.left - containerRect.left) / scale - container.clientLeft + container.scrollLeft + "px";
+              band.style.width = blockRect.width / scale + "px";
+            }
+          };
           if (lineIds.length > 0) {
-              //compute the position of the single el (top and bottom and make a div)
-              const el = window.document.getElementById(lineIds[0]);
-              top = el.offsetTop;
-              height = el.offsetHeight;
-              parent = el.parentElement.parentElement;
-            if (lineIds.length > 1) {
-              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
-              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
-              height = bottom - top;
+            const el = window.document.getElementById(lineIds[0]);
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const parent = el.parentElement.parentElement;
+            // cook up a div (if necessary) and position it
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
             }
-            if (top !== null && height !== null && parent !== null) {
-              // cook up a div (if necessary) and position it 
-              let div = window.document.getElementById("code-annotation-line-highlight");
-              if (div === null) {
-                div = window.document.createElement("div");
-                div.setAttribute("id", "code-annotation-line-highlight");
-                div.style.position = 'absolute';
-                parent.appendChild(div);
-              }
-              div.style.top = top - 2 + "px";
-              div.style.height = height + 4 + "px";
-              div.style.left = 0;
-              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
-              if (gutterDiv === null) {
-                gutterDiv = window.document.createElement("div");
-                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
-                gutterDiv.style.position = 'absolute';
-                const codeCell = window.document.getElementById(targetCell);
-                const gutter = codeCell.querySelector('.code-annotation-gutter');
-                gutter.appendChild(gutterDiv);
-              }
-              gutterDiv.style.top = top - 2 + "px";
-              gutterDiv.style.height = height + 4 + "px";
+            placeBand(div, el, lastEl, parent.closest("div.sourceCode") || parent);
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
             }
+            placeBand(gutterDiv, el, lastEl);
             selectedAnnoteEl = annoteEl;
           }
         };
@@ -1013,6 +1088,9 @@ Yodzis, P. 1981. <span>“The Stability of Real Ecosystems.”</span> <em>Nature
       }
     }
   });
+  </script>
+  <script type="application/javascript">
+  window.quartoScrollableRegionsLabels = {"code":"Scrollable code","output":"Scrollable output"};
   </script>
 </div> <!-- /content -->
 <script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});

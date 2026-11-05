@@ -318,7 +318,7 @@ source à l'océan, Rennes, France%
   \vskip 1em}
 \makeatother
 
-\date{2026-10-28}
+\date{2026-11-05}
 
 \usepackage[nolists,noheads,markers]{endfloat}
 
@@ -443,12 +443,16 @@ At the same time, empirical food webs exhibit surprisingly consistent
 local structural organisation despite large differences in species
 composition and ecosystem type, suggesting that ecological communities
 occupy a constrained region of possible network architectures rather
-than arbitrary combinations of interactions. This has motivated the idea
-that ecological dynamics selectively retain interaction structures that
-are compatible with persistence while filtering those that are not
-(Stouffer et al., 2007; Stouffer \& Bascompte, 2010). Whether this
-filtering is sufficiently strong to erase the structural differences
-introduced by alternative reconstruction frameworks remains unknown.
+than arbitrary combinations of interactions. Understanding how this
+organisation relates to ecological stability has been a longstanding
+ambition in ecology, underpinning the diversity--stability debate and
+efforts to identify the structural properties that allow complex
+communities to persist (McCann, 2000). This has motivated the idea that
+ecological dynamics selectively retain interaction structures that are
+compatible with persistence while filtering those that are not (Stouffer
+et al., 2007; Stouffer \& Bascompte, 2010). Whether this filtering is
+sufficiently strong to erase the structural differences introduced by
+alternative reconstruction frameworks remains unknown.
 
 Here, we test whether food web reconstruction frameworks function as
 benign structural templates or whether they fundamentally shape
@@ -567,51 +571,44 @@ target connectance and species richness.
 \subsection{Network structure}\label{network-structure}
 
 All networks were converted to directed interaction networks and
-analysed using a standardised pipeline. We quantified structural
-properties across multiple scales, including connectance, trophic level,
-generality, vulnerability, clustering, centrality, trophic coherence,
-and path length. These metrics were used to characterise the structural
-signature of each model.
+analysed using a standardised pipeline. We quantified thirty structural
+properties across multiple scales (See table S1 for the full list),
+including connectance, trophic level, generality, vulnerability,
+clustering, centrality, trophic coherence, and path length. These
+metrics were used to characterise the structural signature of each
+model.
 
-\begin{quote}
-I can do a supp matt that breaks all the structural metrics down - I
-don't think we need it here in the main text.
-\end{quote}
-
-\subsection{Dynamic simulations}\label{dynamic-simulations}
+\subsection{Network equilibrium and
+stability}\label{network-equilibrium-and-stability}
 
 To evaluate the dynamical consequences of different generative models,
 we simulated each network using the bio-energetic food web dynamic model
 implemented in \texttt{EcologicalNetworksDynamics.jl} (Lajaaiti et al.,
 2025). A key feature of the bio-energetic model is the allometric
-scaling of metabolism, growth and foraging rates with body mass. For
-trait-based models (ATN, ADBM, LTN), species body masses were taken from
-the generative networks and rescaled relative to the producer with the
-lowest body mass. For structural models (Niche, Cascade, MaxEnt,
-Random), which did not include body mass information, body masses were
-assigned from species trophic levels assuming apredator--prey body mass
-ratio of 100.
+scaling of metabolism, growth and foraging rates with body mass (Brose
+et al., 2006). For trait-based models (ATN, ADBM, LTN), species body
+masses were taken from the generative networks and rescaled relative to
+the producer with the lowest body mass. For structural models (Niche,
+Cascade, MaxEnt, Random), which did not include body mass information,
+body masses were assigned from species trophic levels assuming a
+predator--prey body mass ratio of 100 (Lajaaiti et al., 2025).
 
 For a consumer species \(i\), biomass dynamics were determined by gains
 from feeding, losses to predators, and metabolic maintenance, which is
 expressed as:
 
-\[
-\frac{dB_i}{dt} = \sum_{j \in \mathrm{prey}(i)}e_{ij} B_i F_{ij} - \sum_{j \in \mathrm{predators}(i)} B_j F_{ji} - x_i B_i
-\]
+\[\frac{dB_i}{dt} = \sum_{j \in \mathrm{prey}(i)}e_{ij} B_i F_{ij} - \sum_{j \in \mathrm{predators}(i)} B_j F_{ji} - x_i B_i\]
 
 where \(B_i\) is the biomass of consumer \(i\), \(e_{ij}\) is its
 assimilation efficiency when feeding on prey \emph{j}, \(x_i\) is its
 metabolic rate scaled with body mass, and \(F_{ij}\) is the functional
 response of consumer \emph{i} feeding on prey \emph{j}, defined as
 
-\[
-F_{ij} = \frac{\omega_{i} a_{ij} B_j^{h}} {M_i\left (1 + \displaystyle\sum_{k \in \mathrm{prey}(i)} \omega_{i} a_{ik} h_{ik} B_k^{h} \right)}
-\]
+\[F_{ij} = \frac{\omega_{i} a_{ij} B_j^{h}} {M_i\left (1 + \displaystyle\sum_{k \in \mathrm{prey}(i)} \omega_{i} a_{ik} h_{ik} B_k^{h} \right)}\]
 
-where \(w_i\) is the equal preference of the consumer i feeding on its
-prey, \(w_i\) = 1/number of prey species. \(a_{ij}\) is the attack rate,
-\(h_{ij}\) is the handling time, and \(M_i\) is the body mass of
+where \(w_i\) is the equal preference of the consumer \(i\) feeding on
+its prey, \(w_i\) = 1/number of prey species. \(a_{ij}\) is the attack
+rate, \(h_{ij}\) is the handling time, and \(M_i\) is the body mass of
 consumer \emph{i}. Attack rates and handling times scaled with both
 consumer and prey body masses. The Hill exponent was set to \(h = 2\) as
 a Type III functional response.
@@ -619,9 +616,7 @@ a Type III functional response.
 For a basal species \(j\), biomass dynamics were determined by its
 logistic growth and losses to consumers, expressed as:
 
-\[
-\frac{dB_j}{dt} = r_j G_j B_j - \sum_{i \in \mathrm{predators}(j)} B_i F_{ij}
-\]
+\[\frac{dB_j}{dt} = r_j G_j B_j - \sum_{i \in \mathrm{predators}(j)} B_i F_{ij}\]
 
 where \(r_j\) is the intrinsic growth rate and
 \(G_j = 1 - \frac{B_j}{K_j}\) is the logistic growth modifier , with
@@ -632,15 +627,40 @@ All allometric constants used to parametrise \(x_i\), \(a_{ij}\),
 \(h_{ij}\), \(r_j\), and \(K_j\) were set to the default values provided
 by (Lajaaiti et al., 2025).
 
-Each network was simulated until it reached a steady state. Species were
-considered extinct when their biomass fell below \(10^{−6}\). At
-equilibrium, both extinct species and disconnected species were removed,
-yielding the realised post-simulation network.
+We first ran a burn-in simulation for each food web until a steady-state
+equilibrium was reached. Species with biomass below \(10^{-6}\) were
+considered extinct, and basal species without consumers and consumers
+without prey were removed. We then simulated the remaining food web
+again to a steady-state equilibrium, yielding to the realised feasible
+network. We also recorded cases in which food webs failed to reach
+equilibrium.
 
-\subsection{Post-simulation analyses}\label{post-simulation-analyses}
+Based on the realised networks and equilibrium biomasses, we calculated
+species persistence and the Shannon diversity of species biomasses. We
+extracted the consumption fluxes along individual trophic links and
+calculated their Gini coefficient (Altena et al., 2016), with higher
+values indicating more uneven distributions of fluxes. We further
+derived the Jacobian matrix, whose non-zero off-diagonal elements
+represent the pairwise interspecific interaction strengths, comprising
+per capita top-down and bottom-up effects. We calculated the the
+skewness of interspecific interaction strengths to characterise the
+asymmetry of their distribution, with greater positive skewness
+reflecting many weak interactions and a few strong interactions (Berlow
+et al., 2004).
 
-\subsubsection{Phenotypic trajectory
-analysis}\label{phenotypic-trajectory-analysis}
+Finally we assessed local community stability using resilience and
+reactivity. Resilience was measured by the real part of the dominant
+eigenvalue of the Jacobian matrix, with more negative values indicating
+faster return to equilibrium following a small perturbation (Ruiter et
+al., 1995). Reactivity quantified the maximum instantaneous
+amplification of perturbations, with more positive values indicating a
+stronger tendency for some perturbations to initially move the system
+further away from equilibrium (Neubert \& Caswell, 1997).
+
+\subsection{Statistical analysis}\label{statistical-analysis}
+
+\subsubsection{Phenotypic trajectory analysis of network
+structure}\label{phenotypic-trajectory-analysis-of-network-structure}
 
 To quantify how ecological dynamics reshaped network topology, all
 structural metrics were recalculated following the dynamic simulations
@@ -648,13 +668,13 @@ using the realised (post-extinction) network. These post-dynamics
 metrics were compared with those of the initial network using a
 phenotypic trajectory analysis (PTA) framework (Adams \& Collyer, 2009),
 where each network was represented as a point in a multivariate topology
-space defined by the suite of structural network metrics {[}TABLE in
-SI{]}. Prior to analysis, all metrics were standardised (mean = 0, SD =
-1) to remove differences in scale before constructing a common topology
-space using principal component analysis (PCA). Both pre- and
-post-dynamics networks were projected into this shared ordination,
-allowing each network to be represented by a trajectory from its initial
-to realised topology.
+space defined by the suite of structural network metrics (Table S1).
+Prior to analysis, all metrics were standardised (mean = 0, SD = 1) to
+remove differences in scale before constructing a common topology space
+using principal component analysis (PCA). Both pre- and post-dynamics
+networks were projected into this shared ordination, allowing each
+network to be represented by a trajectory from its initial to realised
+topology.
 
 Trajectory vectors were calculated as the displacement between pre- and
 post-dynamics positions in the five-dimensional PCA space. Trajectory
@@ -667,32 +687,56 @@ network's Euclidean distance to the global post-dynamics centroid before
 and after simulation, with positive reductions in distance indicating
 convergence towards a common realised network topology.
 
-\subsubsection{Community stability}\label{community-stability}
+\begin{quote}
+add a section here Phenotypic trajectory analysis of community dynamics
+and stability??
+\end{quote}
 
-At equilibrium, we calculated two sets of stability metrics to compare
-realised networks across generative models. First, network-level
-stability was characterised by species persistence, Shannon diversity of
-biomasses, the Gini coefficient of consumption fluxes, and the skewness
-of interspecific interaction strengths. Second, local stability was
-characterised by resilience and reactivity. Resilience was measured by
-the real part of the dominant eigenvalue of the Jacobian matrix, with
-more negative values indicating faster return to equilibrium following a
-small perturbation (Ruiter et al., 1995). Reactivity quantified the
-maximum instantaneous amplification of perturbations, with more positive
-values indicating a stronger tendency for some perturbations to
-initially move the system further away from equilibrium (Neubert \&
-Caswell, 1997).
+\subsubsection{Structural equation model
+analysis}\label{structural-equation-model-analysis}
 
-For each stability metric, we fitted a linear model including food web
-model and equilibrium species richness as additive predictors:
+Ecological inferences drawn from generated food webs depend on how the
+choice of generative model shapes network structure and community
+dynamics. We therefore examined how variation in food web stability was
+associated with richness and topological distinctiveness, and whether
+these relationships differed among the seven generative models.
 
-\(\text{Stability metric} \sim \text{Food web model} + \text{Equilibrium richness}\).
+We used multi-group structural equation modelling (SEM) to quantify
+direct and indirect relationships linking richness and topology distance
+to resilience and reactivity through the Shannon diversity of species
+biomasses, the Gini coefficient of consumption fluxes , and the skewness
+in interaction strengths. Topology distance was calculated as the
+Euclidean distance from the pooled centroid in the principal component
+space of standardised topological metrics at equilibrium. The seven
+generative models shared a common pathway structure, with regression
+coefficients, intercepts, variances, and residual covariances estimated
+separately for each group. All variables were standardised using means
+and standard deviations calculated across the complete dataset,
+providing common units for coefficient comparisons. Models were fitted
+using robust maximum likelihood in lavaan (Rosseel, 2012).
 
-We used Type II ANOVA to assess the contribution of each predictor while
-controlling for the other. The magnitude of each association was
-quantified using partial eta-squared, which represents the proportion of
-effect-plus-residual variation attributable to a predictor after
-accounting for the other predictor.
+We then decomposed the model-implied variance in each stability response
+into contributions associated with richness, residual topological
+variation, and residual variation in biomass, flux, and interaction
+properties. Each contribution was calculated by propagating its source
+variation through all direct and indirect pathways to stability. The
+richness contribution included its direct effect and all indirect
+effects through downstream variables. The topological contribution used
+the residual variance of topological distance after accounting for
+richness and its total downstream effect on stability. The biomass,
+flux, and interaction contribution jointly propagated the residual
+variation in biomass diversity, flux Gini, and interaction-strength
+skewness. These three contributions sum to the full SEM
+(R\textsuperscript{2}), with (1-R\textsuperscript{2}) representing
+unexplained variation. This decomposition was performed separately for
+each stability response and generative model. For example, the fraction
+of resilience variance attributed to richness was calculated as
+\(\frac{\tau_{S,Y}^{2}\operatorname{Var}(S)}{\operatorname{Var}(Y)}\),
+where \(S\) denotes richness, \(Y\) denotes the stability response, and
+\(\tau_{S,Y}\) is the total effect of richness on resilience, comprising
+the direct path coefficient plus the sum of coefficient products along
+all indirect pathways. The variances \({Var}(Y)\) refer to the fitted
+SEM within each generative model.
 
 \section{Results}\label{results}
 
@@ -807,57 +851,64 @@ networks}
 
 \end{figure}%
 
-\subsection{Network stability
-inferences}\label{network-stability-inferences}
+\begin{figure}[H]
 
-Equilibrium richness explained substantially more variation than
-generative food web models in network-level stability metrics, with the
-strongest contribution observed for Shannon diversity of biomasses,
-followed by the skewness of interaction strengths, species persistence
-and the Gini coefficient of consumption fluxes
-(Figure~\ref{fig-rel_contribution}). In contrast, variation in
-resilience was influenced by both richness and model, with a larger
-contribution from model. Reactivity was explained primarily by
-generative food web models, with very little contribution from
-equilibrium richness.
-
-\begin{figure}
-
-\centering{
-
-\pandocbounded{\includegraphics[keepaspectratio]{figures/stability_effect_size_model_vs_richness.png}}
+{\centering \pandocbounded{\includegraphics[keepaspectratio]{figures/multivariateDistance_aggregate.png}}
 
 }
 
-\caption{\label{fig-rel_contribution}Relative contributions of
-equilibrium species richness and generative food web models to variation
-in network and local stability metrics}
+\caption{words}
 
 \end{figure}%
 
-After accounting for equilibrium richness, Niche, Cascade, ATN and
-MaxEnt generally supported higher species persistence than ADBM, LTM and
-Random generated food webs (Figure~\ref{fig-emmeans}). Biomass diversity
-was highest in Cascade and Niche webs, but comparatively low in LTM and
-MaxEnt. Random model had the most uneven consumption fluxes, while
-MaxEnt and Random webs showed the strongest skewness in interaction
-strengths. ADBM and LTM generated food webs showed the highest
-resilience, i.e.,fastest asymptotic recovery, whereas LTM food webs were
-also the most reactive, i.e., strongest initial amplification of
-perturbations.
+\subsection{Structure-stability relationships varied despite structural
+convergence}\label{structure-stability-relationships-varied-despite-structural-convergence}
+
+Despite convergence in food web structure, relationships linking
+structure to stability varied among generative models
+(Figure~\ref{fig-SEM}). After accounting for richness, residual
+topological distance accounted for 0-7\% of total variation in
+resilience and 0-13\% in reactivity. Its contribution to reactivity was
+greatest in Niche (10\%) and Cascade (13\%). Residual variation in
+biomass diversity, flux unevenness, and interaction strength skewness
+jointly made the largest contribution to resilience variation in every
+model, accounting for 12-40\% of total variance, compared with 3-16\%
+attributed to direct and indirect pathways from richness. This combined
+contribution was particularly large in ADBM (40\%) and ATN (28\%),
+whereas richness and residual topology together accounted for 18\% in
+each model.
+
+Among the direct paths to stability, greater flux unevenness was
+associated with slower recovery in six models. Greater interaction
+strength skewness was significantly associated with faster recovery in
+ADBM, Niche, Cascade, and MaxEnt, however its relationship with
+reactivity changed direction among models: positive in ADBM, ATN, and
+LTM, and negative in Niche and Cascade. Thus, even where topology
+converged, the pathways linking biomass, flux, and interaction
+properties to stability remained dependent on the generative model.
 
 \begin{figure}
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{figures/stability_adjusted_model_means.png}}
+\pandocbounded{\includegraphics[keepaspectratio]{figures/SEM_and_variation_partitioning.png}}
 
 }
 
-\caption{\label{fig-emmeans}Network and local stability metrics across
-generative food web models. Points are estimated marginal means adjusted
-to the mean equilibrium species richness. Bars show 95\% confidence
-intervals.}
+\caption{\label{fig-SEM}Structural equation models linking food web
+structure to local community stability across seven generative models.
+(a-g) Significant paths (p \textless{} 0.05) for ADBM, ATN, LTM, Niche,
+Cascade, MaxEnt, and Random. Blue and red arrows indicate positive and
+negative relationships, respectively; Topology distance measures
+distance from the pooled centroid in topological principal component
+space. Flux Gini and IS skewness denote the Gini coefficient of
+consumption fluxes and skewness of absolute interaction strengths.
+Higher resilience values indicate slower recovery; higher reactivity
+indicates greater initial perturbation amplification. (h, i) Fractions
+of total variance in resilience and reactivity explained by the full SEM
+and attributed to richness, residual topological variation, and residual
+biomass, flux, and interaction variation (B-F-IS), including their
+downstream pathways.}
 
 \end{figure}%
 
@@ -939,10 +990,11 @@ equivalence}\label{structural-convergence-does-not-imply-dynamical-equivalence}
 
 Although ecological dynamics drove networks towards a shared region of
 topology space, this convergence did not produce equivalent predictions
-of community stability. Instead, we observed a clear separation between
-coarse dynamic properties, which were largely explained by realised
-species richness, and local dynamical properties, which remained
-strongly dependent on the original reconstruction framework. Structural
+of community stability (Figure~\ref{fig-SEM} and S1). Instead, we
+observed a clear separation between coarse dynamic properties, which
+were largely explained by realised species richness, and local dynamical
+properties, which remained strongly dependent on the original
+reconstruction framework (Figure~\ref{fig-SEM} and S2). Structural
 convergence therefore represents only one dimension of ecological
 similarity; the dynamical consequences of those structures retain a
 signature of how the network was assembled.
@@ -1085,11 +1137,25 @@ Allesina, S., \& Tang, S. (2012). Stability criteria for complex
 ecosystems. \emph{Nature}, \emph{483}(7388), 205--208.
 \url{https://doi.org/10.1038/nature10832}
 
+\bibitem[\citeproctext]{ref-vanaltena2016}
+Altena, C. van, Hemerik, L., \& Ruiter, P. C. de. (2016). Food web
+stability and weighted connectance: The complexity-stability debate
+revisited. \emph{Theoretical Ecology}, \emph{9}(1), 49--58.
+\url{https://doi.org/10.1007/s12080-015-0291-7}
+
 \bibitem[\citeproctext]{ref-banville2023}
 Banville, F., Gravel, D., \& Poisot, T. (2023). What constrains food
 webs? A maximum entropy framework for predicting their structure with
 minimal biases. \emph{PLOS Computational Biology}, \emph{19}(9),
 e1011458. \url{https://doi.org/10.1371/journal.pcbi.1011458}
+
+\bibitem[\citeproctext]{ref-berlow2004}
+Berlow, E. L., Neutel, A.-M., Cohen, J. E., De Ruiter, P. C., Ebenman,
+B., Emmerson, M., Fox, J. W., Jansen, V. A. A., Iwan Jones, J.,
+Kokkoris, G. D., Logofet, D. O., McKane, A. J., Montoya, J. M., \&
+Petchey, O. (2004). Interaction strengths in food webs: Issues and
+opportunities. \emph{Journal of Animal Ecology}, \emph{73}(3), 585--598.
+\url{https://doi.org/10.1111/j.0021-8790.2004.00833.x}
 
 \bibitem[\citeproctext]{ref-bezanson2017}
 Bezanson, J., Edelman, A., Karpinski, S., \& Shah, V. (2017). Julia: A
@@ -1157,6 +1223,11 @@ May, R. M. (1974). \emph{Stability and complexity in model ecosystems}
 (Vol. 1). Princeton University Press.
 \url{https://doi.org/10.2307/j.ctvs32rq4}
 
+\bibitem[\citeproctext]{ref-mccann2000}
+McCann, K. S. (2000). The diversity{\textendash}stability debate.
+\emph{Nature}, \emph{405}(6783), 228--233.
+\url{https://doi.org/10.1038/35012234}
+
 \bibitem[\citeproctext]{ref-neubert1997}
 Neubert, M. G., \& Caswell, H. (1997). Alternatives to resilience for
 measuring the responses of ecological systems to perturbations.
@@ -1185,6 +1256,11 @@ Rohr, R., Scherer, H., Kehrli, P., Mazza, C., \& Bersier, L.-F. (2010).
 Modeling food webs: Exploring unexplained structure using latent traits.
 \emph{The American Naturalist}, \emph{176}(2), 170--177.
 \url{https://doi.org/10.1086/653667}
+
+\bibitem[\citeproctext]{ref-rosseel2012}
+Rosseel, Y. (2012). {\textbf{lavaan}} : An {\emph{R}} package for
+structural equation modeling. \emph{Journal of Statistical Software},
+\emph{48}(2). \url{https://doi.org/10.18637/jss.v048.i02}
 
 \bibitem[\citeproctext]{ref-deruiter1995}
 Ruiter, P. C. de, Neutel, A.-M., \& Moore, J. C. (1995). Energetics,
