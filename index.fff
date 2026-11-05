@@ -59,6 +59,17 @@ networks}
 \end{figure}
 \efloatseparator
  
+\begin{figure}[H]
+
+{\centering \pandocbounded{\includegraphics[keepaspectratio]{figures/multivariateDistance_aggregate.png}}
+
+}
+
+\caption{words}
+
+\end{figure}
+\efloatseparator
+ 
 \begin{figure}
 
 \centering{
@@ -81,21 +92,5 @@ of total variance in resilience and reactivity explained by the full SEM
 and attributed to richness, residual topological variation, and residual
 biomass, flux, and interaction variation (B-F-IS), including their
 downstream pathways.}
-
-\end{figure}
-\efloatseparator
- 
-\begin{figure}
-
-\centering{
-
-\pandocbounded{\includegraphics[keepaspectratio]{figures/stability_adjusted_model_means.png}}
-
-}
-
-\caption{\label{fig-emmeans}Network and local stability metrics across
-generative food web models. Points are estimated marginal means adjusted
-to the mean equilibrium species richness. Bars show 95\% confidence
-intervals.}
 
 \end{figure}
